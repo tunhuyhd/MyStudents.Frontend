@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { GraduationCap, ShieldCheck, Zap, Users, Leaf, Trees } from 'lucide-react';
+import { GraduationCap, ShieldCheck, Zap, Users, Calendar, BookOpen } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { useLanguage } from '@/context/LanguageContext';
 import { Magnetic } from '@/components/ui/Magnetic';
@@ -19,10 +19,10 @@ export default function Home() {
       
       {/* Decorative Leaf Icons */}
       <div className="absolute top-40 right-[10%] opacity-20 animate-sway">
-        <Leaf className="w-12 h-12 text-brand-primary" />
+        <BookOpen className="w-12 h-12 text-brand-primary" />
       </div>
       <div className="absolute bottom-40 left-[5%] opacity-10 animate-sway animation-delay-3000">
-        <Trees className="w-20 h-20 text-brand-primary" />
+        <Calendar className="w-20 h-20 text-brand-primary" />
       </div>
 
       <Navbar />
@@ -97,11 +97,11 @@ export default function Home() {
 
       <footer className="relative z-10 py-20 text-center border-t border-brand-primary/5">
         <div className="flex items-center justify-center space-x-3 mb-4 opacity-50">
-          <Trees className="w-6 h-6 text-brand-primary" />
+          <BookOpen className="w-6 h-6 text-brand-primary" />
           <span className="font-black text-surface-900 tracking-tighter">MyStudents 2026</span>
         </div>
         <p className="text-surface-400 text-xs font-bold uppercase tracking-widest">
-          {language === 'vi' ? 'Sức sống Dương Liễu - Tương lai vươn xa' : 'Willow Vitality - Reaching the Future'}
+          {t('home.footerSlogan')}
         </p>
       </footer>
     </main>

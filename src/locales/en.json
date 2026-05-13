@@ -2,32 +2,35 @@
   "common": {
     "login": "Login",
     "register": "Register",
-    "logout": "Logout",
     "getStarted": "Get Started",
     "backToHome": "Back to Home",
     "save": "Save Changes",
     "saveSuccess": "Profile updated successfully!",
     "saveError": "Update failed. Please try again.",
     "loading": "Loading...",
-    "hi": "Hi"
+    "hello": "Hello"
   },
   "home": {
-    "badge": "Modern Education Platform",
-    "heroTitle": "Grow Your Potential",
-    "heroSubTitle": "In Fresh Air",
-    "heroDesc": "An education management system inspired by the resilience of the Willow tree. Soft in UI, powerful in features.",
+    "badge": "Modern Teacher Solution",
+    "heroTitle": "Extra Class Management",
+    "heroSubTitle": "Smart & Efficient",
+    "heroDesc": "The dedicated platform for teachers to manage students, organize schedules, and optimize private tutoring operations.",
     "features": {
-      "flex": "Flexibility",
-      "flexDesc": "Like willow branches in the wind, the system adapts quickly to any classroom scale.",
-      "secure": "Solid Security",
-      "secureDesc": "Multi-layered security, protecting student data like mature tree bark.",
-      "connect": "Connectivity",
-      "connectDesc": "Creating strong bonds between teachers, students, and schools."
-    }
+      "flex": "Class Management",
+      "flexDesc": "Create classes easily, organize students by levels and subjects professionally.",
+      "secure": "Student Profiles",
+      "secureDesc": "Store contact info, track attendance and progress for every student.",
+      "connect": "Smart Scheduling",
+      "connectDesc": "Plan your teaching sessions intelligently, avoid conflicts, and optimize your timetable."
+    },
+    "footerSlogan": "Smart Management - Better Teaching"
   },
   "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
     "welcomeBack": "Welcome Back",
-    "loginDesc": "Login to manage your studies",
+    "loginDesc": "Login to manage your classes",
     "loginFailed": "Login failed. Please check your credentials.",
     "registrationFailed": "Registration failed. Please try again.",
     "username": "Username",
@@ -36,11 +39,11 @@
     "email": "Email Address",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
-    "createAccount": "Create Account"
+    "createAccount": "Create Teacher Account"
   },
   "profile": {
-    "title": "Profile Information",
-    "desc": "Manage your basic account details",
+    "title": "Teacher Profile",
+    "desc": "Manage your personal and account details",
     "security": "Security",
     "securityDesc": "Manage your password and protection settings",
     "changePassword": "Change Password",
@@ -52,9 +55,9 @@
     "passwordError": "Failed to change password."
   },
   "admin": {
-    "panel": "Admin Panel",
+    "panel": "System Admin",
     "title": "Admin Dashboard",
-    "desc": "Manage users and system permissions",
+    "desc": "Manage teachers and system permissions",
     "refresh": "Refresh Data",
     "user": "User",
     "currentRole": "Current Role",

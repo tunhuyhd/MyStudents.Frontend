@@ -89,12 +89,12 @@ export default function AdminDashboard() {
         >
           <div>
             <div className="flex items-center space-x-3 mb-2">
-              <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
-                <UserCog className="w-6 h-6 text-brand-primary" />
+              <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0">
+                <UserCog className="w-6 h-6 text-emerald-500" />
               </div>
-              <h1 className="text-4xl font-black text-surface-900 tracking-tight">{t('admin.title')}</h1>
+              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">{t('admin.title')}</h1>
             </div>
-            <p className="text-surface-500 font-medium ml-13">{t('admin.desc')}</p>
+            <p className="text-emerald-500/40 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
           </div>
           
           <Button 
@@ -117,10 +117,10 @@ export default function AdminDashboard() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5">
-                  <th className="px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.user')}</th>
-                  <th className="px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('auth.email')}</th>
-                  <th className="px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.currentRole')}</th>
-                  <th className="px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.changeRole')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.user')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('auth.email')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.currentRole')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.changeRole')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,19 +133,19 @@ export default function AdminDashboard() {
                       exit={{ opacity: 0 }}
                       className="border-b border-white/[0.02] hover:bg-emerald-500/[0.03] transition-colors group"
                     >
-                      <td className="px-8 py-6">
+                      <td className="px-4 md:px-8 py-6">
                         <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 transition-colors shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]">
+                          <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 transition-colors shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)] shrink-0">
                             <Users className="w-5 h-5 text-emerald-500 group-hover:text-black" />
                           </div>
                           <div>
-                            <div className="font-bold text-white">{u.fullName}</div>
-                            <div className="text-sm text-emerald-500/40">@{u.username}</div>
+                            <div className="font-bold text-white truncate max-w-[120px] md:max-w-none">{u.fullName}</div>
+                            <div className="text-sm text-emerald-500/40 truncate max-w-[100px] md:max-w-none">@{u.username}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6 text-white/70 font-medium">{u.email}</td>
-                      <td className="px-8 py-6">
+                      <td className="px-4 md:px-8 py-6 text-white/70 font-medium truncate max-w-[150px] md:max-w-none">{u.email}</td>
+                      <td className="px-4 md:px-8 py-6">
                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                           u.roleName === 'Admin' 
                           ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
                           {u.roleName}
                         </span>
                       </td>
-                      <td className="px-8 py-6">
+                      <td className="px-4 md:px-8 py-6">
                         <div className="flex items-center">
                           <RoleDropdown 
                             roles={roles}

@@ -2,32 +2,35 @@
   "common": {
     "login": "Đăng nhập",
     "register": "Đăng ký",
-    "logout": "Đăng xuất",
     "getStarted": "Bắt đầu ngay",
     "backToHome": "Quay lại trang chủ",
     "save": "Lưu thay đổi",
     "saveSuccess": "Thông tin đã được cập nhật thành công!",
     "saveError": "Cập nhật thất bại. Vui lòng thử lại.",
     "loading": "Đang tải...",
-    "hi": "Chào"
+    "hello": "Chào"
   },
   "home": {
-    "badge": "Nền tảng giáo dục hiện đại",
-    "heroTitle": "Phát triển tiềm năng",
-    "heroSubTitle": "trong không gian tươi mới",
-    "heroDesc": "Hệ thống quản lý giáo dục lấy cảm hứng từ sự bền bỉ của Dương Liễu. Mềm mại trong giao diện, mạnh mẽ trong tính năng.",
+    "badge": "Giải pháp cho Giáo viên hiện đại",
+    "heroTitle": "Quản lý lớp học thêm",
+    "heroSubTitle": "thông minh & hiệu quả",
+    "heroDesc": "Nền tảng chuyên dụng giúp giáo viên quản lý học sinh, sắp xếp lịch học và tối ưu hóa việc dạy thêm ngoài giờ một cách khoa học nhất.",
     "features": {
-      "flex": "Linh hoạt",
-      "flexDesc": "Như nhành liễu trước gió, hệ thống thích ứng nhanh với mọi quy mô lớp học.",
-      "secure": "Vững chắc",
-      "secureDesc": "Bảo mật đa tầng, bảo vệ dữ liệu học sinh như lớp vỏ cây già dặn.",
-      "connect": "Kết nối",
-      "connectDesc": "Tạo sự gắn kết bền chặt giữa giáo viên, học sinh và nhà trường."
-    }
+      "flex": "Quản lý Lớp học",
+      "flexDesc": "Tạo lớp dễ dàng, phân loại học sinh theo trình độ và môn học một cách chuyên nghiệp.",
+      "secure": "Hồ sơ Học sinh",
+      "secureDesc": "Lưu trữ thông tin liên lạc, theo dõi chuyên cần và tiến độ học tập của từng học sinh.",
+      "connect": "Lịch học Khoa học",
+      "connectDesc": "Sắp xếp lịch dạy thông minh, tránh trùng lịch và quản lý thời gian biểu tối ưu."
+    },
+    "footerSlogan": "Quản lý thông minh - Dạy học thăng hoa"
   },
   "auth": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
     "welcomeBack": "Chào mừng quay lại",
-    "loginDesc": "Đăng nhập để quản lý việc học của bạn",
+    "loginDesc": "Đăng nhập để quản lý lớp học của bạn",
     "loginFailed": "Đăng nhập thất bại. Kiểm tra lại thông tin.",
     "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
     "username": "Tên đăng nhập",
@@ -36,13 +39,13 @@
     "email": "Địa chỉ Email",
     "noAccount": "Chưa có tài khoản?",
     "haveAccount": "Đã có tài khoản?",
-    "createAccount": "Tạo tài khoản ngay"
+    "createAccount": "Tạo tài khoản giáo viên"
   },
   "profile": {
-    "title": "Thông tin cá nhân",
-    "desc": "Quản lý các thông tin cơ bản của bạn",
+    "title": "Hồ sơ Giáo viên",
+    "desc": "Quản lý thông tin cá nhân và tài khoản",
     "security": "Bảo mật",
-    "securityDesc": "Quản lý mật khẩu và các thiết lập bảo mật",
+    "securityDesc": "Quản lý mật khẩu và an toàn tài khoản",
     "changePassword": "Đổi mật khẩu",
     "oldPassword": "Mật khẩu hiện tại",
     "newPassword": "Mật khẩu mới",
@@ -52,9 +55,9 @@
     "passwordError": "Đổi mật khẩu thất bại."
   },
   "admin": {
-    "panel": "Quản trị",
+    "panel": "Quản trị hệ thống",
     "title": "Bảng điều khiển Admin",
-    "desc": "Quản lý người dùng và phân quyền hệ thống",
+    "desc": "Quản lý danh sách giáo viên và phân quyền người dùng",
     "refresh": "Làm mới dữ liệu",
     "user": "Người dùng",
     "currentRole": "Vai trò hiện tại",

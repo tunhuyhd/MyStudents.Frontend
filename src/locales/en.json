@@ -62,5 +62,18 @@
     "user": "User",
     "currentRole": "Current Role",
     "changeRole": "Change Role"
+  },
+  "teacher": {
+    "title": "Class Management",
+    "desc": "Track and manage your private tutoring classes",
+    "createClass": "Create New Class",
+    "editClass": "Edit Class",
+    "viewClass": "View Details",
+    "className": "Class Name",
+    "subject": "Subject",
+    "schedule": "Schedule",
+    "studentCount": "Students",
+    "actions": "Actions",
+    "noClasses": "You don't have any classes yet. Create your first one!"
   }
 }

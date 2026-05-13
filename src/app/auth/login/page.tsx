@@ -11,6 +11,7 @@ import { GraduationCap, ArrowLeft, LogIn } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { UserRoles } from '@/constants/roles';
 
 export default function UserLoginPage() {
   const { t } = useLanguage();
@@ -28,7 +29,13 @@ export default function UserLoginPage() {
     try {
       const res = await api.post('/auth/login', { username, password });
       authLogin(res.data.token, res.data.refreshToken);
-      window.location.href = '/';
+      
+      // Navigate based on role
+      if (res.data.userRole === UserRoles.Admin) {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/teacher';
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || t('auth.loginFailed'));
     } finally {

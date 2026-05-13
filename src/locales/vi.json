@@ -62,5 +62,18 @@
     "user": "Người dùng",
     "currentRole": "Vai trò hiện tại",
     "changeRole": "Thay đổi quyền"
+  },
+  "teacher": {
+    "title": "Quản lý Lớp học",
+    "desc": "Theo dõi và điều hành các lớp học thêm của bạn",
+    "createClass": "Tạo lớp học mới",
+    "editClass": "Chỉnh sửa lớp học",
+    "viewClass": "Xem chi tiết",
+    "className": "Tên lớp học",
+    "subject": "Môn học",
+    "schedule": "Lịch học",
+    "studentCount": "Số học sinh",
+    "actions": "Thao tác",
+    "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!"
   }
 }

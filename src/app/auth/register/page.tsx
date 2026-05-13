@@ -32,7 +32,7 @@ export default function RegisterPage() {
     try {
       const res = await api.post('/auth/register', formData);
       authLogin(res.data.token, res.data.refreshToken);
-      window.location.href = '/';
+      window.location.href = '/teacher';
     } catch (err: any) {
       setError(err.response?.data?.message || t('auth.registrationFailed'));
     } finally {

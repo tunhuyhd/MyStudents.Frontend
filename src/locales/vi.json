@@ -1,0 +1,54 @@
+{
+  "common": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "getStarted": "Bắt đầu ngay",
+    "backToHome": "Quay lại trang chủ",
+    "save": "Lưu thay đổi",
+    "saveSuccess": "Thông tin đã được cập nhật thành công!",
+    "saveError": "Cập nhật thất bại. Vui lòng thử lại.",
+    "loading": "Đang tải...",
+    "hi": "Chào"
+  },
+  "home": {
+    "badge": "Nền tảng giáo dục hiện đại",
+    "heroTitle": "Phát triển tiềm năng",
+    "heroSubTitle": "trong không gian tươi mới",
+    "heroDesc": "Hệ thống quản lý giáo dục lấy cảm hứng từ sự bền bỉ của Dương Liễu. Mềm mại trong giao diện, mạnh mẽ trong tính năng.",
+    "features": {
+      "flex": "Linh hoạt",
+      "flexDesc": "Như nhành liễu trước gió, hệ thống thích ứng nhanh với mọi quy mô lớp học.",
+      "secure": "Vững chắc",
+      "secureDesc": "Bảo mật đa tầng, bảo vệ dữ liệu học sinh như lớp vỏ cây già dặn.",
+      "connect": "Kết nối",
+      "connectDesc": "Tạo sự gắn kết bền chặt giữa giáo viên, học sinh và nhà trường."
+    }
+  },
+  "auth": {
+    "welcomeBack": "Chào mừng quay lại",
+    "loginDesc": "Đăng nhập để quản lý việc học của bạn",
+    "loginFailed": "Đăng nhập thất bại. Kiểm tra lại thông tin.",
+    "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "fullName": "Họ và tên",
+    "email": "Địa chỉ Email",
+    "noAccount": "Chưa có tài khoản?",
+    "haveAccount": "Đã có tài khoản?",
+    "createAccount": "Tạo tài khoản ngay"
+  },
+  "profile": {
+    "title": "Thông tin cá nhân",
+    "desc": "Quản lý các thông tin cơ bản của bạn",
+    "security": "Bảo mật",
+    "securityDesc": "Quản lý mật khẩu và các thiết lập bảo mật",
+    "changePassword": "Đổi mật khẩu",
+    "oldPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu mới",
+    "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+    "passwordSuccess": "Đổi mật khẩu thành công!",
+    "passwordError": "Đổi mật khẩu thất bại."
+  }
+}

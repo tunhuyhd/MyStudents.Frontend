@@ -1,0 +1,54 @@
+{
+  "common": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "getStarted": "Get Started",
+    "backToHome": "Back to Home",
+    "save": "Save Changes",
+    "saveSuccess": "Profile updated successfully!",
+    "saveError": "Update failed. Please try again.",
+    "loading": "Loading...",
+    "hi": "Hi"
+  },
+  "home": {
+    "badge": "Modern Education Platform",
+    "heroTitle": "Grow Your Potential",
+    "heroSubTitle": "In Fresh Air",
+    "heroDesc": "An education management system inspired by the resilience of the Willow tree. Soft in UI, powerful in features.",
+    "features": {
+      "flex": "Flexibility",
+      "flexDesc": "Like willow branches in the wind, the system adapts quickly to any classroom scale.",
+      "secure": "Solid Security",
+      "secureDesc": "Multi-layered security, protecting student data like mature tree bark.",
+      "connect": "Connectivity",
+      "connectDesc": "Creating strong bonds between teachers, students, and schools."
+    }
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "loginDesc": "Login to manage your studies",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registrationFailed": "Registration failed. Please try again.",
+    "username": "Username",
+    "password": "Password",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "createAccount": "Create Account"
+  },
+  "profile": {
+    "title": "Profile Information",
+    "desc": "Manage your basic account details",
+    "security": "Security",
+    "securityDesc": "Manage your password and protection settings",
+    "changePassword": "Change Password",
+    "oldPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "passwordMismatch": "Confirm password does not match.",
+    "passwordSuccess": "Password changed successfully!",
+    "passwordError": "Failed to change password."
+  }
+}

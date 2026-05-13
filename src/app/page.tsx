@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { GraduationCap, ShieldCheck, Zap, Users, Leaf, Trees } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { useLanguage } from '@/context/LanguageContext';
+import { Magnetic } from '@/components/ui/Magnetic';
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -48,17 +49,21 @@ export default function Home() {
             {t('home.heroDesc')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="/auth/register">
-              <Button size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg shadow-2xl shadow-brand-primary/40">
-                {t('common.getStarted')}
-              </Button>
-            </Link>
-            <Link href="/auth/login">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5 bg-white">
-                {t('common.login')}
-              </Button>
-            </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+            <Magnetic>
+              <Link href="/auth/register">
+                <Button size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg shadow-2xl shadow-brand-primary/40">
+                  {t('common.getStarted')}
+                </Button>
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link href="/auth/login">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5 bg-white">
+                  {t('common.login')}
+                </Button>
+              </Link>
+            </Magnetic>
           </div>
         </motion.div>
       </section>
@@ -73,8 +78,12 @@ export default function Home() {
           ].map((feature, i) => (
             <motion.div
               key={i}
-              whileHover={{ y: -10, scale: 1.01 }}
-              className="bg-white/70 backdrop-blur-sm p-10 rounded-[3rem] border border-brand-primary/10 shadow-xl shadow-brand-primary/5"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              whileHover={{ y: -12, scale: 1.02, rotateZ: 1 }}
+              className="bg-white/70 backdrop-blur-md p-10 rounded-[3rem] border border-brand-primary/10 shadow-xl shadow-brand-primary/5 cursor-pointer transition-shadow hover:shadow-brand-primary/20"
             >
               <div className={`w-14 h-14 ${feature.color} rounded-2xl flex items-center justify-center mb-8 shadow-inner`}>
                 <feature.icon className="w-7 h-7" />

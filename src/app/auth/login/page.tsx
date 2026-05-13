@@ -28,6 +28,7 @@ export default function UserLoginPage() {
     try {
       const res = await api.post('/auth/login', { username, password });
       authLogin(res.data.token, res.data.refreshToken);
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.response?.data?.message || t('auth.loginFailed'));
     } finally {
@@ -42,8 +43,9 @@ export default function UserLoginPage() {
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-brand-secondary/10 rounded-full blur-3xl" />
       
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md relative z-10"
       >
         <Link href="/" className="inline-flex items-center text-sm font-bold text-surface-500 hover:text-brand-primary mb-8 transition-all group">

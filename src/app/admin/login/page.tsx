@@ -5,11 +5,16 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShieldAlert, ArrowLeft, Terminal } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, Lock } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
+import ZodiacBackground from '@/components/ZodiacBackground';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
+  const { t } = useLanguage();
+  const { login: authLogin } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,85 +26,82 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/login', { username, password });
-      
-      // Kiểm tra xem có đúng là Admin không
-      if (res.data.role !== 'ADMIN') {
-        throw new Error('Unauthorized access. Admin privileges required.');
-      }
-
-      localStorage.setItem('accessToken', res.data.token);
-      localStorage.setItem('refreshToken', res.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(res.data));
-      router.push('/'); // Sau này chuyển sang /admin/dashboard
+      const res = await api.post('/admin/login', { username, password });
+      authLogin(res.data.token, res.data.refreshToken);
+      window.location.href = '/admin';
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Login failed.');
+      setError(err.response?.data?.message || 'Access Denied: Invalid admin credentials.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black p-6 relative overflow-hidden">
-      {/* Matrix-like Decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(#1a1a1a_1px,transparent_1px)] [background-size:16px_16px] opacity-20" />
+    <div className="min-h-screen flex items-center justify-center bg-[#020403] p-6 relative overflow-hidden">
+      <ZodiacBackground />
       
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="bg-zinc-900 border border-zinc-800 p-10 rounded-[2rem] shadow-2xl">
-          <div className="flex flex-col items-center mb-10">
-            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/20">
-              <ShieldAlert className="w-8 h-8 text-red-500" />
+        <Link href="/" className="inline-flex items-center text-sm font-bold text-emerald-500/50 hover:text-emerald-400 mb-8 transition-all group">
+          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+          {t('common.backToHome')}
+        </Link>
+
+        <div className="bg-[#111814]/80 backdrop-blur-xl p-10 rounded-[2.5rem] shadow-[0_0_80px_-20px_rgba(16,185,129,0.3)] border border-emerald-500/20">
+          <div className="flex flex-col items-center mb-10 text-center">
+            <div className="w-20 h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mb-6 border border-emerald-500/20 shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]">
+              <ShieldAlert className="w-10 h-10 text-emerald-500" />
             </div>
-            <h1 className="text-2xl font-mono font-bold tracking-widest text-white uppercase">Admin Console</h1>
-            <div className="flex items-center mt-2 text-zinc-500 space-x-2">
-              <Terminal className="w-4 h-4" />
-              <span className="text-xs font-mono">SECURE ACCESS ONLY</span>
-            </div>
+            <h1 className="text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">Admin Access</h1>
+            <p className="text-emerald-500/60 font-medium mt-2 text-sm tracking-widest uppercase">Secure Terminal System</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <Input 
-              label="Admin ID" 
-              placeholder="root_id"
-              className="bg-zinc-950 border-zinc-800 text-white font-mono"
+              label="ADMIN IDENTIFIER" 
+              placeholder="Username"
+              className="bg-black/50 border-emerald-500/10 text-white focus:border-emerald-500/40"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
             <Input 
-              label="Security Key" 
+              label="SECURITY KEY" 
               type="password" 
               placeholder="••••••••"
-              className="bg-zinc-950 border-zinc-800 text-white font-mono"
+              className="bg-black/50 border-emerald-500/10 text-white focus:border-emerald-500/40"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
 
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
-                <p className="text-xs text-red-500 font-mono text-center">{error}</p>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }} 
+                animate={{ opacity: 1, x: 0 }}
+                className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-bold text-red-400 text-center"
+              >
+                {error}
+              </motion.div>
             )}
 
             <Button 
               type="submit" 
-              className="w-full h-14 bg-white text-black hover:bg-zinc-200" 
+              className="w-full h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-widest shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]" 
               isLoading={loading}
             >
-              Authenticate
+              <Lock className="w-4 h-4 mr-2" />
+              Authorize Entry
             </Button>
           </form>
-
-          <Link href="/" className="mt-8 flex items-center justify-center text-xs text-zinc-500 hover:text-zinc-300 transition-colors uppercase tracking-widest">
-            <ArrowLeft className="w-3 h-3 mr-2" />
-            Return to Public Area
-          </Link>
         </div>
+        
+        <p className="text-center mt-8 text-[10px] font-black text-emerald-500/20 uppercase tracking-[0.3em]">
+          Restricted Area - Unauthorized access is prohibited
+        </p>
       </motion.div>
     </div>
   );

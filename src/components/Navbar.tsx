@@ -7,6 +7,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { GraduationCap, LogOut, User as UserIcon } from 'lucide-react';
 
 import { useLanguage } from '@/context/LanguageContext';
+import { UserRoles } from '@/constants/roles';
 
 export function Navbar() {
   const { t } = useLanguage();
@@ -27,6 +28,11 @@ export function Navbar() {
           <>
             {user ? (
               <div className="flex items-center space-x-6">
+                {user.role === UserRoles.Admin && (
+                  <Link href="/admin" className="text-sm font-black text-brand-primary hover:opacity-70 transition-opacity uppercase tracking-tighter">
+                    {t('admin.panel')}
+                  </Link>
+                )}
                 <Link 
                   href="/me" 
                   className="flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-full border border-surface-100 hover:bg-surface-100 transition-all active:scale-95 group"

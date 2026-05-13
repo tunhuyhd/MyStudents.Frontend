@@ -50,5 +50,14 @@
     "passwordMismatch": "Mật khẩu xác nhận không khớp.",
     "passwordSuccess": "Đổi mật khẩu thành công!",
     "passwordError": "Đổi mật khẩu thất bại."
+  },
+  "admin": {
+    "panel": "Quản trị",
+    "title": "Bảng điều khiển Admin",
+    "desc": "Quản lý người dùng và phân quyền hệ thống",
+    "refresh": "Làm mới dữ liệu",
+    "user": "Người dùng",
+    "currentRole": "Vai trò hiện tại",
+    "changeRole": "Thay đổi quyền"
   }
 }

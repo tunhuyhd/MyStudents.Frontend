@@ -50,5 +50,14 @@
     "passwordMismatch": "Confirm password does not match.",
     "passwordSuccess": "Password changed successfully!",
     "passwordError": "Failed to change password."
+  },
+  "admin": {
+    "panel": "Admin Panel",
+    "title": "Admin Dashboard",
+    "desc": "Manage users and system permissions",
+    "refresh": "Refresh Data",
+    "user": "User",
+    "currentRole": "Current Role",
+    "changeRole": "Change Role"
   }
 }

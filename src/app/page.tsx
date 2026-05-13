@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { GraduationCap, ShieldCheck, Zap, Users, Calendar, BookOpen } from 'lucide-react';
-import { Navbar } from '@/components/Navbar';
 import { useLanguage } from '@/context/LanguageContext';
 import { Magnetic } from '@/components/ui/Magnetic';
 
@@ -14,8 +13,8 @@ export default function Home() {
   return (
     <main className="min-h-screen relative overflow-hidden bg-transparent text-surface-900">
       {/* Nature-inspired Orbs */}
-      <div className="absolute top-0 -left-10 w-[500px] h-[500px] bg-brand-primary/10 rounded-full filter blur-[120px] animate-blob" />
-      <div className="absolute -bottom-20 -right-10 w-[600px] h-[600px] bg-brand-secondary/5 rounded-full filter blur-[150px] animate-blob animation-delay-2000" />
+      <div className="absolute top-0 -left-10 w-[500px] h-[500px] bg-brand-primary/10 rounded-full filter blur-[120px] animate-blob z-0" />
+      <div className="absolute -bottom-20 -right-10 w-[600px] h-[600px] bg-brand-secondary/5 rounded-full filter blur-[150px] animate-blob animation-delay-2000 z-0" />
       
       {/* Decorative Leaf Icons */}
       <div className="absolute top-40 right-[10%] opacity-20 animate-sway">
@@ -25,7 +24,6 @@ export default function Home() {
         <Calendar className="w-20 h-20 text-brand-primary" />
       </div>
 
-      <Navbar />
 
       {/* Hero Section */}
       <section className="relative z-10 pt-16 pb-32 px-6 max-w-7xl mx-auto text-center">

@@ -74,6 +74,22 @@
     "schedule": "Lịch học",
     "studentCount": "Số học sinh",
     "actions": "Thao tác",
-    "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!"
+    "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!",
+    "modal": {
+      "createTitle": "Tạo lớp học mới",
+      "editTitle": "Chỉnh sửa lớp học",
+      "nameLabel": "Tên lớp học",
+      "namePlaceholder": "Ví dụ: Toán lớp 12",
+      "codeLabel": "Mã lớp",
+      "codePlaceholder": "Ví dụ: TOAN12-2024",
+      "subjectLabel": "Môn học",
+      "subjectPlaceholder": "Chọn một môn học",
+      "categoryLabel": "Hình thức",
+      "online": "Trực tuyến",
+      "offline": "Trực tiếp",
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi",
+      "create": "Tạo lớp học"
+    }
   }
 }

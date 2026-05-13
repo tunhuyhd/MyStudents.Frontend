@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 import { UserRoles } from '@/constants/roles';
 
-export function Navbar() {
+export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { t } = useLanguage();
   const { user, logout, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,14 +70,24 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-100 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-3 group transition-transform active:scale-95">
-          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20 group-hover:rotate-6 transition-transform">
-            <GraduationCap className="text-white w-6 h-6" />
-          </div>
-          <span className="text-2xl font-black tracking-tighter text-surface-900 group-hover:text-brand-primary transition-colors">
-            My<span className="text-brand-primary">Students</span>
-          </span>
-        </Link>
+        <div className="flex items-center space-x-3">
+          {onMenuClick && (
+            <button 
+              onClick={onMenuClick}
+              className="p-2 -ml-2 hover:bg-brand-primary/5 rounded-xl lg:hidden text-brand-primary"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          )}
+          <Link href="/" className="flex items-center space-x-3 group transition-transform active:scale-95">
+            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20 group-hover:rotate-6 transition-transform">
+              <GraduationCap className="text-white w-6 h-6" />
+            </div>
+            <span className="text-2xl font-black tracking-tighter text-surface-900 group-hover:text-brand-primary transition-colors">
+              My<span className="text-brand-primary">Students</span>
+            </span>
+          </Link>
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">

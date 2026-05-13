@@ -8,7 +8,8 @@ import RoleDropdown from '@/components/RoleDropdown';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen } from 'lucide-react';
+import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
   const [roles, setRoles] = useState<RoleDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'Admin')) {
@@ -97,6 +99,27 @@ export default function AdminDashboard() {
             <p className="text-emerald-500/40 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
           </div>
           
+          <div className="flex items-center bg-white/5 p-1.5 rounded-2xl border border-white/5">
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'users' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-500/60 hover:text-emerald-400'
+              }`}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              Users
+            </button>
+            <button
+              onClick={() => setActiveTab('subjects')}
+              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'subjects' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-500/60 hover:text-emerald-400'
+              }`}
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Subjects
+            </button>
+          </div>
+
           <Button 
             onClick={fetchData} 
             variant="outline" 
@@ -108,13 +131,17 @@ export default function AdminDashboard() {
           </Button>
         </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden"
-        >
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+        <AnimatePresence mode="wait">
+          {activeTab === 'users' ? (
+            <motion.div 
+              key="users"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden"
+            >
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5">
                   <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.user')}</th>
@@ -178,8 +205,19 @@ export default function AdminDashboard() {
                 </AnimatePresence>
               </tbody>
             </table>
-          </div>
-        </motion.div>
+            </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="subjects"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <SubjectManagement />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );

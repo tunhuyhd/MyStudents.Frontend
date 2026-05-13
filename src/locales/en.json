@@ -74,6 +74,22 @@
     "schedule": "Schedule",
     "studentCount": "Students",
     "actions": "Actions",
-    "noClasses": "You don't have any classes yet. Create your first one!"
+    "noClasses": "You don't have any classes yet. Create your first one!",
+    "modal": {
+      "createTitle": "Create New Class",
+      "editTitle": "Edit Class",
+      "nameLabel": "Class Name",
+      "namePlaceholder": "e.g. Mathematics Grade 12",
+      "codeLabel": "Class Code",
+      "codePlaceholder": "e.g. MATH12-2024",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "categoryLabel": "Category",
+      "online": "Online",
+      "offline": "Offline",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Class"
+    }
   }
 }

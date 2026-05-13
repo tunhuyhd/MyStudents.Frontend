@@ -20,6 +20,8 @@ export const metadata: Metadata = {
 
 import { LanguageProvider } from "@/context/LanguageContext";
 
+import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +36,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white">
         <LanguageProvider>
           <AuthProvider>
-            {children}
+            <MainLayoutWrapper>
+              {children}
+            </MainLayoutWrapper>
           </AuthProvider>
         </LanguageProvider>
       </body>

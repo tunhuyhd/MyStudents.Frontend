@@ -25,7 +25,7 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
       href: '/teacher',
     },
     {
-      title: 'Học sinh', // Will localize later
+      title: t('teacher.students.label'),
       icon: Users,
       href: '/teacher/students',
     },

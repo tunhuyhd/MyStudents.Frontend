@@ -152,7 +152,7 @@ export default function TeacherDashboard() {
               <div>
                 <div className="text-[10px] font-black text-surface-400 uppercase tracking-widest leading-none mb-1">{t('teacher.totalImpact')}</div>
                 <div className="text-lg font-black text-surface-900 leading-none">
-                  {classes.reduce((acc, curr) => acc + curr.studentCount, 0)} {t('teacher.students')}
+                  {classes.reduce((acc, curr) => acc + curr.studentCount, 0)} {t('teacher.students.label')}
                 </div>
               </div>
             </div>

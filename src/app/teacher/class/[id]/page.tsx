@@ -63,6 +63,7 @@ export default function ClassDetailPage() {
       // Normalize data to handle both camelCase and PascalCase
       const normalizedData = {
         ...data,
+        status: data.status !== undefined ? data.status : data.Status,
         category: data.category !== undefined ? data.category : data.Category,
         subjectId: data.subjectId || data.SubjectId,
         students: data.students || data.Students || [],
@@ -149,13 +150,33 @@ export default function ClassDetailPage() {
                   {classData.subjectName}
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black text-surface-900 tracking-tighter leading-none">
+              <h1 className="text-4xl md:text-7xl font-black text-surface-900 tracking-tighter leading-tight md:leading-none">
                 {classData.name}
               </h1>
-              <div className="flex items-center space-x-6 text-surface-400 font-bold">
+              <div className="flex flex-wrap items-center gap-4 md:gap-8 text-surface-400 font-bold">
                 <div className="flex items-center">
                   <Hash className="w-4 h-4 mr-2 text-brand-primary/40" />
                   <span>{classData.code}</span>
+                </div>
+                {/* Status Badge */}
+                <div className={`flex items-center space-x-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${
+                  classData.status === 1 ? 'bg-green-50 text-green-600 border-green-100' :
+                  classData.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
+                  classData.status === 3 ? 'bg-brand-primary/10 text-brand-primary border-brand-primary/20' :
+                  'bg-red-50 text-red-600 border-red-100'
+                }`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${
+                    classData.status === 1 ? 'bg-green-500' :
+                    classData.status === 2 ? 'bg-yellow-500' :
+                    classData.status === 3 ? 'bg-brand-primary' :
+                    'bg-red-500'
+                  }`} />
+                  <span>{
+                    classData.status === 1 ? t('teacher.status.active') :
+                    classData.status === 2 ? t('teacher.status.inactive') :
+                    classData.status === 3 ? t('teacher.status.completed') :
+                    t('teacher.status.cancelled')
+                  }</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="w-4 h-4 mr-2 text-brand-primary/40" />
@@ -164,11 +185,11 @@ export default function ClassDetailPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full md:w-auto">
               <Button 
                 variant="outline" 
                 onClick={() => setIsModalOpen(true)}
-                className="rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5"
+                className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5"
               >
                 {t('common.edit')}
               </Button>
@@ -176,27 +197,29 @@ export default function ClassDetailPage() {
           </div>
         </div>
 
-        {/* Dynamic Tabs */}
-        <div className="flex items-center p-2 bg-white/50 backdrop-blur-xl border border-white rounded-[2.5rem] mb-12 w-fit">
+        {/* Dynamic Tabs - Scrollable on Mobile */}
+        <div className="flex items-center p-1.5 bg-white/50 backdrop-blur-xl border border-white rounded-[2rem] md:rounded-[2.5rem] mb-12 overflow-x-auto scrollbar-hide max-w-full">
+          <div className="flex items-center min-w-max">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`relative flex items-center space-x-3 px-8 py-4 rounded-[1.75rem] font-black text-sm transition-all duration-500 ${
+              className={`relative flex items-center space-x-3 px-4 md:px-8 py-3 md:py-4 rounded-[1.25rem] md:rounded-[1.75rem] font-black text-sm transition-all duration-500 ${
                 activeTab === tab.id ? 'text-white' : 'text-surface-400 hover:text-surface-600'
               }`}
             >
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="active-tab-bg"
-                  className="absolute inset-0 bg-brand-primary rounded-[1.75rem] shadow-xl shadow-brand-primary/30"
+                  className="absolute inset-0 bg-brand-primary rounded-[1.25rem] md:rounded-[1.75rem] shadow-xl shadow-brand-primary/30"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
               <tab.icon className="w-4 h-4 relative z-10" />
-              <span className="relative z-10 uppercase tracking-widest">{tab.label}</span>
+              <span className="relative z-10 uppercase tracking-widest whitespace-nowrap">{tab.label}</span>
             </button>
           ))}
+          </div>
         </div>
 
         {/* Tab Content Area */}

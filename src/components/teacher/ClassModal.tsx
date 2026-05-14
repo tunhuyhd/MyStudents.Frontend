@@ -205,7 +205,7 @@ const ScheduleRow = ({
             }`}
           >
             <span className="font-bold text-sm text-surface-700">
-              {t(`teacher.modal.days.${schedule.dayOfWeek}`)}
+              {t(`days.${schedule.dayOfWeek}`)}
             </span>
             <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform duration-300 ${isDayOpen ? 'rotate-180 text-brand-primary' : ''}`} />
           </div>
@@ -232,7 +232,7 @@ const ScheduleRow = ({
                         : 'hover:bg-surface-50 text-surface-600'
                       }`}
                     >
-                      {t(`teacher.modal.days.${d}`)}
+                      {t(`days.${d}`)}
                     </div>
                   ))}
                 </div>
@@ -339,11 +339,22 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     name: '',
     code: '',
     category: 0,
+    status: 1,
     subjectId: '',
     startDate: new Date().toISOString().split('T')[0],
     expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     schedules: []
   });
+
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
+
+  const statusOptions = [
+    { value: 1, label: t('teacher.status.active'), color: 'bg-green-500' },
+    { value: 2, label: t('teacher.status.inactive'), color: 'bg-yellow-500' },
+    { value: 3, label: t('teacher.status.completed'), color: 'bg-brand-primary' },
+    { value: 4, label: t('teacher.status.cancelled'), color: 'bg-red-500' },
+  ];
 
   useEffect(() => {
     if (isOpen) {
@@ -352,6 +363,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         setFormData({
           name: initialData.name,
           code: initialData.code,
+          status: initialData.status || 1,
           category: initialData.category,
           subjectId: initialData.subjectId,
           startDate: (initialData.startDate && !initialData.startDate.startsWith('0001')) 
@@ -366,6 +378,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         setFormData({ 
           name: '', 
           code: '', 
+          status: 1,
           category: 0, 
           subjectId: '',
           startDate: new Date().toISOString().split('T')[0],
@@ -381,6 +394,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+      }
+      if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
+        setIsStatusOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -604,12 +620,65 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                     t={t}
                   />
 
-                  <CustomDatePicker 
+                   <CustomDatePicker 
                     label={t('teacher.modal.endDateLabel')}
                     value={formData.expectedEndDate}
                     onChange={(val) => setFormData({...formData, expectedEndDate: val})}
                     t={t}
                   />
+
+                  {/* Status Selection */}
+                  <div className="space-y-2 relative" ref={statusRef}>
+                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
+                      {t('teacher.modal.statusLabel')}
+                    </label>
+                    <div 
+                      onClick={() => setIsStatusOpen(!isStatusOpen)}
+                      className={`w-full h-14 px-6 rounded-2xl bg-surface-50/50 border flex items-center justify-between cursor-pointer transition-all duration-300 ${
+                        isStatusOpen ? 'border-brand-primary bg-white shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-3 ${statusOptions.find(o => o.value === formData.status)?.color}`} />
+                        <span className="font-bold text-surface-900">
+                          {statusOptions.find(o => o.value === formData.status)?.label}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-surface-400 transition-transform duration-300 ${isStatusOpen ? 'rotate-180 text-brand-primary' : ''}`} />
+                    </div>
+
+                    <AnimatePresence>
+                      {isStatusOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute z-20 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-[2rem] shadow-2xl overflow-hidden"
+                        >
+                          <div className="p-2 scrollbar-hide">
+                            {statusOptions.map(opt => (
+                              <div
+                                key={opt.value}
+                                onClick={() => {
+                                  setFormData({...formData, status: opt.value});
+                                  setIsStatusOpen(false);
+                                }}
+                                className={`flex items-center px-4 py-3 rounded-xl cursor-pointer transition-all ${
+                                  formData.status === opt.value 
+                                  ? 'bg-brand-primary/10 text-brand-primary' 
+                                  : 'hover:bg-surface-50 text-surface-600'
+                                }`}
+                              >
+                                <div className={`w-2 h-2 rounded-full mr-3 ${opt.color}`} />
+                                <span className="font-bold">{opt.label}</span>
+                                {formData.status === opt.value && <Check className="ml-auto w-4 h-4" />}
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
 
                 {/* Schedules Management */}

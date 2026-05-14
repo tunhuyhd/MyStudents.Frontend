@@ -86,6 +86,8 @@
     "actions": "Actions",
     "noClasses": "You don't have any classes yet. Create your first one!",
     "sessionsPerWeek": "sessions / week",
+    "deleteTitle": "Confirm Class Deletion",
+    "deleteMessage": "Are you sure you want to delete this class? All related data will be permanently removed and cannot be undone.",
     "details": {
       "overview": "Overview",
       "students": "Students",
@@ -117,6 +119,7 @@
       "codePlaceholder": "e.g. MATH12-2024",
       "subjectLabel": "Subject",
       "subjectPlaceholder": "Select subject",
+      "statusLabel": "Status",
       "categoryLabel": "Category",
       "online": "Online",
       "offline": "Offline",
@@ -129,6 +132,12 @@
       "addSession": "Add Session",
       "noSchedules": "No regular schedules",
       "hoursAbbr": "h"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   },
   "days": {

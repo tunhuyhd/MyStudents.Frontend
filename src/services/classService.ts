@@ -11,6 +11,7 @@ export interface Class {
   id: string;
   name: string;
   code: string;
+  status: number; // 1: Active, 2: Inactive, 3: Completed, 4: Cancelled
   category: number; // 0: Online, 1: Offline
   subjectId: string;
   subjectName: string;
@@ -23,6 +24,7 @@ export interface Class {
 export interface CreateClassData {
   name: string;
   code: string;
+  status: number;
   category: number;
   subjectId: string;
   startDate: string;

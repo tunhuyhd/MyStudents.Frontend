@@ -26,6 +26,7 @@ import { UserRoles } from '@/constants/roles';
 
 import { classService, Class, CreateClassData } from '@/services/classService';
 import ClassModal from '@/components/teacher/ClassModal';
+import ConfirmModal from '@/components/teacher/ConfirmModal';
 
 export default function TeacherDashboard() {
   const { t } = useLanguage();
@@ -35,6 +36,9 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClass, setEditingClass] = useState<Class | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingClassId, setDeletingClassId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== UserRoles.User)) {
@@ -79,13 +83,23 @@ export default function TeacherDashboard() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this class?')) return;
+  const handleDeleteClick = (id: string) => {
+    setDeletingClassId(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingClassId) return;
+    setIsDeleting(true);
     try {
-      await classService.delete(id);
+      await classService.delete(deletingClassId);
+      setIsDeleteModalOpen(false);
       fetchClasses();
     } catch (err) {
       console.error('Failed to delete class', err);
+    } finally {
+      setIsDeleting(false);
+      setDeletingClassId(null);
     }
   };
 
@@ -191,6 +205,26 @@ export default function TeacherDashboard() {
                           <Zap className="w-3 h-3" />
                           <span>{c.category === 0 ? t('common.online') : t('common.offline')}</span>
                         </div>
+                        {/* Status Badge */}
+                        <div className={`mt-2 flex items-center space-x-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${
+                          c.status === 1 ? 'bg-green-50 text-green-600 border-green-100' :
+                          c.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
+                          c.status === 3 ? 'bg-brand-primary/10 text-brand-primary border-brand-primary/20' :
+                          'bg-red-50 text-red-600 border-red-100'
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${
+                            c.status === 1 ? 'bg-green-500' :
+                            c.status === 2 ? 'bg-yellow-500' :
+                            c.status === 3 ? 'bg-brand-primary' :
+                            'bg-red-500'
+                          }`} />
+                          <span>{
+                            c.status === 1 ? t('teacher.status.active') :
+                            c.status === 2 ? t('teacher.status.inactive') :
+                            c.status === 3 ? t('teacher.status.completed') :
+                            t('teacher.status.cancelled')
+                          }</span>
+                        </div>
                       </div>
 
                       {/* Decoration Icon */}
@@ -243,7 +277,7 @@ export default function TeacherDashboard() {
                             <Edit className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => handleDelete(c.id)} 
+                            onClick={() => handleDeleteClick(c.id)} 
                             className="flex-1 h-12 bg-white border border-surface-100 rounded-[1.25rem] flex items-center justify-center text-surface-400 hover:text-red-500 hover:border-red-100 transition-all hover:shadow-lg hover:shadow-red-500/5"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -283,7 +317,16 @@ export default function TeacherDashboard() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveClass}
-        initialData={editingClass}
+        initialData={editingClass || undefined}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        isLoading={isDeleting}
+        title={t('teacher.deleteTitle') || "Xóa lớp học"}
+        message={t('teacher.deleteMessage') || "Bạn có chắc chắn muốn xóa lớp học này? Hành động này không thể hoàn tác."}
       />
     </main>
   );

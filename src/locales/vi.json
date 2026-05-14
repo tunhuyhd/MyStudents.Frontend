@@ -14,7 +14,7 @@
     "delete": "Xóa",
     "search": "Tìm kiếm...",
     "online": "Trực tuyến",
-    "offline": "Ngoại tuyến",
+    "offline": "Trực tiếp",
     "viewDetails": "Xem chi tiết"
   },
   "home": {
@@ -86,6 +86,8 @@
     "actions": "Thao tác",
     "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!",
     "sessionsPerWeek": "buổi / tuần",
+    "deleteTitle": "Xác nhận xóa lớp học",
+    "deleteMessage": "Bạn có chắc chắn muốn xóa lớp học này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn và không thể hoàn tác.",
     "details": {
       "overview": "Tổng quan",
       "students": "Học sinh",
@@ -117,6 +119,7 @@
       "codePlaceholder": "Ví dụ: TOAN12-2024",
       "subjectLabel": "Môn học",
       "subjectPlaceholder": "Chọn một môn học",
+      "statusLabel": "Trạng thái",
       "categoryLabel": "Hình thức",
       "online": "Trực tuyến",
       "offline": "Trực tiếp",
@@ -129,6 +132,12 @@
       "addSession": "Thêm buổi",
       "noSchedules": "Chưa có lịch học định kỳ",
       "hoursAbbr": "giờ"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Tạm dừng",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy"
     }
   },
   "days": {

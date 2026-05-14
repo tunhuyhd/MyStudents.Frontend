@@ -48,4 +48,10 @@ export const classService = {
   removeStudent: (classId: string, studentId: string) => api.delete<boolean>(`/classes/${classId}/students/${studentId}`),
   getAvailableStudents: (classId: string, searchTerm: string = '') => 
     api.get<any[]>(`/classes/${classId}/available-students?searchTerm=${searchTerm}`),
+  
+  // Sessions
+  createSession: (data: any) => api.post<string>('/sessions', data),
+  getSessionAttendances: (sessionId: string) => api.get<any[]>(`/sessions/${sessionId}/attendances`),
+  updateAttendance: (data: { attendanceId: string; status: number; note?: string }) => 
+    api.put<boolean>('/sessions/attendances', data),
 };

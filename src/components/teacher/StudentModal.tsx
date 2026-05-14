@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, User, Mail, GraduationCap, Phone, MapPin, Calendar, ChevronLeft, ChevronRight, UserCircle, Users, ChevronDown } from 'lucide-react';
+import { X, Check, User, Mail, GraduationCap, Phone, MapPin, Calendar, ChevronLeft, ChevronRight, UserCircle, Users, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { Student, CreateStudentData } from '@/services/studentService';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -53,7 +53,6 @@ const CustomDatePicker = ({
     const val = e.target.value;
     setInputValue(val);
     
-    // Try to parse DD/MM/YYYY
     const parts = val.split('/');
     if (parts.length === 3) {
       const day = parseInt(parts[0]);
@@ -73,13 +72,11 @@ const CustomDatePicker = ({
   };
 
   const selectedDate = value ? new Date(value) : null;
-  
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
   const daysInMonth = getDaysInMonth(viewDate.getFullYear(), viewDate.getMonth());
   const firstDay = getFirstDayOfMonth(viewDate.getFullYear(), viewDate.getMonth());
-  
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const padding = Array.from({ length: firstDay }, (_, i) => i);
 
@@ -103,7 +100,7 @@ const CustomDatePicker = ({
 
   return (
     <div className="space-y-2 relative" ref={dropdownRef}>
-      <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
+      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">
         {label}
       </label>
       <div className="relative group">
@@ -113,8 +110,8 @@ const CustomDatePicker = ({
           value={inputValue}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
-          className={`w-full h-14 px-6 pr-14 rounded-2xl bg-surface-50/50 border text-sm font-bold text-surface-700 transition-all duration-300 outline-none ${
-            isOpen ? 'border-brand-primary bg-white shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
+          className={`w-full h-14 md:h-16 px-6 pr-14 rounded-[1.5rem] bg-surface-50/50 border-2 text-base font-bold text-surface-900 transition-all duration-300 outline-none ${
+            isOpen ? 'border-brand-primary/20 bg-white shadow-xl shadow-brand-primary/5' : 'border-transparent hover:border-brand-primary/10'
           }`}
         />
         <Calendar 
@@ -129,13 +126,13 @@ const CustomDatePicker = ({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute z-50 top-full left-0 right-0 mt-2 p-6 bg-white border border-surface-100 rounded-[2rem] shadow-2xl overflow-hidden min-w-[320px]"
+            className="absolute z-50 top-full left-0 right-0 mt-3 p-6 bg-white border border-surface-50 rounded-[2.5rem] shadow-2xl min-w-[320px]"
           >
             <div className="flex items-center justify-between mb-6">
               <button 
                 type="button"
                 onClick={() => setShowYearPicker(!showYearPicker)}
-                className="flex items-center space-x-2 px-3 py-1 hover:bg-surface-50 rounded-xl transition-colors group"
+                className="flex items-center space-x-2 px-4 py-2 hover:bg-surface-50 rounded-xl transition-colors group"
               >
                 <h4 className="font-black text-surface-900 group-hover:text-brand-primary transition-colors text-lg">
                   {viewDate.toLocaleString('vi-VN', { month: 'long', year: 'numeric' })}
@@ -225,6 +222,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
     note: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -256,217 +254,288 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
         note: ''
       });
     }
+    setError(null);
   }, [initialData, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setError(null);
+
+    // Client-side validation
+    if (!formData.lastName?.trim() || !formData.firstName?.trim()) {
+      setError('Vui lòng nhập đầy đủ Họ và Tên học sinh');
+      return;
+    }
+
+    if (!formData.email?.trim()) {
+      setError('Vui lòng nhập địa chỉ Email');
+      return;
+    }
+
     setLoading(true);
     try {
       await onSave(formData);
       onClose();
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      const message = err.response?.data?.message || err.message || 'Có lỗi xảy ra khi lưu thông tin học sinh';
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-surface-900/40 backdrop-blur-md"
-          />
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6 lg:p-10">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
+        />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] relative z-10 overflow-hidden border border-white flex flex-col"
-          >
-            {/* Header */}
-            <div className="p-8 md:p-10 border-b border-surface-50 flex items-center justify-between bg-white/50 backdrop-blur-xl">
-              <div className="flex items-center space-x-6">
-                <div className="w-16 h-16 bg-brand-primary/10 rounded-[1.5rem] flex items-center justify-center">
-                  <UserCircle className="w-8 h-8 text-brand-primary" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-black text-surface-900 tracking-tight">
-                    {initialData ? t('teacher.students.editTitle') || 'Chỉnh sửa học sinh' : t('teacher.students.createTitle') || 'Thêm học sinh mới'}
-                  </h2>
-                  <p className="text-surface-400 font-medium">
-                    {initialData ? t('teacher.students.editDesc') || 'Cập nhật thông tin chi tiết hồ sơ học sinh' : t('teacher.students.createDesc') || 'Khởi tạo hồ sơ học sinh vào danh sách quản lý'}
-                  </p>
-                </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="bg-white w-full h-full md:h-auto md:max-w-4xl md:max-h-[90vh] md:rounded-[3.5rem] shadow-2xl relative z-10 overflow-hidden flex flex-col"
+        >
+          {/* Header */}
+          <div className="p-8 md:p-12 border-b border-surface-50 flex items-center justify-between bg-white relative z-20">
+            <div className="flex items-center space-x-6">
+              <div className="w-16 h-16 bg-brand-primary/10 rounded-[1.75rem] flex items-center justify-center shadow-sm">
+                <UserCircle className="w-8 h-8 text-brand-primary" />
               </div>
-              <button 
-                onClick={onClose}
-                className="p-4 hover:bg-surface-50 rounded-2xl transition-all duration-300 group"
-              >
-                <X className="w-6 h-6 text-surface-400 group-hover:rotate-90 transition-transform" />
-              </button>
+              <div>
+                <h2 className="text-3xl font-black text-brand-primary tracking-tight">
+                  {initialData ? 'Cập nhật học sinh' : 'Thêm học sinh mới'}
+                </h2>
+                <p className="text-surface-500 font-bold text-sm mt-1">
+                  {initialData ? 'Cập nhật thông tin chi tiết hồ sơ học sinh' : 'Khởi tạo hồ sơ học sinh vào danh sách quản lý'}
+                </p>
+              </div>
             </div>
+            <button 
+              onClick={onClose}
+              className="p-4 hover:bg-surface-50 rounded-2xl transition-all duration-300 group"
+            >
+              <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
+            </button>
+          </div>
 
-            {/* Form Content */}
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 md:p-10 scrollbar-hide">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {/* Section: Basic Info */}
-                <div className="space-y-8">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <User className="w-4 h-4 text-brand-primary" />
-                    <h3 className="text-sm font-black text-surface-900 uppercase tracking-widest">{t('teacher.students.basicInfo') || 'Thông tin cơ bản'}</h3>
+          {/* Form Content */}
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 md:p-12 scrollbar-hide">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }} 
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600"
+              >
+                <AlertCircle className="w-6 h-6 shrink-0" />
+                <p className="font-bold text-sm leading-relaxed">{error}</p>
+              </motion.div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
+              {/* Section: Basic Info */}
+              <div className="space-y-8">
+                <div className="flex items-center space-x-4 mb-2">
+                  <div className="w-10 h-10 bg-brand-primary/5 rounded-[1rem] flex items-center justify-center">
+                    <User className="w-5 h-5 text-brand-primary" />
                   </div>
+                  <h3 className="text-lg font-black text-surface-900 tracking-tight">Thông tin cơ bản</h3>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input 
-                      label={t('auth.lastName') || 'Họ & Tên đệm'}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ & Tên đệm <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
                       placeholder="Nguyễn Văn"
                       value={formData.lastName}
                       onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                      className="w-full h-14 md:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
                       required
                     />
-                    <Input 
-                      label={t('auth.firstName') || 'Tên'}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
                       placeholder="An"
                       value={formData.firstName}
                       onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                      className="w-full h-14 md:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
                       required
                     />
                   </div>
-
-                  <Input 
-                    label={t('auth.email') || 'Email'}
-                    type="email"
-                    placeholder="student@example.com"
-                    value={formData.email || ''}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    icon={<Mail className="w-4 h-4" />}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <CustomDatePicker 
-                      label={t('teacher.students.dob') || 'Ngày sinh'}
-                      value={formData.dateOfBirth || ''}
-                      onChange={(val) => setFormData({...formData, dateOfBirth: val})}
-                      t={t}
-                    />
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-                        {t('teacher.students.gender') || 'Giới tính'}
-                      </label>
-                      <div className="flex bg-surface-50/50 p-1.5 rounded-2xl border border-surface-100">
-                        {[
-                          { id: 0, label: t('teacher.students.male') || 'Nam' },
-                          { id: 1, label: t('teacher.students.female') || 'Nữ' }
-                        ].map((g) => (
-                          <button
-                            key={g.id}
-                            type="button"
-                            onClick={() => setFormData({...formData, gender: g.id})}
-                            className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${
-                              formData.gender === g.id 
-                              ? 'bg-white text-brand-primary shadow-sm' 
-                              : 'text-surface-400 hover:text-surface-600'
-                            }`}
-                          >
-                            {g.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <Input 
-                    label={t('teacher.students.school') || 'Trường học'}
-                    placeholder="THPT Chuyên Lê Hồng Phong"
-                    value={formData.school || ''}
-                    onChange={(e) => setFormData({...formData, school: e.target.value})}
-                    icon={<GraduationCap className="w-4 h-4" />}
-                  />
                 </div>
 
-                {/* Section: Parent & Contact */}
-                <div className="space-y-8">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <Users className="w-4 h-4 text-brand-primary" />
-                    <h3 className="text-sm font-black text-surface-900 uppercase tracking-widest">{t('teacher.students.parentContact') || 'Phụ huynh & Liên hệ'}</h3>
-                  </div>
-
-                  <Input 
-                    label={t('teacher.students.parentName') || 'Họ tên phụ huynh'}
-                    placeholder="Nguyễn Văn B"
-                    value={formData.parentName || ''}
-                    onChange={(e) => setFormData({...formData, parentName: e.target.value})}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <Input 
-                      label={t('teacher.students.parentPhone') || 'SĐT Phụ huynh'}
-                      placeholder="090..."
-                      value={formData.parentPhone || ''}
-                      onChange={(e) => setFormData({...formData, parentPhone: e.target.value})}
-                      icon={<Phone className="w-4 h-4" />}
-                    />
-                    <Input 
-                      label={t('teacher.students.phone') || 'SĐT Học sinh'}
-                      placeholder="091..."
-                      value={formData.phone || ''}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      icon={<Phone className="w-4 h-4" />}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Email <span className="text-red-500">*</span></label>
+                  <div className="relative group">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                    <input 
+                      type="email" 
+                      placeholder="student@example.com"
+                      value={formData.email || ''}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      required
                     />
                   </div>
+                </div>
 
-                  <Input 
-                    label={t('teacher.students.address') || 'Địa chỉ'}
-                    placeholder="123 Đường ABC, Quận X, TP. HCM"
-                    value={formData.address || ''}
-                    onChange={(e) => setFormData({...formData, address: e.target.value})}
-                    icon={<MapPin className="w-4 h-4" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <CustomDatePicker 
+                    label="Ngày sinh"
+                    value={formData.dateOfBirth || ''}
+                    onChange={(val) => setFormData({...formData, dateOfBirth: val})}
+                    t={t}
                   />
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-                      {t('teacher.students.note') || 'Ghi chú'}
-                    </label>
-                    <textarea 
-                      className="w-full p-6 bg-surface-50/50 border border-surface-100 rounded-[2rem] text-sm font-medium placeholder:text-surface-300 focus:ring-2 focus:ring-brand-primary/20 focus:bg-white focus:border-brand-primary/50 transition-all min-h-[120px] outline-none scrollbar-hide"
-                      placeholder="Ghi chú về học lực, tính cách hoặc lưu ý đặc biệt..."
-                      value={formData.note || ''}
-                      onChange={(e) => setFormData({...formData, note: e.target.value})}
+                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Giới tính</label>
+                    <div className="flex bg-surface-50/70 p-1.5 rounded-[1.5rem] h-14 md:h-16">
+                      {[
+                        { id: 0, label: 'Nam' },
+                        { id: 1, label: 'Nữ' }
+                      ].map((g) => (
+                        <button
+                          key={g.id}
+                          type="button"
+                          onClick={() => setFormData({...formData, gender: g.id})}
+                          className={`flex-1 rounded-[1rem] text-xs font-black transition-all duration-500 ${
+                            formData.gender === g.id 
+                            ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' 
+                            : 'text-surface-400 hover:text-surface-600'
+                          }`}
+                        >
+                          {g.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trường học</label>
+                  <div className="relative group">
+                    <GraduationCap className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                    <input 
+                      type="text" 
+                      placeholder="THPT Chuyên Lê Hồng Phong"
+                      value={formData.school || ''}
+                      onChange={(e) => setFormData({...formData, school: e.target.value})}
+                      className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="mt-12 pt-8 border-t border-surface-50 flex items-center justify-end space-x-4">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={onClose}
-                  className="rounded-2xl px-8 h-14 border-surface-100 text-surface-500 font-bold hover:bg-surface-50"
-                >
-                  {t('teacher.modal.cancel') || 'Hủy bỏ'}
-                </Button>
-                <Button 
-                  type="submit" 
-                  isLoading={loading}
-                  className="rounded-2xl px-12 h-14 bg-brand-primary hover:bg-brand-primary/90 shadow-xl shadow-brand-primary/20 text-white font-black"
-                >
-                  <Check className="w-5 h-5 mr-3" />
-                  {initialData ? t('teacher.modal.save') || 'Lưu thay đổi' : t('teacher.modal.create') || 'Tạo hồ sơ'}
-                </Button>
+              {/* Section: Parent & Contact */}
+              <div className="space-y-8">
+                <div className="flex items-center space-x-4 mb-2">
+                  <div className="w-10 h-10 bg-brand-primary/5 rounded-[1rem] flex items-center justify-center">
+                    <Users className="w-5 h-5 text-brand-primary" />
+                  </div>
+                  <h3 className="text-lg font-black text-surface-900 tracking-tight">Phụ huynh & Liên hệ</h3>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ tên phụ huynh</label>
+                  <input 
+                    type="text" 
+                    placeholder="Nguyễn Văn B"
+                    value={formData.parentName || ''}
+                    onChange={(e) => setFormData({...formData, parentName: e.target.value})}
+                    className="w-full h-14 md:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Phụ huynh</label>
+                    <div className="relative group">
+                      <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                      <input 
+                        type="text" 
+                        placeholder="090..."
+                        value={formData.parentPhone || ''}
+                        onChange={(e) => setFormData({...formData, parentPhone: e.target.value})}
+                        className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Học sinh</label>
+                    <div className="relative group">
+                      <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                      <input 
+                        type="text" 
+                        placeholder="091..."
+                        value={formData.phone || ''}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Địa chỉ</label>
+                  <div className="relative group">
+                    <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                    <input 
+                      type="text" 
+                      placeholder="123 Đường ABC, Quận X, TP. HCM"
+                      value={formData.address || ''}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
+                      className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ghi chú</label>
+                  <textarea 
+                    className="w-full p-6 bg-surface-50/70 border-2 border-transparent rounded-[2rem] text-sm font-bold placeholder:text-surface-300 focus:ring-0 focus:border-brand-primary/20 focus:bg-white transition-all min-h-[140px] outline-none scrollbar-hide text-surface-900"
+                    placeholder="Ghi chú về học lực, tính cách hoặc lưu ý đặc biệt..."
+                    value={formData.note || ''}
+                    onChange={(e) => setFormData({...formData, note: e.target.value})}
+                  />
+                </div>
               </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
+            </div>
+          </form>
+
+          {/* Action Buttons */}
+          <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md flex items-center justify-between sticky bottom-0 z-30 mt-auto">
+            <button 
+              onClick={onClose}
+              className="rounded-[1.75rem] px-8 md:px-12 h-16 border-none font-black text-surface-400 hover:text-surface-900 uppercase tracking-widest text-xs transition-all"
+            >
+              Hủy bỏ
+            </button>
+            <Button 
+              onClick={() => handleSubmit()} 
+              isLoading={loading}
+              className="rounded-[1.75rem] px-10 md:px-14 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-xs"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                <>
+                  <Check className="w-5 h-5 mr-3" />
+                  {initialData ? 'Lưu thay đổi' : 'Tạo hồ sơ'}
+                </>
+              )}
+            </Button>
+          </div>
+        </motion.div>
+      </div>
     </AnimatePresence>
   );
 }

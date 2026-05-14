@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Users, Calendar, Clock, ChevronLeft, 
   Plus, Search, MoreVertical, CheckCircle2, AlertCircle,
-  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2
+  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2, Sparkles
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
@@ -15,6 +15,7 @@ import ClassModal from '@/components/teacher/ClassModal';
 import { classService, CreateClassData, Class } from '@/services/classService';
 import AddStudentToClassModal from '@/components/teacher/AddStudentToClassModal';
 import StatusDropdown from '@/components/teacher/StatusDropdown';
+import RecordSessionModal from '@/components/teacher/RecordSessionModal';
 
 interface StudentSummary {
   id: string;
@@ -29,6 +30,7 @@ interface Session {
   startTime: string;
   endTime: string;
   status: number;
+  orderIndex: number;
   note?: string;
   presentCount: number;
   totalCount: number;
@@ -59,6 +61,8 @@ export default function ClassDetailPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'sessions'>('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | undefined>(undefined);
   const [updatingStudentId, setUpdatingStudentId] = useState<string | null>(null);
 
   const fetchClassDetail = async () => {
@@ -174,6 +178,12 @@ export default function ClassDetailPage() {
     { id: 'sessions', label: t('teacher.details.sessions'), icon: Calendar },
   ];
 
+  const today = new Date().toISOString().split('T')[0];
+  const todaySession = classData.sessions.find(s => s.date === today);
+  const otherSessions = classData.sessions
+    .filter(s => s.date !== today)
+    .sort((a, b) => a.orderIndex - b.orderIndex);
+
   return (
     <main className="min-h-screen pb-20 relative overflow-hidden bg-transparent">
       <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-brand-primary/5 aura-bg rounded-full animate-float pointer-events-none" />
@@ -287,26 +297,6 @@ export default function ClassDetailPage() {
                     ))}
                   </div>
                 </div>
-                <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5">
-                  <h3 className="text-2xl font-black text-surface-900 mb-8 flex items-center">
-                    <GraduationCap className="w-6 h-6 mr-4 text-brand-primary" />
-                    {t('teacher.details.overview')}
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-                    <div>
-                      <div className="text-[10px] font-black text-surface-300 uppercase tracking-[0.3em] mb-3">{t('teacher.details.startDate')}</div>
-                      <div className="text-xl font-black text-surface-900">{classData.startDate}</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-black text-surface-300 uppercase tracking-[0.3em] mb-3">{t('teacher.details.endDate')}</div>
-                      <div className="text-xl font-black text-surface-900">{classData.expectedEndDate}</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-black text-surface-300 uppercase tracking-[0.3em] mb-3">{t('teacher.details.totalStudents')}</div>
-                      <div className="text-xl font-black text-surface-900">{classData.studentCount}</div>
-                    </div>
-                  </div>
-                </div>
               </motion.div>
             )}
 
@@ -329,7 +319,6 @@ export default function ClassDetailPage() {
                         <tr className="bg-surface-50/30">
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.fullName')}</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">Trạng thái</th>
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.email')}</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest text-right">{t('teacher.actions')}</th>
                         </tr>
                       </thead>
@@ -349,18 +338,12 @@ export default function ClassDetailPage() {
                               <td className="px-8 py-6">
                                 <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusInfo.color}`}>{statusInfo.label}</div>
                               </td>
-                              <td className="px-8 py-6">
-                                <div className="flex items-center text-surface-500 font-medium">
-                                  <Mail className="w-3.5 h-3.5 mr-2 opacity-40" />
-                                  {student.email}
-                                </div>
-                              </td>
                               <td className="px-8 py-6 text-right">
                                 <div className="flex items-center justify-end space-x-4">
                                   <StatusDropdown 
-                                    value={student.status} 
-                                    onChange={(val) => handleUpdateStudentStatus(student.id, val)} 
-                                    disabled={updatingStudentId === student.id} 
+                                    value={student.status}
+                                    onChange={(val) => handleUpdateStudentStatus(student.id, val)}
+                                    disabled={updatingStudentId === student.id}
                                   />
                                   <button onClick={() => handleRemoveStudent(student.id)} disabled={updatingStudentId === student.id} className="p-3 hover:bg-red-50 rounded-xl text-surface-300 hover:text-red-500 transition-all group/delete" title="Xóa khỏi lớp">
                                     {updatingStudentId === student.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5 group-hover/delete:scale-110 transition-transform" />}
@@ -385,18 +368,93 @@ export default function ClassDetailPage() {
             )}
 
             {activeTab === 'sessions' && (
-              <motion.div key="sessions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
+              <motion.div key="sessions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+                <style dangerouslySetInnerHTML={{ __html: `
+                  @keyframes pulse-highlight {
+                    0% { border-color: rgba(var(--brand-primary-rgb), 0.2); box-shadow: 0 0 0 0 rgba(var(--brand-primary-rgb), 0.2); }
+                    50% { border-color: rgba(var(--brand-primary-rgb), 0.8); box-shadow: 0 0 30px 0 rgba(var(--brand-primary-rgb), 0.4); }
+                    100% { border-color: rgba(var(--brand-primary-rgb), 0.2); box-shadow: 0 0 0 0 rgba(var(--brand-primary-rgb), 0.2); }
+                  }
+                  .animate-pulse-highlight {
+                    animation: pulse-highlight 2s infinite ease-in-out;
+                    border-width: 3px !important;
+                  }
+                `}} />
+                
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-2xl font-black text-surface-900">{t('teacher.details.sessions')}</h3>
-                  <Button className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20">
+                  <Button 
+                    onClick={() => {
+                      setSelectedSessionId(undefined);
+                      setIsRecordModalOpen(true);
+                    }}
+                    className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20"
+                  >
                     <Plus className="w-5 h-5 mr-2" />
                     {t('teacher.details.recordSession')}
                   </Button>
                 </div>
+
+                {/* Today's Special Session Card */}
+                {todaySession && (
+                  <div className="relative group">
+                    <div className="absolute -top-4 left-8 px-4 py-1 bg-brand-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full z-30 shadow-lg flex items-center">
+                      <Sparkles className="w-3 h-3 mr-2 animate-spin-slow" />
+                      Hôm nay
+                    </div>
+                    <div 
+                      onClick={() => {
+                        setSelectedSessionId(todaySession.id);
+                        setIsRecordModalOpen(true);
+                      }}
+                      className="bg-white p-12 rounded-[3.5rem] border-brand-primary/40 animate-pulse-highlight flex flex-col md:flex-row md:items-center justify-between gap-10 group hover:scale-[1.01] transition-all duration-500 cursor-pointer shadow-2xl shadow-brand-primary/10"
+                    >
+                      <div className="flex items-center gap-10">
+                        <div className="w-24 h-24 bg-brand-primary/10 rounded-[2.5rem] flex flex-col items-center justify-center border border-brand-primary/20">
+                          <span className="text-3xl font-black text-brand-primary">{todaySession.date.split('-')[2]}</span>
+                          <span className="text-[10px] font-black text-brand-primary/60 uppercase tracking-widest">{todaySession.date.split('-')[1]}</span>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center text-sm font-black text-brand-primary uppercase tracking-[0.2em]">
+                            <Clock className="w-4 h-4 mr-2" />
+                            {formatTime(todaySession.startTime)} - {formatTime(todaySession.endTime)}
+                          </div>
+                          <div className="text-3xl font-black text-surface-900">
+                            Buổi {todaySession.orderIndex.toString().padStart(2, '0')}
+                            {todaySession.note && <span className="text-surface-400 font-bold ml-4 text-xl">— {todaySession.note}</span>}
+                          </div>
+                          <div className="flex items-center text-sm font-bold text-surface-400">
+                            <Users className="w-4 h-4 mr-2 opacity-50" />
+                            {todaySession.presentCount}/{todaySession.totalCount} {t('teacher.details.present')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        <div className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest flex items-center ${todaySession.status === 2 ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                          {todaySession.status === 2 ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <AlertCircle className="w-4 h-4 mr-2" />}
+                          {todaySession.status === 2 ? t('teacher.details.completed') : 'Đang diễn ra'}
+                        </div>
+                        <Button className="rounded-2xl h-16 px-10 shadow-xl shadow-brand-primary/30 group/btn">
+                          {t('common.viewDetails') || 'Details'}
+                          <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Other Sessions List */}
                 <div className="grid grid-cols-1 gap-6">
-                  {classData?.sessions?.length > 0 ? (
-                    classData.sessions.map((session) => (
-                      <div key={session.id} className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-xl shadow-surface-900/5 flex flex-col md:flex-row md:items-center justify-between gap-8 group hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500">
+                  {otherSessions.length > 0 ? (
+                    otherSessions.map((session) => (
+                      <div 
+                        key={session.id} 
+                        onClick={() => {
+                          setSelectedSessionId(session.id);
+                          setIsRecordModalOpen(true);
+                        }}
+                        className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-xl shadow-surface-900/5 flex flex-col md:flex-row md:items-center justify-between gap-8 group hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 cursor-pointer"
+                      >
                         <div className="flex items-center gap-8">
                           <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex flex-col items-center justify-center group-hover:bg-brand-primary/5 transition-colors">
                             <span className="text-xl font-black text-surface-900">{session.date.split('-')[2]}</span>
@@ -407,7 +465,10 @@ export default function ClassDetailPage() {
                               <Clock className="w-3 h-3 mr-2" />
                               {formatTime(session.startTime)} - {formatTime(session.endTime)}
                             </div>
-                            <div className="text-xl font-black text-surface-900">{session.note || t('teacher.details.regularSession')}</div>
+                            <div className="text-xl font-black text-surface-900">
+                              Buổi {session.orderIndex.toString().padStart(2, '0')}
+                              {session.note && <span className="text-surface-400 font-bold ml-3 text-base">— {session.note}</span>}
+                            </div>
                             <div className="flex items-center text-xs font-bold text-surface-400">
                               <Users className="w-3 h-3 mr-2 opacity-50" />
                               {session.presentCount}/{session.totalCount} {t('teacher.details.present')}
@@ -427,12 +488,14 @@ export default function ClassDetailPage() {
                       </div>
                     ))
                   ) : (
-                    <div className="py-32 bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white text-center">
-                      <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">
-                        <Calendar className="w-10 h-10 text-surface-200" />
+                    !todaySession && (
+                      <div className="py-32 bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white text-center">
+                        <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">
+                          <Calendar className="w-10 h-10 text-surface-200" />
+                        </div>
+                        <p className="text-surface-400 font-bold">{t('teacher.details.noSessions')}</p>
                       </div>
-                      <p className="text-surface-400 font-bold">{t('teacher.details.noSessions')}</p>
-                    </div>
+                    )
                   )}
                 </div>
               </motion.div>
@@ -446,6 +509,14 @@ export default function ClassDetailPage() {
         onClose={() => setIsAddStudentModalOpen(false)} 
         onAdd={handleAddStudent} 
         classId={id as string}
+      />
+
+      <RecordSessionModal 
+        isOpen={isRecordModalOpen}
+        onClose={() => setIsRecordModalOpen(false)}
+        onSuccess={fetchClassDetail}
+        classId={id as string}
+        sessionId={selectedSessionId}
       />
 
       <ClassModal 

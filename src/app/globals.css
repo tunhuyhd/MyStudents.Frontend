@@ -14,6 +14,7 @@
   --color-surface-300: #a7f3d0;
   --color-surface-800: #064e3b;
   --color-surface-900: #022c22;
+  --breakpoint-xs: 320px;
 }
 
 @layer base {

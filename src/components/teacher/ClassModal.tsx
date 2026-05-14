@@ -1,414 +1,123 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, BookOpen, Globe, Home, ChevronDown, Search, Plus, Trash2, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Class, CreateClassData, ClassSchedule } from '@/services/classService';
-import { subjectService, Subject } from '@/services/subjectService';
+import { 
+  X, Calendar as CalendarIcon, Clock, Plus, Trash2, 
+  ChevronDown, BookOpen, Hash, MapPin, Globe, 
+  Check, ChevronLeft, ChevronRight, Sparkles, Layout, Info, Loader2
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import api from '@/lib/api';
+import { Button } from '@/components/ui/Button';
+
+interface ClassSchedule {
+  id?: string;
+  dayOfWeek: number;
+  startTime: string;
+  durationHours: number;
+}
+
+interface CreateClassData {
+  id?: string;
+  name: string;
+  code: string;
+  status: number;
+  category: number; // 1: Online, 2: Offline
+  subjectId: string;
+  startDate: string;
+  expectedEndDate: string;
+  schedules: ClassSchedule[];
+}
 
 interface ClassModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: CreateClassData) => Promise<void>;
-  initialData?: Class | null;
+  initialData?: any;
 }
-
-const CustomDatePicker = ({ 
-  label, 
-  value, 
-  onChange, 
-  t 
-}: { 
-  label: string, 
-  value: string, 
-  onChange: (val: string) => void,
-  t: (key: string) => string
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [viewDate, setViewDate] = useState(new Date(value || Date.now()));
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const selectedDate = new Date(value);
-  
-  const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
-  const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
-
-  const daysInMonth = getDaysInMonth(viewDate.getFullYear(), viewDate.getMonth());
-  const firstDay = getFirstDayOfMonth(viewDate.getFullYear(), viewDate.getMonth());
-  
-  // Adjusted for Monday start if needed, but standard 0=Sun is fine
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const padding = Array.from({ length: firstDay }, (_, i) => i);
-
-  const prevMonth = () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
-  const nextMonth = () => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
-
-  const handleSelect = (day: number) => {
-    const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-    // Format as YYYY-MM-DD
-    const offset = newDate.getTimezoneOffset();
-    const adjustedDate = new Date(newDate.getTime() - (offset * 60 * 1000));
-    onChange(adjustedDate.toISOString().split('T')[0]);
-    setIsOpen(false);
-  };
-
-  const isToday = (day: number) => {
-    const today = new Date();
-    return today.getDate() === day && 
-           today.getMonth() === viewDate.getMonth() && 
-           today.getFullYear() === viewDate.getFullYear();
-  };
-
-  const isSelected = (day: number) => {
-    return selectedDate.getDate() === day && 
-           selectedDate.getMonth() === viewDate.getMonth() && 
-           selectedDate.getFullYear() === viewDate.getFullYear();
-  };
-
-  return (
-    <div className="space-y-2 relative" ref={dropdownRef}>
-      <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-        {label}
-      </label>
-      <div 
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full h-14 px-6 rounded-2xl bg-surface-50/50 border flex items-center justify-between cursor-pointer transition-all duration-300 ${
-          isOpen ? 'border-brand-primary bg-white shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
-        }`}
-      >
-        <span className="font-bold text-surface-700">
-          {new Date(value).toLocaleDateString('vi-VN')}
-        </span>
-        <Calendar className={`w-5 h-5 transition-colors ${isOpen ? 'text-brand-primary' : 'text-surface-400'}`} />
-      </div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute z-40 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-3xl shadow-2xl p-5"
-          >
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h4 className="font-black text-surface-900 flex items-center">
-                <span className="text-brand-primary mr-2 uppercase tracking-widest text-[10px]">Tháng</span>
-                {viewDate.getMonth() + 1} / {viewDate.getFullYear()}
-              </h4>
-              <div className="flex space-x-1">
-                <button type="button" onClick={prevMonth} className="p-2 hover:bg-surface-50 rounded-xl transition-colors">
-                  <ChevronLeft className="w-4 h-4 text-surface-400" />
-                </button>
-                <button type="button" onClick={nextMonth} className="p-2 hover:bg-surface-50 rounded-xl transition-colors">
-                  <ChevronRight className="w-4 h-4 text-surface-400" />
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-7 gap-1 mb-2">
-              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                <div key={d} className="text-[10px] font-black text-surface-300 text-center py-2">{d}</div>
-              ))}
-              {padding.map(p => <div key={`p-${p}`} />)}
-              {days.map(d => (
-                <div
-                  key={d}
-                  onClick={() => handleSelect(d)}
-                  className={`aspect-square flex items-center justify-center text-sm font-bold rounded-xl cursor-pointer transition-all ${
-                    isSelected(d) 
-                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
-                    : isToday(d)
-                    ? 'bg-brand-primary/10 text-brand-primary'
-                    : 'hover:bg-surface-50 text-surface-600'
-                  }`}
-                >
-                  {d}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-const ScheduleRow = ({ 
-  schedule, 
-  index, 
-  updateSchedule, 
-  removeSchedule, 
-  t 
-}: { 
-  schedule: ClassSchedule, 
-  index: number, 
-  updateSchedule: (index: number, field: keyof Omit<ClassSchedule, 'id'>, value: any) => void,
-  removeSchedule: (index: number) => void,
-  t: (key: string) => string
-}) => {
-  const [isDayOpen, setIsDayOpen] = useState(false);
-  const [isTimeOpen, setIsTimeOpen] = useState(false);
-  const dayRef = useRef<HTMLDivElement>(null);
-  const timeRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dayRef.current && !dayRef.current.contains(event.target as Node)) setIsDayOpen(false);
-      if (timeRef.current && !timeRef.current.contains(event.target as Node)) setIsTimeOpen(false);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const days = [1, 2, 3, 4, 5, 6, 0];
-  const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
-  const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
-
-  const [currentHour, currentMinute] = schedule.startTime.split(':');
-
-  const handleHourSelect = (h: string) => {
-    updateSchedule(index, 'startTime', `${h}:${currentMinute}:00`);
-  };
-
-  const handleMinuteSelect = (m: string) => {
-    updateSchedule(index, 'startTime', `${currentHour}:${m}:00`);
-    setIsTimeOpen(false); // Close after picking minute as it's usually the final step
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-      animate={{ opacity: 1, height: 'auto', marginBottom: 12 }}
-      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-      className="bg-surface-50/50 rounded-3xl p-4 border border-surface-100 group hover:bg-white hover:shadow-xl hover:shadow-surface-200/20 transition-all duration-300"
-    >
-      <div className="flex flex-col sm:flex-row items-center gap-4">
-        {/* Custom Day Dropdown */}
-        <div className="relative w-full sm:w-48" ref={dayRef}>
-          <div 
-            onClick={() => setIsDayOpen(!isDayOpen)}
-            className={`w-full h-12 px-5 rounded-2xl bg-white border flex items-center justify-between cursor-pointer transition-all duration-300 ${
-              isDayOpen ? 'border-brand-primary shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
-            }`}
-          >
-            <span className="font-bold text-sm text-surface-700">
-              {t(`days.${schedule.dayOfWeek}`)}
-            </span>
-            <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform duration-300 ${isDayOpen ? 'rotate-180 text-brand-primary' : ''}`} />
-          </div>
-
-          <AnimatePresence>
-            {isDayOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute z-30 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-2xl shadow-2xl overflow-hidden"
-              >
-                <div className="max-h-60 overflow-y-auto p-1.5 scrollbar-thin scrollbar-thumb-surface-100">
-                  {days.map(d => (
-                    <div
-                      key={d}
-                      onClick={() => {
-                        updateSchedule(index, 'dayOfWeek', d);
-                        setIsDayOpen(false);
-                      }}
-                      className={`px-4 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-bold ${
-                        schedule.dayOfWeek === d 
-                        ? 'bg-brand-primary/10 text-brand-primary' 
-                        : 'hover:bg-surface-50 text-surface-600'
-                      }`}
-                    >
-                      {t(`days.${d}`)}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Custom Time Picker */}
-        <div className="flex items-center space-x-3 flex-1 w-full">
-          <div className="relative flex-1" ref={timeRef}>
-            <div 
-              onClick={() => setIsTimeOpen(!isTimeOpen)}
-              className={`w-full h-12 px-5 rounded-2xl bg-white border flex items-center space-x-4 cursor-pointer transition-all duration-300 ${
-                isTimeOpen ? 'border-brand-primary shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
-              }`}
-            >
-              <Clock className={`w-4 h-4 transition-colors ${isTimeOpen ? 'text-brand-primary' : 'text-surface-400'}`} />
-              <span className="font-bold text-sm text-surface-700">
-                {currentHour}:{currentMinute}
-              </span>
-            </div>
-
-            <AnimatePresence>
-              {isTimeOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute z-30 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-3xl shadow-2xl overflow-hidden flex h-64"
-                >
-                  <div className="flex-1 overflow-y-auto p-2 scrollbar-hide border-r border-surface-50 bg-surface-50/30">
-                    <div className="text-[10px] font-black text-surface-300 uppercase tracking-widest text-center py-2 mb-1">HH</div>
-                    {hours.map(h => (
-                      <div
-                        key={h}
-                        onClick={() => handleHourSelect(h)}
-                        className={`py-2.5 rounded-xl cursor-pointer transition-all text-center text-sm font-bold ${
-                          currentHour === h 
-                          ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
-                          : 'hover:bg-brand-primary/5 text-surface-600'
-                        }`}
-                      >
-                        {h}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-2 scrollbar-hide">
-                    <div className="text-[10px] font-black text-surface-300 uppercase tracking-widest text-center py-2 mb-1">MM</div>
-                    {minutes.map(m => (
-                      <div
-                        key={m}
-                        onClick={() => handleMinuteSelect(m)}
-                        className={`py-2.5 rounded-xl cursor-pointer transition-all text-center text-sm font-bold ${
-                          currentMinute === m 
-                          ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
-                          : 'hover:bg-brand-primary/5 text-surface-600'
-                        }`}
-                      >
-                        {m}
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          
-          <div className="flex items-center bg-white border border-surface-100 rounded-2xl h-12 px-4 hover:border-brand-primary/50 focus-within:border-brand-primary focus-within:ring-4 focus-within:ring-brand-primary/5 transition-all">
-            <input 
-              type="number"
-              step="0.5"
-              min="0.5"
-              max="24"
-              value={schedule.durationHours}
-              onChange={(e) => updateSchedule(index, 'durationHours', parseFloat(e.target.value))}
-              className="w-10 text-center text-sm font-bold text-surface-700 outline-none bg-transparent"
-            />
-            <span className="text-[10px] font-black text-surface-400 uppercase tracking-tighter ml-1">{t('teacher.modal.hoursAbbr') || 'giờ'}</span>
-          </div>
-        </div>
-
-        <button 
-          type="button"
-          onClick={() => removeSchedule(index)}
-          className="p-3 text-surface-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-        >
-          <Trash2 className="w-5 h-5" />
-        </button>
-      </div>
-    </motion.div>
-  );
-};
 
 export default function ClassModal({ isOpen, onClose, onSave, initialData }: ClassModalProps) {
   const { t } = useLanguage();
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [step, setStep] = useState(1);
+  const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const [isSubjectOpen, setIsSubjectOpen] = useState(false);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  
   const [formData, setFormData] = useState<CreateClassData>({
     name: '',
     code: '',
-    category: 0,
     status: 1,
+    category: 1,
     subjectId: '',
     startDate: new Date().toISOString().split('T')[0],
     expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    schedules: []
+    schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
   });
 
-  const [isStatusOpen, setIsStatusOpen] = useState(false);
-  const statusRef = useRef<HTMLDivElement>(null);
-
-  const statusOptions = [
-    { value: 1, label: t('teacher.status.active'), color: 'bg-green-500' },
-    { value: 2, label: t('teacher.status.inactive'), color: 'bg-yellow-500' },
-    { value: 3, label: t('teacher.status.completed'), color: 'bg-brand-primary' },
-    { value: 4, label: t('teacher.status.cancelled'), color: 'bg-red-500' },
-  ];
-
   useEffect(() => {
-    if (isOpen) {
-      fetchSubjects();
-      if (initialData) {
-        setFormData({
-          name: initialData.name,
-          code: initialData.code,
-          status: initialData.status || 1,
-          category: initialData.category,
-          subjectId: initialData.subjectId,
-          startDate: (initialData.startDate && !initialData.startDate.startsWith('0001')) 
-            ? initialData.startDate.split('T')[0] 
-            : new Date().toISOString().split('T')[0],
-          expectedEndDate: (initialData.expectedEndDate && !initialData.expectedEndDate.startsWith('0001')) 
-            ? initialData.expectedEndDate.split('T')[0] 
-            : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          schedules: initialData.schedules || []
-        });
-      } else {
-        setFormData({ 
-          name: '', 
-          code: '', 
-          status: 1,
-          category: 0, 
-          subjectId: '',
-          startDate: new Date().toISOString().split('T')[0],
-          expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          schedules: []
-        });
-      }
-    }
-  }, [isOpen, initialData]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-      if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
-        setIsStatusOpen(false);
+    const fetchSubjects = async () => {
+      try {
+        const response = await api.get('/subjects');
+        setSubjects(response.data);
+      } catch (error) {
+        console.error('Error fetching subjects:', error);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    fetchSubjects();
   }, []);
 
-  const fetchSubjects = async () => {
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name || '',
+        code: initialData.code || '',
+        status: initialData.status || 1,
+        category: initialData.category || 1,
+        subjectId: initialData.subjectId || '',
+        startDate: (initialData.startDate && !initialData.startDate.startsWith('0001')) 
+          ? initialData.startDate.split('T')[0] 
+          : new Date().toISOString().split('T')[0],
+        expectedEndDate: (initialData.expectedEndDate && !initialData.expectedEndDate.startsWith('0001')) 
+          ? initialData.expectedEndDate.split('T')[0] 
+          : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        schedules: initialData.schedules?.length > 0 
+          ? initialData.schedules.map((s: any) => ({
+              ...s,
+              startTime: s.startTime.length > 8 ? s.startTime.substring(0, 8) : s.startTime
+            }))
+          : [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
+      });
+    } else {
+      setFormData({
+        name: '',
+        code: '',
+        status: 1,
+        category: 1,
+        subjectId: '',
+        startDate: new Date().toISOString().split('T')[0],
+        expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
+      });
+    }
+    setStep(1);
+  }, [initialData, isOpen]);
+
+  const handleSubmit = async () => {
+    setLoading(true);
     try {
-      const res = await subjectService.getAll();
-      setSubjects(res.data);
-    } catch (err) {
-      console.error('Failed to fetch subjects', err);
+      await onSave({
+        ...formData,
+        schedules: formData.schedules.map(s => ({
+          ...s,
+          startTime: s.startTime.length === 5 ? `${s.startTime}:00` : s.startTime
+        }))
+      });
+    } catch (error) {
+      console.error('Error saving class:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -417,332 +126,407 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
       ...formData,
       schedules: [
         ...formData.schedules,
-        { dayOfWeek: 1, startTime: '08:00:00', durationHours: 1.5 }
+        { dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }
       ]
     });
   };
 
-  const removeSchedule = (index: number) => {
-    setFormData({
-      ...formData,
-      schedules: formData.schedules.filter((_, i) => i !== index)
-    });
-  };
-
-  const updateSchedule = (index: number, field: keyof Omit<ClassSchedule, 'id'>, value: any) => {
+  const updateSchedule = (index: number, field: keyof ClassSchedule, value: any) => {
     const newSchedules = [...formData.schedules];
     newSchedules[index] = { ...newSchedules[index], [field]: value };
     setFormData({ ...formData, schedules: newSchedules });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.subjectId) return;
-    setLoading(true);
-    try {
-      // Ensure time format is correct for Backend (HH:mm:ss)
-      const submitData = {
-        ...formData,
-        schedules: formData.schedules.map(s => ({
-          ...s,
-          startTime: s.startTime.length === 5 ? `${s.startTime}:00` : s.startTime
-        }))
-      };
-      await onSave(submitData);
-      onClose();
-    } catch (err) {
-      console.error('Failed to save class', err);
-    } finally {
-      setLoading(false);
-    }
+  const removeSchedule = (index: number) => {
+    if (formData.schedules.length <= 1) return;
+    const newSchedules = formData.schedules.filter((_, i) => i !== index);
+    setFormData({ ...formData, schedules: newSchedules });
   };
 
-  const selectedSubject = subjects.find(s => s.id === formData.subjectId);
-  const filteredSubjects = subjects.filter(s => 
-    s.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white w-full max-w-2xl rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] relative z-10 overflow-hidden border border-white max-h-[90vh] flex flex-col"
-          >
-            <div className="p-10 flex-1 overflow-y-auto scrollbar-nature">
-              <div className="flex justify-between items-center mb-10">
-                <div className="flex items-center space-x-4">
-                  <div className="w-14 h-14 bg-brand-primary/10 rounded-[1.25rem] flex items-center justify-center shadow-inner shadow-brand-primary/5">
-                    <BookOpen className="w-7 h-7 text-brand-primary" />
-                  </div>
-                  <h2 className="text-3xl font-black text-surface-900 tracking-tight">
-                    {initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
-                  </h2>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6 lg:p-10">
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
+        onClick={onClose}
+      />
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+      >
+        {/* Sidebar Decor - Desktop */}
+        <div className="hidden md:flex w-72 lg:w-80 bg-brand-primary/5 p-10 lg:p-12 flex-col justify-between relative overflow-hidden shrink-0">
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+          <div className="absolute top-[-10%] right-[-10%] w-60 h-60 bg-brand-primary/10 rounded-full blur-3xl" />
+          
+          <div className="relative z-10">
+            <div className="w-14 h-14 bg-white rounded-[1.5rem] shadow-2xl shadow-brand-primary/10 flex items-center justify-center mb-8">
+              <BookOpen className="w-7 h-7 text-brand-primary" />
+            </div>
+            <h2 className="text-3xl lg:text-4xl font-black text-surface-900 leading-tight mb-5 tracking-tighter">
+              {initialData ? 'Cập nhật Lớp học' : 'Tạo mới Lớp học'}
+            </h2>
+            <p className="text-surface-500 font-bold text-xs lg:text-sm leading-relaxed max-w-[200px]">
+              Tổ chức khóa học của bạn với các thiết lập chuyên nghiệp.
+            </p>
+          </div>
+
+          <div className="relative z-10 space-y-6 lg:space-y-8">
+            {[1, 2].map((s) => (
+              <div key={s} className="flex items-center gap-4 lg:gap-5">
+                <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-[1.25rem] flex items-center justify-center font-black text-base lg:text-lg transition-all duration-500 ${
+                  step === s ? 'bg-brand-primary text-white shadow-xl shadow-brand-primary/30 scale-110' : 
+                  step > s ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-white text-surface-300 border border-surface-100'
+                }`}>
+                  {step > s ? <Check className="w-6 h-6" /> : s}
                 </div>
-                <button onClick={onClose} className="p-3 hover:bg-surface-50 rounded-2xl transition-colors">
-                  <X className="w-6 h-6 text-surface-400" />
-                </button>
+                <div className="flex flex-col">
+                  <span className={`text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${step === s ? 'text-brand-primary' : 'text-surface-300'}`}>Bước {s}</span>
+                  <span className={`text-sm lg:text-base font-black ${step === s ? 'text-surface-900' : 'text-surface-400'}`}>
+                    {s === 1 ? 'Thông tin cơ bản' : 'Lịch trình khóa học'}
+                  </span>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Input 
-                    label={t('teacher.modal.nameLabel')} 
-                    placeholder={t('teacher.modal.namePlaceholder')}
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="h-14 rounded-2xl border-surface-100 focus:border-brand-primary bg-surface-50/50"
-                    required
-                  />
-                  <Input 
-                    label={t('teacher.modal.codeLabel')} 
-                    placeholder={t('teacher.modal.codePlaceholder')}
-                    value={formData.code}
-                    onChange={(e) => setFormData({...formData, code: e.target.value})}
-                    className="h-14 rounded-2xl border-surface-100 focus:border-brand-primary bg-surface-50/50"
-                    required
-                  />
-                  
-                  {/* Custom Styled Dropdown for Subject */}
-                  <div className="space-y-2 relative" ref={dropdownRef}>
-                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-                      {t('teacher.modal.subjectLabel')}
-                    </label>
-                    <div 
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className={`w-full h-14 px-6 rounded-2xl bg-surface-50/50 border flex items-center justify-between cursor-pointer transition-all duration-300 ${
-                        isDropdownOpen ? 'border-brand-primary bg-white shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
-                      }`}
-                    >
-                      <span className={`font-semibold ${selectedSubject ? 'text-surface-900' : 'text-surface-400'}`}>
-                        {selectedSubject ? selectedSubject.name : t('teacher.modal.subjectPlaceholder')}
-                      </span>
-                      <ChevronDown className={`w-5 h-5 text-surface-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-brand-primary' : ''}`} />
-                    </div>
+        {/* Mobile Header */}
+        <div className="md:hidden bg-white p-5 border-b border-surface-50 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center gap-4">
+             <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-brand-primary" />
+             </div>
+             <div>
+                <h2 className="text-lg font-black text-surface-900">
+                  {initialData ? 'Cập nhật Lớp' : 'Tạo Lớp mới'}
+                </h2>
+                <div className="flex gap-1 mt-1">
+                  {[1, 2].map(s => (
+                    <div key={s} className={`h-1 rounded-full transition-all duration-500 ${step === s ? 'w-8 bg-brand-primary' : step > s ? 'w-4 bg-green-500' : 'w-4 bg-surface-100'}`} />
+                  ))}
+                </div>
+             </div>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-surface-50 rounded-xl">
+            <X className="w-6 h-6 text-surface-400" />
+          </button>
+        </div>
 
-                    <AnimatePresence>
-                      {isDropdownOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute z-20 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-[2rem] shadow-2xl overflow-hidden"
-                        >
-                          <div className="p-3 border-b border-surface-50">
-                            <div className="relative">
-                              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" />
-                              <input 
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search subject..."
-                                className="w-full h-10 pl-10 pr-4 rounded-xl bg-surface-50 border-none focus:ring-2 focus:ring-brand-primary/10 text-sm font-medium"
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            </div>
-                          </div>
-                          <div className="max-h-60 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-surface-100">
-                            {filteredSubjects.length > 0 ? (
-                              filteredSubjects.map(s => (
-                                <div
-                                  key={s.id}
-                                  onClick={() => {
-                                    setFormData({...formData, subjectId: s.id});
-                                    setIsDropdownOpen(false);
-                                  }}
-                                  className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all ${
-                                    formData.subjectId === s.id 
-                                    ? 'bg-brand-primary/10 text-brand-primary' 
-                                    : 'hover:bg-surface-50 text-surface-600'
-                                  }`}
-                                >
-                                  <span className="font-bold">{s.name}</span>
-                                  {formData.subjectId === s.id && <Check className="w-4 h-4" />}
-                                </div>
-                              ))
-                            ) : (
-                              <div className="py-8 text-center text-surface-400 text-sm font-medium">
-                                No subjects found
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
+          <div className="hidden md:flex justify-end p-6 lg:p-8 absolute top-0 right-0 z-20">
+            <button onClick={onClose} className="p-3 hover:bg-surface-50 rounded-[1.25rem] transition-all group">
+              <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 transition-all duration-300" />
+            </button>
+          </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-                      {t('teacher.modal.categoryLabel')}
-                    </label>
-                    <div className="flex bg-surface-50/50 p-1.5 rounded-2xl border border-surface-100">
-                      <button
-                        type="button"
-                        onClick={() => setFormData({...formData, category: 0})}
-                        className={`flex-1 flex items-center justify-center py-2.5 rounded-xl text-sm font-black transition-all duration-300 ${
-                          formData.category === 0 
-                          ? 'bg-white text-brand-primary shadow-[0_4px_12px_rgba(0,0,0,0.05)]' 
-                          : 'text-surface-400 hover:text-surface-600'
-                        }`}
-                      >
-                        <Globe className="w-4 h-4 mr-2" />
-                        {t('teacher.modal.online')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFormData({...formData, category: 1})}
-                        className={`flex-1 flex items-center justify-center py-2.5 rounded-xl text-sm font-black transition-all duration-300 ${
-                          formData.category === 1 
-                          ? 'bg-white text-brand-primary shadow-[0_4px_12px_rgba(0,0,0,0.05)]' 
-                          : 'text-surface-400 hover:text-surface-600'
-                        }`}
-                      >
-                        <Home className="w-4 h-4 mr-2" />
-                        {t('teacher.modal.offline')}
-                      </button>
-                    </div>
-                  </div>
-
-                  <CustomDatePicker 
-                    label={t('teacher.modal.startDateLabel')}
-                    value={formData.startDate}
-                    onChange={(val) => setFormData({...formData, startDate: val})}
-                    t={t}
-                  />
-
-                   <CustomDatePicker 
-                    label={t('teacher.modal.endDateLabel')}
-                    value={formData.expectedEndDate}
-                    onChange={(val) => setFormData({...formData, expectedEndDate: val})}
-                    t={t}
-                  />
-
-                  {/* Status Selection */}
-                  <div className="space-y-2 relative" ref={statusRef}>
-                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em] ml-1">
-                      {t('teacher.modal.statusLabel')}
-                    </label>
-                    <div 
-                      onClick={() => setIsStatusOpen(!isStatusOpen)}
-                      className={`w-full h-14 px-6 rounded-2xl bg-surface-50/50 border flex items-center justify-between cursor-pointer transition-all duration-300 ${
-                        isStatusOpen ? 'border-brand-primary bg-white shadow-lg shadow-brand-primary/5' : 'border-surface-100 hover:border-brand-primary/50'
-                      }`}
-                    >
-                      <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full mr-3 ${statusOptions.find(o => o.value === formData.status)?.color}`} />
-                        <span className="font-bold text-surface-900">
-                          {statusOptions.find(o => o.value === formData.status)?.label}
-                        </span>
+          <div className="flex-1 p-6 md:p-10 lg:p-16 overflow-y-auto scrollbar-hide">
+            <AnimatePresence mode="wait">
+              {step === 1 ? (
+                <motion.div 
+                  key="step1" 
+                  initial={{ opacity: 0, x: 20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-8 lg:space-y-10"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên lớp học</label>
+                      <div className="relative group">
+                        <Layout className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                        <input 
+                          type="text" 
+                          value={formData.name}
+                          onChange={e => setFormData({...formData, name: e.target.value})}
+                          placeholder="Ví dụ: Toán nâng cao 12"
+                          className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none placeholder:text-surface-300"
+                        />
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-surface-400 transition-transform duration-300 ${isStatusOpen ? 'rotate-180 text-brand-primary' : ''}`} />
                     </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Mã lớp</label>
+                      <div className="relative group">
+                        <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                        <input 
+                          type="text" 
+                          value={formData.code}
+                          onChange={e => setFormData({...formData, code: e.target.value})}
+                          placeholder="TOAN-12"
+                          className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none uppercase placeholder:text-surface-300"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                    <AnimatePresence>
-                      {isStatusOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute z-20 top-full left-0 right-0 mt-2 bg-white border border-surface-100 rounded-[2rem] shadow-2xl overflow-hidden"
-                        >
-                          <div className="p-2 scrollbar-hide">
-                            {statusOptions.map(opt => (
-                              <div
-                                key={opt.value}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="space-y-2 relative">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Môn học</label>
+                      <button 
+                        onClick={() => setIsSubjectOpen(!isSubjectOpen)}
+                        className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
+                      >
+                        <span className="font-bold text-surface-900 text-base lg:text-lg">
+                          {subjects.find(s => s.id === formData.subjectId)?.name || 'Chọn môn học'}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 text-brand-primary/40 transition-transform duration-300 ${isSubjectOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {isSubjectOpen && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                            className="absolute z-50 top-full left-0 right-0 mt-3 p-3 bg-white rounded-[1.75rem] shadow-2xl border border-surface-50 max-h-60 overflow-y-auto scrollbar-hide"
+                          >
+                            {subjects.map(s => (
+                              <button
+                                key={s.id}
                                 onClick={() => {
-                                  setFormData({...formData, status: opt.value});
-                                  setIsStatusOpen(false);
+                                  setFormData({...formData, subjectId: s.id});
+                                  setIsSubjectOpen(false);
                                 }}
-                                className={`flex items-center px-4 py-3 rounded-xl cursor-pointer transition-all ${
-                                  formData.status === opt.value 
-                                  ? 'bg-brand-primary/10 text-brand-primary' 
-                                  : 'hover:bg-surface-50 text-surface-600'
+                                className={`w-full p-4 rounded-xl text-left font-bold transition-all mb-1 last:mb-0 ${
+                                  formData.subjectId === s.id ? 'bg-brand-primary text-white shadow-lg' : 'hover:bg-brand-primary/5 text-surface-600'
                                 }`}
                               >
-                                <div className={`w-2 h-2 rounded-full mr-3 ${opt.color}`} />
-                                <span className="font-bold">{opt.label}</span>
-                                {formData.status === opt.value && <Check className="ml-auto w-4 h-4" />}
-                              </div>
+                                {s.name}
+                              </button>
                             ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                {/* Schedules Management */}
-                <div className="space-y-4 pt-4">
-                  <div className="flex items-center justify-between px-1">
-                    <label className="text-xs font-black text-surface-400 uppercase tracking-[0.2em]">
-                      {t('teacher.modal.schedulesLabel')}
-                    </label>
-                    <button 
-                      type="button"
-                      onClick={addSchedule}
-                      className="flex items-center space-x-2 text-xs font-black text-brand-primary hover:opacity-70 transition-opacity uppercase tracking-widest"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>{t('teacher.modal.addSession')}</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    <AnimatePresence initial={false}>
-                      {formData.schedules.map((schedule, index) => (
-                        <ScheduleRow 
-                          key={index}
-                          index={index}
-                          schedule={schedule}
-                          updateSchedule={updateSchedule}
-                          removeSchedule={removeSchedule}
-                          t={t}
-                        />
-                      ))}
-                    </AnimatePresence>
-                    
-                    {formData.schedules.length === 0 && (
-                      <div className="py-10 border-2 border-dashed border-surface-100 rounded-[2rem] flex flex-col items-center justify-center text-surface-400">
-                        <Calendar className="w-8 h-8 mb-2 opacity-20" />
-                        <p className="text-sm font-medium">{t('teacher.modal.noSchedules')}</p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Hình thức học</label>
+                      <div className="flex p-1.5 bg-surface-50/70 rounded-[1.5rem] h-14 lg:h-16">
+                        <button 
+                          onClick={() => setFormData({...formData, category: 1})}
+                          className={`flex-1 flex items-center justify-center gap-2 lg:gap-3 rounded-[1rem] font-bold text-xs lg:text-sm whitespace-nowrap px-2 lg:px-4 transition-all duration-500 ${
+                            formData.category === 1 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
+                          }`}
+                        >
+                          <Globe className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
+                          Trực tuyến
+                        </button>
+                        <button 
+                          onClick={() => setFormData({...formData, category: 2})}
+                          className={`flex-1 flex items-center justify-center gap-2 lg:gap-3 rounded-[1rem] font-bold text-xs lg:text-sm whitespace-nowrap px-2 lg:px-4 transition-all duration-500 ${
+                            formData.category === 2 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
+                          }`}
+                        >
+                          <MapPin className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
+                          Trực tiếp
+                        </button>
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex justify-end gap-4 pt-10 border-t border-surface-50">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={onClose} 
-                    className="rounded-2xl px-8 h-14 border-surface-100 text-surface-500 hover:bg-surface-50"
-                  >
-                    {t('teacher.modal.cancel')}
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    isLoading={loading} 
-                    className="rounded-2xl px-14 h-14 shadow-2xl shadow-brand-primary/30"
-                  >
-                    <Check className="w-5 h-5 mr-2" />
-                    {initialData ? t('teacher.modal.save') : t('teacher.modal.create')}
-                  </Button>
-                </div>
-              </form>
+                  {initialData && (
+                    <div className="space-y-2 relative">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trạng thái lớp học</label>
+                      <button 
+                        onClick={() => setIsStatusOpen(!isStatusOpen)}
+                        className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
+                      >
+                        <div className="flex items-center gap-3 lg:gap-4">
+                          <div className={`w-2 h-2 lg:w-2.5 lg:h-2.5 rounded-full ${
+                            formData.status === 1 ? 'bg-green-500 shadow-lg shadow-green-500/30' :
+                            formData.status === 2 ? 'bg-surface-300' :
+                            formData.status === 3 ? 'bg-brand-primary shadow-lg shadow-brand-primary/30' :
+                            'bg-red-500 shadow-lg shadow-red-500/30'
+                          }`} />
+                          <span className="font-bold text-surface-900 text-base lg:text-lg">
+                            {formData.status === 1 ? 'Đang hoạt động' : 
+                             formData.status === 2 ? 'Bảo lưu' : 
+                             formData.status === 3 ? 'Đã kết thúc' : 'Hủy bỏ'}
+                          </span>
+                        </div>
+                        <ChevronDown className="w-5 h-5 text-brand-primary/40" />
+                      </button>
+                      <AnimatePresence>
+                        {isStatusOpen && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                            className="absolute z-50 bottom-full md:bottom-auto md:top-full left-0 right-0 mb-3 md:mb-0 md:mt-3 p-3 bg-white rounded-[1.75rem] shadow-2xl border border-surface-50"
+                          >
+                            {[1, 2, 3, 4].map(s => (
+                              <button
+                                key={s}
+                                onClick={() => {
+                                  setFormData({...formData, status: s});
+                                  setIsStatusOpen(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left font-bold hover:bg-surface-50 flex items-center gap-3 lg:gap-4 transition-all"
+                              >
+                                <div className={`w-2 h-2 rounded-full ${
+                                  s === 1 ? 'bg-green-500' : s === 2 ? 'bg-surface-300' : s === 3 ? 'bg-brand-primary' : 'bg-red-500'
+                                }`} />
+                                {s === 1 ? 'Đang hoạt động' : s === 2 ? 'Bảo lưu' : s === 3 ? 'Đã kết thúc' : 'Hủy bỏ'}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="step2" 
+                  initial={{ opacity: 0, x: 20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-10"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ngày bắt đầu</label>
+                      <div className="relative group">
+                        <CalendarIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
+                        <input 
+                          type="date" 
+                          value={formData.startDate}
+                          onChange={e => setFormData({...formData, startDate: e.target.value})}
+                          className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Kết thúc dự kiến</label>
+                      <div className="relative group">
+                        <CalendarIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
+                        <input 
+                          type="date" 
+                          value={formData.expectedEndDate}
+                          onChange={e => setFormData({...formData, expectedEndDate: e.target.value})}
+                          className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                      <div className="flex items-center gap-3 lg:gap-4">
+                        <div className="w-9 h-9 bg-brand-primary/10 rounded-[0.8rem] flex items-center justify-center">
+                          <Clock className="w-5 h-5 text-brand-primary" />
+                        </div>
+                        <h3 className="text-xl lg:text-2xl font-black text-surface-900 tracking-tight">Lịch học định kỳ</h3>
+                      </div>
+                      <button onClick={addSchedule} className="px-5 py-2.5 bg-brand-primary text-white rounded-xl font-black text-[10px] lg:text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-primary/20">
+                        <Plus className="w-4 h-4 inline-block mr-1.5" />
+                        Thêm buổi
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
+                      <AnimatePresence initial={false}>
+                        {formData.schedules.map((schedule, index) => (
+                          <motion.div 
+                            key={index}
+                            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="flex flex-col lg:flex-row items-center gap-5 p-5 md:p-6 bg-surface-50/40 rounded-[2rem] border border-surface-50 group hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500"
+                          >
+                            <div className="w-full lg:flex-1 grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                              <div className="relative">
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Thứ</label>
+                                <select 
+                                  value={schedule.dayOfWeek}
+                                  onChange={e => updateSchedule(index, 'dayOfWeek', parseInt(e.target.value))}
+                                  className="w-full h-12 md:h-14 px-5 bg-white rounded-xl md:rounded-2xl border-none text-xs md:text-sm font-bold text-surface-900 shadow-sm appearance-none cursor-pointer focus:ring-2 focus:ring-brand-primary/10"
+                                >
+                                  {['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'].map((day, i) => (
+                                    <option key={i} value={i}>{day}</option>
+                                  ))}
+                                </select>
+                                <ChevronDown className="absolute right-4 bottom-[18px] md:bottom-[20px] w-4 h-4 text-brand-primary/30 pointer-events-none" />
+                              </div>
+                              <div className="relative">
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Giờ học</label>
+                                <input 
+                                  type="time" 
+                                  value={schedule.startTime}
+                                  onChange={e => updateSchedule(index, 'startTime', e.target.value)}
+                                  className="w-full h-12 md:h-14 px-5 bg-white rounded-xl md:rounded-2xl border-none text-xs md:text-sm font-bold text-surface-900 shadow-sm focus:ring-2 focus:ring-brand-primary/10"
+                                />
+                              </div>
+                              <div className="relative col-span-2 lg:col-span-1">
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Thời lượng</label>
+                                <div className="flex items-center bg-white rounded-xl md:rounded-2xl px-5 h-12 md:h-14 shadow-sm">
+                                  <input 
+                                    type="number" 
+                                    step="0.5"
+                                    min="0.5"
+                                    value={schedule.durationHours}
+                                    onChange={e => updateSchedule(index, 'durationHours', parseFloat(e.target.value))}
+                                    className="w-full bg-transparent border-none text-xs md:text-sm font-bold text-surface-900 outline-none"
+                                  />
+                                  <span className="text-[9px] font-black text-brand-primary/40 uppercase tracking-widest ml-2 whitespace-nowrap">Tiếng</span>
+                                </div>
+                              </div>
+                            </div>
+                            <button 
+                              onClick={() => removeSchedule(index)}
+                              className="lg:mt-4 p-3 md:p-4 text-surface-200 hover:text-red-500 hover:bg-red-50 rounded-xl md:rounded-2xl transition-all group-hover:text-surface-300"
+                            >
+                              <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
+                            </button>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Footer Controls */}
+          <div className="p-6 md:p-10 lg:p-12 bg-white/80 backdrop-blur-md border-t border-surface-50 flex items-center justify-between sticky bottom-0 z-30 mt-auto">
+            {step === 1 ? (
+              <div />
+            ) : (
+              <button 
+                onClick={() => setStep(1)}
+                className="flex items-center gap-2 md:gap-3 px-4 md:px-8 h-14 md:h-16 rounded-[1.5rem] font-black text-surface-500 hover:text-surface-900 transition-all group"
+              >
+                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
+                <span className="hidden md:inline uppercase tracking-widest text-[10px] md:text-xs">Quay lại</span>
+              </button>
+            )}
+
+            <div className="flex gap-3 md:gap-4 w-full md:w-auto">
+              <Button variant="outline" onClick={onClose} className="flex-1 md:flex-none rounded-[1.5rem] px-6 md:px-10 h-14 md:h-16 border-surface-100 font-black text-surface-600 hover:bg-surface-50 uppercase tracking-widest text-[10px] md:text-xs">
+                Hủy
+              </Button>
+              {step === 1 ? (
+                <Button 
+                  onClick={() => setStep(2)}
+                  className="flex-1 md:flex-none rounded-[1.5rem] px-8 md:px-12 h-14 md:h-16 shadow-2xl shadow-brand-primary/20 font-black group bg-brand-primary text-white uppercase tracking-widest text-[10px] md:text-xs"
+                >
+                  Tiếp tục
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleSubmit} 
+                  disabled={loading}
+                  className="flex-1 md:flex-none rounded-[1.5rem] px-8 md:px-12 h-14 md:h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-[10px] md:text-xs"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : (initialData ? 'Lưu thay đổi' : 'Tạo lớp học')}
+                </Button>
+              )}
             </div>
-          </motion.div>
+          </div>
         </div>
-      )}
-    </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }

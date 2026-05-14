@@ -38,4 +38,14 @@ export const classService = {
   create: (data: CreateClassData) => api.post<string>('/classes', data),
   update: (id: string, data: CreateClassData & { id: string }) => api.put(`/classes/${id}`, data),
   delete: (id: string) => api.delete(`/classes/${id}`),
+  addStudent: (classId: string, studentId: string) => api.post<boolean>(`/classes/${classId}/students`, studentId, {
+    headers: { 'Content-Type': 'application/json' }
+  }),
+  updateStudentStatus: (classId: string, studentId: string, status: number) => 
+    api.put<boolean>(`/classes/${classId}/students/${studentId}`, status, {
+      headers: { 'Content-Type': 'application/json' }
+    }),
+  removeStudent: (classId: string, studentId: string) => api.delete<boolean>(`/classes/${classId}/students/${studentId}`),
+  getAvailableStudents: (classId: string, searchTerm: string = '') => 
+    api.get<any[]>(`/classes/${classId}/available-students?searchTerm=${searchTerm}`),
 };

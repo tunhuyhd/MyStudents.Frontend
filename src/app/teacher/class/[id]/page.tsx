@@ -6,19 +6,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Users, Calendar, Clock, ChevronLeft, 
   Plus, Search, MoreVertical, CheckCircle2, AlertCircle,
-  Mail, GraduationCap, MapPin, Hash, ArrowRight
+  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import ClassModal from '@/components/teacher/ClassModal';
 import { classService, CreateClassData, Class } from '@/services/classService';
+import AddStudentToClassModal from '@/components/teacher/AddStudentToClassModal';
+import StatusDropdown from '@/components/teacher/StatusDropdown';
 
 interface StudentSummary {
   id: string;
   fullName: string;
   email: string;
-  studentIdNumber: string;
+  status: number;
 }
 
 interface Session {
@@ -36,6 +38,7 @@ interface ClassDetail {
   id: string;
   name: string;
   code: string;
+  status: number;
   category: number;
   subjectId: string;
   subjectName: string;
@@ -55,12 +58,13 @@ export default function ClassDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'sessions'>('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [updatingStudentId, setUpdatingStudentId] = useState<string | null>(null);
 
   const fetchClassDetail = async () => {
     try {
       const response = await api.get(`/classes/${id}`);
       const data = response.data;
-      // Normalize data to handle both camelCase and PascalCase
       const normalizedData = {
         ...data,
         status: data.status !== undefined ? data.status : data.Status,
@@ -86,7 +90,7 @@ export default function ClassDetailPage() {
     try {
       if (classData) {
         await classService.update(classData.id, { ...data, id: classData.id });
-        await fetchClassDetail(); // Refresh data
+        await fetchClassDetail();
         setIsModalOpen(false);
       }
     } catch (err) {
@@ -95,9 +99,44 @@ export default function ClassDetailPage() {
     }
   };
 
+  const handleAddStudent = async (studentId: string) => {
+    try {
+      await classService.addStudent(id as string, studentId);
+      await fetchClassDetail();
+    } catch (err) {
+      console.error('Failed to add student to class', err);
+      throw err;
+    }
+  };
+
+  const handleUpdateStudentStatus = async (studentId: string, status: number) => {
+    setUpdatingStudentId(studentId);
+    try {
+      await classService.updateStudentStatus(id as string, studentId, status);
+      await fetchClassDetail();
+    } catch (err) {
+      console.error('Failed to update student status', err);
+    } finally {
+      setUpdatingStudentId(null);
+    }
+  };
+
+  const handleRemoveStudent = async (studentId: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa học sinh này khỏi lớp?')) return;
+    setUpdatingStudentId(studentId);
+    try {
+      await classService.removeStudent(id as string, studentId);
+      await fetchClassDetail();
+    } catch (err) {
+      console.error('Failed to remove student from class', err);
+    } finally {
+      setUpdatingStudentId(null);
+    }
+  };
+
   const formatTime = (time: string) => {
     if (!time) return '';
-    return time.substring(0, 5); // "15:00:00" -> "15:00"
+    return time.substring(0, 5);
   };
 
   const getEndTime = (startTime: string, duration: number) => {
@@ -107,6 +146,16 @@ export default function ClassDetailPage() {
     const endH = Math.floor(totalMinutes / 60) % 24;
     const endM = Math.floor(totalMinutes % 60);
     return `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+  };
+
+  const getStatusLabel = (status: number) => {
+    switch (status) {
+      case 1: return { label: 'Đang học', color: 'bg-green-100 text-green-600' };
+      case 2: return { label: 'Bảo lưu', color: 'bg-surface-100 text-surface-500' };
+      case 3: return { label: 'Hoàn thành', color: 'bg-brand-primary/10 text-brand-primary' };
+      case 4: return { label: 'Nghỉ học', color: 'bg-red-100 text-red-500' };
+      default: return { label: 'Không rõ', color: 'bg-surface-50 text-surface-400' };
+    }
   };
 
   if (loading) {
@@ -127,12 +176,10 @@ export default function ClassDetailPage() {
 
   return (
     <main className="min-h-screen pb-20 relative overflow-hidden bg-transparent">
-      {/* Zen Background Orbs */}
       <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-brand-primary/5 aura-bg rounded-full animate-float pointer-events-none" />
       <div className="absolute bottom-[10%] right-[-5%] w-[500px] h-[500px] bg-brand-secondary/5 aura-bg rounded-full animate-float pointer-events-none" style={{ animationDelay: '-4s' }} />
 
       <div className="max-w-7xl mx-auto px-6 pt-12 relative z-10">
-        {/* Header Section */}
         <div className="mb-12">
           <button 
             onClick={() => router.back()}
@@ -158,7 +205,6 @@ export default function ClassDetailPage() {
                   <Hash className="w-4 h-4 mr-2 text-brand-primary/40" />
                   <span>{classData.code}</span>
                 </div>
-                {/* Status Badge */}
                 <div className={`flex items-center space-x-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${
                   classData.status === 1 ? 'bg-green-50 text-green-600 border-green-100' :
                   classData.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
@@ -186,18 +232,13 @@ export default function ClassDetailPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsModalOpen(true)}
-                className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5"
-              >
+              <Button variant="outline" onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5">
                 {t('common.edit')}
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Dynamic Tabs - Scrollable on Mobile */}
         <div className="flex items-center p-1.5 bg-white/50 backdrop-blur-xl border border-white rounded-[2rem] md:rounded-[2.5rem] mb-12 overflow-x-auto scrollbar-hide max-w-full">
           <div className="flex items-center min-w-max">
           {tabs.map((tab) => (
@@ -222,17 +263,10 @@ export default function ClassDetailPage() {
           </div>
         </div>
 
-        {/* Tab Content Area */}
         <div className="relative">
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
-              <motion.div
-                key="overview"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-8"
-              >
+              <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
                 <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-bl-[5rem] transition-all group-hover:w-40 group-hover:h-40" />
                   <h3 className="text-2xl font-black text-surface-900 mb-8 flex items-center">
@@ -246,18 +280,13 @@ export default function ClassDetailPage() {
                           <Clock className="w-6 h-6 text-brand-primary" />
                         </div>
                         <div>
-                          <div className="text-xs font-black text-surface-400 uppercase tracking-widest mb-1">
-                            {t(`days.${s.dayOfWeek}`)}
-                          </div>
-                          <div className="text-lg font-black text-surface-900">
-                            {formatTime(s.startTime)} — {getEndTime(s.startTime, s.durationHours)}
-                          </div>
+                          <div className="text-xs font-black text-surface-400 uppercase tracking-widest mb-1">{t(`days.${s.dayOfWeek}`)}</div>
+                          <div className="text-lg font-black text-surface-900">{formatTime(s.startTime)} — {getEndTime(s.startTime, s.durationHours)}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-
                 <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5">
                   <h3 className="text-2xl font-black text-surface-900 mb-8 flex items-center">
                     <GraduationCap className="w-6 h-6 mr-4 text-brand-primary" />
@@ -282,70 +311,65 @@ export default function ClassDetailPage() {
             )}
 
             {activeTab === 'students' && (
-              <motion.div
-                key="students"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 overflow-hidden"
-              >
+              <motion.div key="students" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 overflow-hidden min-h-[600px] flex flex-col">
                 <div className="p-8 border-b border-surface-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" />
-                    <input 
-                      type="text" 
-                      placeholder={t('teacher.details.searchStudents')} 
-                      className="w-full h-14 pl-14 pr-6 bg-surface-50/50 rounded-2xl border-none text-sm font-bold placeholder:text-surface-300 focus:ring-2 focus:ring-brand-primary/20 transition-all"
-                    />
+                    <input type="text" placeholder={t('teacher.details.searchStudents')} className="w-full h-14 pl-14 pr-6 bg-surface-50/50 rounded-2xl border-none text-sm font-bold placeholder:text-surface-300 focus:ring-2 focus:ring-brand-primary/20 transition-all" />
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button variant="outline" className="rounded-2xl h-14 px-6 border-surface-100 text-surface-600 font-bold hover:bg-surface-50">
-                      <Plus className="w-4 h-4 mr-2" />
-                      {t('teacher.details.addStudent')}
-                    </Button>
-                  </div>
+                  <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="rounded-2xl h-14 px-6 border-surface-100 text-surface-600 font-bold hover:bg-surface-50">
+                    <Plus className="w-4 h-4 mr-2" />
+                    {t('teacher.details.addStudent')}
+                  </Button>
                 </div>
-
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto flex-1">
                   {classData?.students?.length > 0 ? (
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-surface-50/30">
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.fullName')}</th>
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('teacher.modal.codeLabel')}</th>
+                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">Trạng thái</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.email')}</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest text-right">{t('teacher.actions')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-50">
-                        {classData.students.map((student) => (
-                          <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
-                            <td className="px-8 py-6">
-                              <div className="flex items-center space-x-4">
-                                <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-primary font-black text-xs group-hover:scale-110 transition-transform">
-                                  {student.fullName.substring(0, 2).toUpperCase()}
+                        {classData.students.map((student) => {
+                          const statusInfo = getStatusLabel(student.status);
+                          return (
+                            <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
+                              <td className="px-8 py-6">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-primary font-black text-xs group-hover:scale-110 transition-transform">
+                                    {student.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
+                                  </div>
+                                  <span className="font-black text-surface-900">{student.fullName}</span>
                                 </div>
-                                <span className="font-black text-surface-900">{student.fullName}</span>
-                              </div>
-                            </td>
-                            <td className="px-8 py-6">
-                              <span className="font-bold text-surface-500 bg-surface-50 px-3 py-1 rounded-lg text-xs tracking-widest">
-                                {student.studentIdNumber}
-                              </span>
-                            </td>
-                            <td className="px-8 py-6">
-                              <div className="flex items-center text-surface-500 font-medium">
-                                <Mail className="w-3.5 h-3.5 mr-2 opacity-40" />
-                                {student.email}
-                              </div>
-                            </td>
-                            <td className="px-8 py-6 text-right">
-                              <button className="p-3 hover:bg-white rounded-xl text-surface-400 hover:text-brand-primary hover:shadow-lg transition-all">
-                                <MoreVertical className="w-5 h-5" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
+                              </td>
+                              <td className="px-8 py-6">
+                                <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusInfo.color}`}>{statusInfo.label}</div>
+                              </td>
+                              <td className="px-8 py-6">
+                                <div className="flex items-center text-surface-500 font-medium">
+                                  <Mail className="w-3.5 h-3.5 mr-2 opacity-40" />
+                                  {student.email}
+                                </div>
+                              </td>
+                              <td className="px-8 py-6 text-right">
+                                <div className="flex items-center justify-end space-x-4">
+                                  <StatusDropdown 
+                                    value={student.status} 
+                                    onChange={(val) => handleUpdateStudentStatus(student.id, val)} 
+                                    disabled={updatingStudentId === student.id} 
+                                  />
+                                  <button onClick={() => handleRemoveStudent(student.id)} disabled={updatingStudentId === student.id} className="p-3 hover:bg-red-50 rounded-xl text-surface-300 hover:text-red-500 transition-all group/delete" title="Xóa khỏi lớp">
+                                    {updatingStudentId === student.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5 group-hover/delete:scale-110 transition-transform" />}
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   ) : (
@@ -361,13 +385,7 @@ export default function ClassDetailPage() {
             )}
 
             {activeTab === 'sessions' && (
-              <motion.div
-                key="sessions"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
-              >
+              <motion.div key="sessions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
                 <div className="flex items-center justify-between px-2">
                   <h3 className="text-2xl font-black text-surface-900">{t('teacher.details.sessions')}</h3>
                   <Button className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20">
@@ -375,7 +393,6 @@ export default function ClassDetailPage() {
                     {t('teacher.details.recordSession')}
                   </Button>
                 </div>
-
                 <div className="grid grid-cols-1 gap-6">
                   {classData?.sessions?.length > 0 ? (
                     classData.sessions.map((session) => (
@@ -397,13 +414,8 @@ export default function ClassDetailPage() {
                             </div>
                           </div>
                         </div>
-
                         <div className="flex items-center gap-4">
-                          <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${
-                            session.status === 2 // Completed
-                            ? 'bg-green-100 text-green-600'
-                            : 'bg-amber-100 text-amber-600'
-                          }`}>
+                          <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${session.status === 2 ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
                             {session.status === 2 ? <CheckCircle2 className="w-3 h-3 mr-2" /> : <AlertCircle className="w-3 h-3 mr-2" />}
                             {session.status === 2 ? t('teacher.details.completed') : t('teacher.details.scheduled')}
                           </div>
@@ -429,11 +441,18 @@ export default function ClassDetailPage() {
         </div>
       </div>
 
+      <AddStudentToClassModal 
+        isOpen={isAddStudentModalOpen} 
+        onClose={() => setIsAddStudentModalOpen(false)} 
+        onAdd={handleAddStudent} 
+        classId={id as string}
+      />
+
       <ClassModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveClass}
-        initialData={classData as any as Class}
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSave={handleSaveClass} 
+        initialData={classData as any as Class} 
       />
     </main>
   );

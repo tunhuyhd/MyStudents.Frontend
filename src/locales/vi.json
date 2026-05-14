@@ -12,7 +12,7 @@
   },
   "home": {
     "badge": "Giải pháp cho Giáo viên hiện đại",
-    "heroTitle": "Quản lý lớp học thêm",
+    "heroTitle": "Quản lý lớp học",
     "heroSubTitle": "thông minh & hiệu quả",
     "heroDesc": "Nền tảng chuyên dụng giúp giáo viên quản lý học sinh, sắp xếp lịch học và tối ưu hóa việc dạy thêm ngoài giờ một cách khoa học nhất.",
     "features": {
@@ -65,7 +65,7 @@
   },
   "teacher": {
     "title": "Quản lý Lớp học",
-    "desc": "Theo dõi và điều hành các lớp học thêm của bạn",
+    "desc": "Theo dõi và điều hành các lớp học của bạn",
     "createClass": "Tạo lớp học mới",
     "editClass": "Chỉnh sửa lớp học",
     "viewClass": "Xem chi tiết",
@@ -89,7 +89,22 @@
       "offline": "Trực tiếp",
       "cancel": "Hủy",
       "save": "Lưu thay đổi",
-      "create": "Tạo lớp học"
+      "create": "Tạo lớp học",
+      "startDateLabel": "Ngày bắt đầu",
+      "endDateLabel": "Ngày kết thúc dự kiến",
+      "schedulesLabel": "Lịch học định kỳ",
+      "addSession": "Thêm buổi",
+      "noSchedules": "Chưa có lịch học định kỳ",
+      "hoursAbbr": "giờ",
+      "days": {
+        "0": "Chủ nhật",
+        "1": "Thứ 2",
+        "2": "Thứ 3",
+        "3": "Thứ 4",
+        "4": "Thứ 5",
+        "5": "Thứ 6",
+        "6": "Thứ 7"
+      }
     }
   }
 }

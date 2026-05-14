@@ -1,5 +1,12 @@
 import api from '@/lib/api';
 
+export interface ClassSchedule {
+  id?: string;
+  dayOfWeek: number; // 0: Sunday, 1: Monday, ...
+  startTime: string; // "HH:mm:ss"
+  durationHours: number;
+}
+
 export interface Class {
   id: string;
   name: string;
@@ -8,6 +15,9 @@ export interface Class {
   subjectId: string;
   subjectName: string;
   studentCount: number;
+  startDate: string;
+  expectedEndDate: string;
+  schedules: ClassSchedule[];
 }
 
 export interface CreateClassData {
@@ -15,6 +25,9 @@ export interface CreateClassData {
   code: string;
   category: number;
   subjectId: string;
+  startDate: string;
+  expectedEndDate: string;
+  schedules: Omit<ClassSchedule, 'id'>[];
 }
 
 export const classService = {

@@ -89,7 +89,22 @@
       "offline": "Offline",
       "cancel": "Cancel",
       "save": "Save Changes",
-      "create": "Create Class"
+      "create": "Create Class",
+      "startDateLabel": "Start Date",
+      "endDateLabel": "Expected End Date",
+      "schedulesLabel": "Recurring Schedules",
+      "addSession": "Add Session",
+      "noSchedules": "No schedules set yet",
+      "hoursAbbr": "hrs",
+      "days": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      }
     }
   }
 }

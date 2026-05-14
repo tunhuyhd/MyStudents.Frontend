@@ -166,6 +166,14 @@ export default function TeacherDashboard() {
                         <Users className="w-4 h-4 mr-3 text-brand-primary/50" />
                         {c.studentCount} {t('teacher.studentCount')}
                       </div>
+                      <div className="flex items-center text-surface-500 text-sm font-medium">
+                        <Calendar className="w-4 h-4 mr-3 text-brand-primary/50" />
+                        {c.startDate ? new Date(c.startDate).toLocaleDateString('vi-VN') : 'Chưa đặt'}
+                      </div>
+                      <div className="flex items-center text-surface-500 text-sm font-medium">
+                        <Clock className="w-4 h-4 mr-3 text-brand-primary/50" />
+                        {c.schedules?.length || 0} buổi / tuần
+                      </div>
                     </div>
 
                     <Button variant="outline" className="w-full rounded-xl h-12 border-surface-100 text-surface-600 hover:bg-brand-primary/5 hover:text-brand-primary hover:border-brand-primary/20 group/btn">

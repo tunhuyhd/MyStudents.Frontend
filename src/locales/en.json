@@ -8,22 +8,29 @@
     "saveSuccess": "Profile updated successfully!",
     "saveError": "Update failed. Please try again.",
     "loading": "Loading...",
-    "hello": "Hello"
+    "hello": "Hello",
+    "back": "Back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search...",
+    "online": "Online",
+    "offline": "Offline",
+    "viewDetails": "View Details"
   },
   "home": {
     "badge": "Modern Teacher Solution",
-    "heroTitle": "Extra Class Management",
-    "heroSubTitle": "Smart & Efficient",
-    "heroDesc": "The dedicated platform for teachers to manage students, organize schedules, and optimize private tutoring operations.",
+    "heroTitle": "Manage your classes",
+    "heroSubTitle": "smartly & effectively",
+    "heroDesc": "A dedicated platform helping teachers manage students, schedule classes, and optimize private tutoring scientifically.",
     "features": {
       "flex": "Class Management",
-      "flexDesc": "Create classes easily, organize students by levels and subjects professionally.",
+      "flexDesc": "Create classes easily, categorize students by level and subject professionally.",
       "secure": "Student Profiles",
-      "secureDesc": "Store contact info, track attendance and progress for every student.",
-      "connect": "Smart Scheduling",
-      "connectDesc": "Plan your teaching sessions intelligently, avoid conflicts, and optimize your timetable."
+      "secureDesc": "Store contact info, track attendance, and progress for each student.",
+      "connect": "Scientific Scheduling",
+      "connectDesc": "Smart teaching schedule, avoid conflicts, and optimize time management."
     },
-    "footerSlogan": "Smart Management - Better Teaching"
+    "footerSlogan": "Smart Management - Inspired Teaching"
   },
   "auth": {
     "login": "Login",
@@ -43,21 +50,21 @@
   },
   "profile": {
     "title": "Teacher Profile",
-    "desc": "Manage your personal and account details",
+    "desc": "Manage personal info and account",
     "security": "Security",
-    "securityDesc": "Manage your password and protection settings",
+    "securityDesc": "Manage password and account safety",
     "changePassword": "Change Password",
     "oldPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm New Password",
-    "passwordMismatch": "Confirm password does not match.",
+    "passwordMismatch": "Passwords do not match.",
     "passwordSuccess": "Password changed successfully!",
-    "passwordError": "Failed to change password."
+    "passwordError": "Password change failed."
   },
   "admin": {
     "panel": "System Admin",
     "title": "Admin Dashboard",
-    "desc": "Manage teachers and system permissions",
+    "desc": "Manage teachers and user roles",
     "refresh": "Refresh Data",
     "user": "User",
     "currentRole": "Current Role",
@@ -65,7 +72,10 @@
   },
   "teacher": {
     "title": "Class Management",
-    "desc": "Track and manage your private tutoring classes",
+    "desc": "Track and manage your classes",
+    "teacherSpace": "Teacher Space",
+    "totalImpact": "Total Impact",
+    "students": "Students",
     "createClass": "Create New Class",
     "editClass": "Edit Class",
     "viewClass": "View Details",
@@ -75,15 +85,38 @@
     "studentCount": "Students",
     "actions": "Actions",
     "noClasses": "You don't have any classes yet. Create your first one!",
+    "sessionsPerWeek": "sessions / week",
+    "details": {
+      "overview": "Overview",
+      "students": "Students",
+      "sessions": "Sessions",
+      "classCode": "Class Code",
+      "subject": "Subject",
+      "startDate": "Start Date",
+      "endDate": "Expected End Date",
+      "schedule": "Schedule",
+      "noStudents": "No students registered in this class yet.",
+      "noSessions": "No sessions recorded yet.",
+      "addStudent": "Add Student",
+      "markAttendance": "Mark Attendance",
+      "totalStudents": "Total Students",
+      "manageList": "Manage List",
+      "searchStudents": "Search students...",
+      "recordSession": "Record Session",
+      "regularSession": "Regular Session",
+      "present": "Present",
+      "completed": "Completed",
+      "scheduled": "Scheduled"
+    },
     "modal": {
       "createTitle": "Create New Class",
       "editTitle": "Edit Class",
       "nameLabel": "Class Name",
-      "namePlaceholder": "e.g. Mathematics Grade 12",
+      "namePlaceholder": "e.g. Math Grade 12",
       "codeLabel": "Class Code",
       "codePlaceholder": "e.g. MATH12-2024",
       "subjectLabel": "Subject",
-      "subjectPlaceholder": "Select a subject",
+      "subjectPlaceholder": "Select subject",
       "categoryLabel": "Category",
       "online": "Online",
       "offline": "Offline",
@@ -92,19 +125,26 @@
       "create": "Create Class",
       "startDateLabel": "Start Date",
       "endDateLabel": "Expected End Date",
-      "schedulesLabel": "Recurring Schedules",
+      "schedulesLabel": "Regular Schedule",
       "addSession": "Add Session",
-      "noSchedules": "No schedules set yet",
-      "hoursAbbr": "hrs",
-      "days": {
-        "0": "Sunday",
-        "1": "Monday",
-        "2": "Tuesday",
-        "3": "Wednesday",
-        "4": "Thursday",
-        "5": "Friday",
-        "6": "Saturday"
-      }
+      "noSchedules": "No regular schedules",
+      "hoursAbbr": "h"
     }
+  },
+  "days": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday",
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
   }
 }

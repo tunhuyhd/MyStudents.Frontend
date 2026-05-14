@@ -8,7 +8,14 @@
     "saveSuccess": "Thông tin đã được cập nhật thành công!",
     "saveError": "Cập nhật thất bại. Vui lòng thử lại.",
     "loading": "Đang tải...",
-    "hello": "Chào"
+    "hello": "Chào",
+    "back": "Quay lại",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "search": "Tìm kiếm...",
+    "online": "Trực tuyến",
+    "offline": "Ngoại tuyến",
+    "viewDetails": "Xem chi tiết"
   },
   "home": {
     "badge": "Giải pháp cho Giáo viên hiện đại",
@@ -66,6 +73,9 @@
   "teacher": {
     "title": "Quản lý Lớp học",
     "desc": "Theo dõi và điều hành các lớp học của bạn",
+    "teacherSpace": "Không gian Giáo viên",
+    "totalImpact": "Tác động Tổng thể",
+    "students": "Học sinh",
     "createClass": "Tạo lớp học mới",
     "editClass": "Chỉnh sửa lớp học",
     "viewClass": "Xem chi tiết",
@@ -75,6 +85,29 @@
     "studentCount": "Số học sinh",
     "actions": "Thao tác",
     "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!",
+    "sessionsPerWeek": "buổi / tuần",
+    "details": {
+      "overview": "Tổng quan",
+      "students": "Học sinh",
+      "sessions": "Buổi học",
+      "classCode": "Mã lớp",
+      "subject": "Môn học",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc dự kiến",
+      "schedule": "Lịch học",
+      "noStudents": "Chưa có học sinh đăng ký vào lớp này.",
+      "noSessions": "Chưa có buổi học nào được ghi lại.",
+      "addStudent": "Thêm học sinh",
+      "markAttendance": "Điểm danh",
+      "totalStudents": "Tổng số học sinh",
+      "manageList": "Quản lý danh sách",
+      "searchStudents": "Tìm kiếm học sinh...",
+      "recordSession": "Ghi nhận buổi học",
+      "regularSession": "Buổi học định kỳ",
+      "present": "Hiện diện",
+      "completed": "Hoàn thành",
+      "scheduled": "Đã lên lịch"
+    },
     "modal": {
       "createTitle": "Tạo lớp học mới",
       "editTitle": "Chỉnh sửa lớp học",
@@ -95,16 +128,23 @@
       "schedulesLabel": "Lịch học định kỳ",
       "addSession": "Thêm buổi",
       "noSchedules": "Chưa có lịch học định kỳ",
-      "hoursAbbr": "giờ",
-      "days": {
-        "0": "Chủ nhật",
-        "1": "Thứ 2",
-        "2": "Thứ 3",
-        "3": "Thứ 4",
-        "4": "Thứ 5",
-        "5": "Thứ 6",
-        "6": "Thứ 7"
-      }
+      "hoursAbbr": "giờ"
     }
+  },
+  "days": {
+    "Monday": "Thứ Hai",
+    "Tuesday": "Thứ Ba",
+    "Wednesday": "Thứ Tư",
+    "Thursday": "Thứ Năm",
+    "Friday": "Thứ Sáu",
+    "Saturday": "Thứ Bảy",
+    "Sunday": "Chủ Nhật",
+    "0": "Chủ Nhật",
+    "1": "Thứ Hai",
+    "2": "Thứ Ba",
+    "3": "Thứ Tư",
+    "4": "Thứ Năm",
+    "5": "Thứ Sáu",
+    "6": "Thứ Bảy"
   }
 }

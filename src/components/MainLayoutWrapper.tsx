@@ -28,12 +28,20 @@ export function MainLayoutWrapper({ children }: { children: React.ReactNode }) {
 
   if (showSidebar) {
     return (
-      <div className={`flex min-h-screen ${isHomePage ? 'bg-transparent' : 'bg-surface-50'}`}>
+      <div className={`flex min-h-screen relative overflow-hidden ${isHomePage ? 'bg-transparent' : 'bg-surface-50'}`}>
+        {/* Global Organic Decoration */}
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-brand-primary/5 aura-bg rounded-full animate-float pointer-events-none" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-brand-secondary/5 aura-bg rounded-full animate-float pointer-events-none" style={{ animationDelay: '-7s' }} />
+
         <TeacherSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        
         <div className="flex-1 flex flex-col overflow-hidden relative">
-          {/* Ensure landing orbs are visible if on home page */}
-          <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
-          <main className="flex-1 relative z-10">
+          {/* Top Bar - Only visible on mobile since Sidebar handles everything on desktop */}
+          <div className="lg:hidden sticky top-0 z-50">
+            <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
+          </div>
+          
+          <main className="flex-1 relative z-10 overflow-y-auto scrollbar-hide">
             {children}
           </main>
         </div>

@@ -192,5 +192,9 @@
     "4": "Thursday",
     "5": "Friday",
     "6": "Saturday"
+  },
+  "errors": {
+    "ERR_SCHEDULE_OVERLAP": "You already have class '{className}' on {day} from {startTime} to {endTime}. Cannot create or update class.",
+    "ERR_INTERNAL_SCHEDULE_OVERLAP": "Schedule conflict within the same class on {day} ({time1} and {time2})."
   }
 }

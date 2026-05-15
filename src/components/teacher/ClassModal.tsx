@@ -44,6 +44,10 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
   const [loading, setLoading] = useState(false);
   const [isSubjectOpen, setIsSubjectOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [errorPopup, setErrorPopup] = useState<{ isOpen: boolean; message: string }>({
+    isOpen: false,
+    message: ''
+  });
   
   const [formData, setFormData] = useState<CreateClassData>({
     name: '',
@@ -114,8 +118,25 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
           startTime: s.startTime.length === 5 ? `${s.startTime}:00` : s.startTime
         }))
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving class:', error);
+      
+      const errorData = error.response?.data;
+      
+      // If it's a structured business error
+      if (errorData?.errorCode) {
+        const translatedMessage = t(`errors.${errorData.errorCode}`, errorData.parameters);
+        setErrorPopup({ isOpen: true, message: translatedMessage });
+      } else {
+        // Fallback for other errors
+        const errorMessage = errorData?.message || error.message || t('common.saveError');
+        
+        if (typeof errorMessage === 'string' && (errorMessage.includes('Bạn đã có lớp học') || errorMessage.includes('trùng nhau'))) {
+          setErrorPopup({ isOpen: true, message: errorMessage });
+        } else {
+          alert(errorMessage);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -157,7 +178,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+        className="relative w-full h-full md:h-[85vh] md:max-h-[800px] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
       >
         {/* Sidebar Decor - Desktop */}
         <div className="hidden md:flex w-72 lg:w-80 bg-brand-primary/5 p-10 lg:p-12 flex-col justify-between relative overflow-hidden shrink-0">
@@ -226,7 +247,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
             </button>
           </div>
 
-          <div className="flex-1 p-6 md:p-10 lg:p-16 overflow-y-auto scrollbar-hide">
+          <div className="flex-1 p-6 md:p-8 lg:p-12 overflow-y-auto scrollbar-hide min-h-0">
             <AnimatePresence mode="wait">
               {step === 1 ? (
                 <motion.div 
@@ -489,7 +510,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
           </div>
 
           {/* Footer Controls */}
-          <div className="p-6 md:p-10 lg:p-12 bg-white/80 backdrop-blur-md border-t border-surface-50 flex items-center justify-between sticky bottom-0 z-30 mt-auto">
+          <div className="p-6 md:p-8 lg:p-10 bg-white/80 backdrop-blur-md border-t border-surface-50 flex items-center justify-between sticky bottom-0 z-30 mt-auto shrink-0">
             {step === 1 ? (
               <div />
             ) : (
@@ -527,6 +548,57 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
           </div>
         </div>
       </motion.div>
+
+      {/* Custom Error Popup for Schedule Overlap */}
+      <AnimatePresence>
+        {errorPopup.isOpen && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-surface-900/40 backdrop-blur-sm"
+              onClick={() => setErrorPopup({ ...errorPopup, isOpen: false })}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 overflow-hidden"
+            >
+              {/* Background Decor */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-brand-primary/5 rounded-full blur-2xl -ml-12 -mb-12" />
+
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="w-20 h-20 bg-red-50 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-red-500/5">
+                  <div className="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center animate-pulse">
+                    <Info className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-black text-surface-900 tracking-tight mb-4 uppercase">Trùng lịch học!</h3>
+                
+                <div className="bg-surface-50 p-6 rounded-2xl border border-surface-100 mb-8 w-full">
+                  <p className="text-surface-600 font-bold leading-relaxed text-sm">
+                    {errorPopup.message}
+                  </p>
+                </div>
+
+                <div className="flex flex-col w-full gap-3">
+                  <Button 
+                    onClick={() => setErrorPopup({ ...errorPopup, isOpen: false })}
+                    className="w-full h-14 rounded-2xl bg-brand-primary text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-brand-primary/20"
+                  >
+                    Tôi đã hiểu
+                  </Button>
+                  <p className="text-[10px] font-black text-surface-300 uppercase tracking-widest mt-2">
+                    Vui lòng điều chỉnh lại lịch trình của bạn
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -192,5 +192,9 @@
     "4": "Thứ Năm",
     "5": "Thứ Sáu",
     "6": "Thứ Bảy"
+  },
+  "errors": {
+    "ERR_SCHEDULE_OVERLAP": "Bạn đã có lớp học '{className}' vào {day} từ {startTime} đến {endTime} nên không thể tạo mới/ thay đổi thời gian lớp học.",
+    "ERR_INTERNAL_SCHEDULE_OVERLAP": "Lịch học trong cùng một lớp bị trùng nhau vào {day} ({time1} và {time2})."
   }
 }

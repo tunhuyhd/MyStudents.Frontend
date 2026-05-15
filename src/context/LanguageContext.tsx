@@ -32,7 +32,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = (path: string) => {
+  const t = (path: string, params?: Record<string, string>) => {
     const keys = path.split('.');
     let result: any = translations[language];
 
@@ -44,7 +44,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    return result as string;
+    let translated = result as string;
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        // Translate the value if it's a day of week
+        const translatedValue = t(`days.${value}`);
+        const finalValue = translatedValue !== `days.${value}` ? translatedValue : value;
+        translated = translated.replace(`{${key}}`, finalValue);
+      });
+    }
+
+    return translated;
   };
 
   return (

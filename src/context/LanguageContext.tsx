@@ -10,7 +10,7 @@ type Translations = typeof vi;
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (path: string) => string;
+  t: (path: string, params?: Record<string, any>) => string;
 }
 
 const translations: Record<Language, Translations> = { vi, en };
@@ -32,7 +32,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = (path: string, params?: Record<string, string>) => {
+  const t = (path: string, params?: Record<string, any>) => {
     const keys = path.split('.');
     let result: any = translations[language];
 
@@ -40,16 +40,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (result && result[key]) {
         result = result[key];
       } else {
-        return path; // Trả về path nếu không tìm thấy key
+        return path;
       }
     }
 
     let translated = result as string;
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        // Translate the value if it's a day of week
-        const translatedValue = t(`days.${value}`);
-        const finalValue = translatedValue !== `days.${value}` ? translatedValue : value;
+        // Convert value to string and translate if it's a day of week
+        const stringValue = String(value);
+        const translatedValue = t(`days.${stringValue}`);
+        const finalValue = translatedValue !== `days.${stringValue}` ? translatedValue : stringValue;
         translated = translated.replace(`{${key}}`, finalValue);
       });
     }

@@ -127,7 +127,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
       
       // If it's a structured business error
       if (errorData?.errorCode) {
-        const translatedMessage = t(`errors.${errorData.errorCode}`, errorData.parameters);
+        const translatedMessage = (t as any)(`errors.${errorData.errorCode}`, errorData.parameters);
         setErrorPopup({ isOpen: true, message: translatedMessage });
       } else {
         // Fallback for other errors

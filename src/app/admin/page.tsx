@@ -8,7 +8,7 @@ import RoleDropdown from '@/components/RoleDropdown';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen } from 'lucide-react';
+import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen, Loader2 } from 'lucide-react';
 import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ interface UserDto {
   fullName: string;
   roleName: string;
   roleId: string;
+  status: number;
 }
 
 interface RoleDto {
@@ -71,6 +72,22 @@ export default function AdminDashboard() {
       await fetchData(); // Refresh data
     } catch (err) {
       console.error('Failed to update role', err);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleUpdateStatus = async (userId: string, currentStatus: number) => {
+    const newStatus = currentStatus === 1 ? 2 : 1;
+    setUpdatingId(userId);
+    try {
+      await api.patch(`/admin/users/${userId}/status`, {
+        userId,
+        newStatus
+      });
+      await fetchData();
+    } catch (err) {
+      console.error('Failed to update status', err);
     } finally {
       setUpdatingId(null);
     }
@@ -147,6 +164,7 @@ export default function AdminDashboard() {
                   <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.user')}</th>
                   <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('auth.email')}</th>
                   <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.currentRole')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('teacher.modal.statusLabel')}</th>
                   <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.changeRole')}</th>
                 </tr>
               </thead>
@@ -180,6 +198,22 @@ export default function AdminDashboard() {
                         }`}>
                           {u.roleName}
                         </span>
+                      </td>
+                      <td className="px-4 md:px-8 py-6">
+                        <button
+                          onClick={() => handleUpdateStatus(u.id, u.status)}
+                          disabled={updatingId === u.id}
+                          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                            u.status === 1 
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
+                            : 'bg-white/5 text-white/40 border-white/10'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className={`w-1.5 h-1.5 rounded-full ${u.status === 1 ? 'bg-emerald-500 animate-pulse' : 'bg-white/20'}`} />
+                            {u.status === 1 ? t('teacher.status.active') : t('teacher.status.inactive')}
+                          </div>
+                        </button>
                       </td>
                       <td className="px-4 md:px-8 py-6">
                         <div className="flex items-center">

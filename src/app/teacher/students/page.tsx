@@ -17,7 +17,8 @@ import {
   MapPin,
   ChevronRight,
   Filter,
-  UserPlus
+  UserPlus,
+  Loader2
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -42,6 +43,7 @@ export default function StudentsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== UserRoles.User)) {
@@ -99,6 +101,19 @@ export default function StudentsPage() {
     } finally {
       setIsDeleting(false);
       setDeletingStudentId(null);
+    }
+  };
+
+  const handleUpdateStatus = async (studentId: string, currentStatus: number) => {
+    const newStatus = currentStatus === 1 ? 2 : 1;
+    setUpdatingStatusId(studentId);
+    try {
+      await studentService.updateStatus(studentId, newStatus);
+      setStudents(prev => prev.map(s => s.id === studentId ? { ...s, status: newStatus } : s));
+    } catch (err) {
+      console.error('Failed to update status', err);
+    } finally {
+      setUpdatingStatusId(null);
     }
   };
 
@@ -201,8 +216,23 @@ export default function StudentsPage() {
                     <h3 className="text-xl font-black text-surface-900 tracking-tight group-hover:text-brand-primary transition-colors">
                       {student.lastName} {student.firstName}
                     </h3>
-                    <div className="flex items-center mt-1 text-xs font-black text-brand-primary uppercase tracking-widest opacity-60">
-                      {student.gender === 0 ? t('teacher.students.male') : student.gender === 1 ? t('teacher.students.female') : t('teacher.students.other')}
+                    <div className="flex items-center mt-1 space-x-3">
+                      <span className="text-xs font-black text-brand-primary uppercase tracking-widest opacity-60">
+                        {student.gender === 0 ? t('teacher.students.male') : student.gender === 1 ? t('teacher.students.female') : t('teacher.students.other')}
+                      </span>
+                      <button
+                        onClick={() => handleUpdateStatus(student.id, student.status)}
+                        disabled={updatingStatusId === student.id}
+                        className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
+                          student.status === 1 
+                          ? 'bg-green-50 text-green-600 border border-green-100' 
+                          : 'bg-surface-100 text-surface-400 border border-surface-200'
+                        }`}
+                      >
+                        <div className={`w-1.5 h-1.5 rounded-full ${student.status === 1 ? 'bg-green-500 animate-pulse' : 'bg-surface-300'}`} />
+                        {student.status === 1 ? t('teacher.status.active') : t('teacher.status.inactive')}
+                        {updatingStatusId === student.id && <Loader2 className="w-2.5 h-2.5 animate-spin ml-1" />}
+                      </button>
                     </div>
                   </div>
                 </div>

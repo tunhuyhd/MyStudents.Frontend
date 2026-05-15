@@ -13,6 +13,7 @@ export interface Student {
   phone?: string;
   address?: string;
   note?: string;
+  status: number; // 1: Active, 2: Inactive
   createdOn: string;
 }
 
@@ -35,5 +36,6 @@ export const studentService = {
   getById: (id: string) => api.get<Student>(`/students/${id}`),
   create: (data: CreateStudentData) => api.post<string>('/students', data),
   update: (id: string, data: CreateStudentData & { id: string }) => api.put(`/students/${id}`, data),
+  updateStatus: (id: string, status: number) => api.patch(`/students/${id}/status`, { id, status }),
   delete: (id: string) => api.delete(`/students/${id}`),
 };

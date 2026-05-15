@@ -1,4 +1,5 @@
 'use client';
+// Force redeploy to refresh types
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +9,7 @@ import {
   Check, ChevronLeft, ChevronRight, Sparkles, Layout, Info, Loader2
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+// Force refresh
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 

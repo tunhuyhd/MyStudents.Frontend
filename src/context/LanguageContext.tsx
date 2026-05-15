@@ -1,4 +1,5 @@
 'use client';
+// Refresh types for Vercel
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import vi from '@/locales/vi.json';

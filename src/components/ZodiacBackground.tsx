@@ -29,8 +29,8 @@ export default function ZodiacBackground() {
       opacity: number;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * canvas!.width;
+        this.y = Math.random() * canvas!.height;
         this.size = Math.random() * 2.5 + 1.0; // Larger stars
         this.speedX = Math.random() * 0.15 - 0.075;
         this.speedY = Math.random() * 0.15 - 0.075;
@@ -41,10 +41,10 @@ export default function ZodiacBackground() {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        if (this.x > canvas.width) this.x = 0;
-        else if (this.x < 0) this.x = canvas.width;
-        if (this.y > canvas.height) this.y = 0;
-        else if (this.y < 0) this.y = canvas.height;
+        if (this.x > canvas!.width) this.x = 0;
+        else if (this.x < 0) this.x = canvas!.width;
+        if (this.y > canvas!.height) this.y = 0;
+        else if (this.y < 0) this.y = canvas!.height;
       }
 
       draw() {
@@ -61,7 +61,7 @@ export default function ZodiacBackground() {
 
     const init = () => {
       particles = [];
-      const numberOfParticles = (canvas.width * canvas.height) / 7000; // More stars
+      const numberOfParticles = (canvas!.width * canvas!.height) / 7000; // More stars
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle());
       }
@@ -89,17 +89,17 @@ export default function ZodiacBackground() {
     };
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas!.width, canvas!.height);
       
       // Deep space gradient
       const gradient = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, canvas.width
+        canvas!.width / 2, canvas!.height / 2, 0,
+        canvas!.width / 2, canvas!.height / 2, canvas!.width
       );
       gradient.addColorStop(0, '#060a08'); // Darkest center
       gradient.addColorStop(1, '#020403'); // Total black outer
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvas!.width, canvas!.height);
 
       particles.forEach(p => {
         p.update();

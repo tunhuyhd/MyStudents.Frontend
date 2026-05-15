@@ -11,7 +11,7 @@ type Translations = typeof vi;
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (path: string, params?: Record<string, any>) => string;
+  t: (...args: any[]) => string;
 }
 
 const translations: Record<Language, Translations> = { vi, en };

@@ -29,7 +29,7 @@ import ClassModal from '@/components/teacher/ClassModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
 
 export default function TeacherDashboard() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [classes, setClasses] = useState<Class[]>([]);
@@ -106,67 +106,56 @@ export default function TeacherDashboard() {
   if (authLoading || !user || user.role !== UserRoles.User) return null;
 
   return (
-    <main className="min-h-screen pb-20 relative overflow-hidden">
-      {/* Decorative Organic Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-primary/20 aura-bg rounded-full animate-float pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-brand-secondary/20 aura-bg rounded-full animate-float pointer-events-none" style={{ animationDelay: '-5s' }} />
-      <div className="absolute top-[20%] right-[-5%] w-[20%] h-[20%] bg-brand-accent/30 aura-bg rounded-full animate-sway pointer-events-none" />
+    <main className="min-h-screen pb-20 space-y-12 relative overflow-hidden">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex-1"
+        >
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-6 border border-brand-primary/10">
+            <Sparkles className="w-4 h-4 text-brand-primary animate-pulse" />
+            <span className="text-[10px] font-black text-brand-primary uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
+          </div>
+          
+          <h1 className="text-5xl font-black text-surface-900 tracking-tighter leading-none mb-6">
+            {t('teacher.title')}
+          </h1>
+          <p className="text-surface-500 text-lg font-medium max-w-xl">
+            {t('teacher.desc')}
+          </p>
+        </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 pt-12 relative z-10">
-        {/* Dynamic Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex-1"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto"
+        >
+          {/* Quick Stats */}
+          <div className="flex bg-white border border-surface-100 rounded-3xl p-3 pr-8 items-center shadow-sm w-full sm:w-auto">
+            <div className="w-12 h-12 bg-brand-primary/10 text-brand-primary rounded-2xl flex items-center justify-center mr-4">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">{t('teacher.totalImpact')}</p>
+              <p className="text-xl font-black text-surface-900">
+                {classes.reduce((acc, curr) => acc + curr.studentCount, 0)} {t('teacher.students.label')}
+              </p>
+            </div>
+          </div>
+
+          <Button 
+            onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
+            size="lg" 
+            className="rounded-3xl h-16 px-10 shadow-xl shadow-brand-primary/20 group bg-brand-primary text-white font-black w-full sm:w-auto"
           >
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-6 border border-brand-primary/10">
-              <Sparkles className="w-4 h-4 text-brand-primary animate-pulse" />
-              <span className="text-[10px] font-black text-brand-primary uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
-            </div>
-            
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="w-16 h-16 bg-white soft-card rounded-[2rem] flex items-center justify-center shadow-xl shadow-brand-primary/10 rotate-[-5deg] hover:rotate-0 transition-transform duration-500">
-                <BookOpen className="w-8 h-8 text-brand-primary" />
-              </div>
-              <h1 className="text-5xl md:text-6xl font-black text-surface-900 tracking-tighter leading-none">
-                {t('teacher.title')}
-              </h1>
-            </div>
-            <p className="text-surface-500 text-lg font-medium max-w-xl leading-relaxed">
-              {t('teacher.desc')}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center gap-4"
-          >
-            {/* Quick Stats Pill */}
-            <div className="hidden md:flex bg-white/40 backdrop-blur-xl border border-white/50 rounded-[2rem] p-2 pr-6 items-center shadow-lg shadow-surface-200/20">
-              <div className="w-10 h-10 bg-brand-primary text-white rounded-[1.25rem] flex items-center justify-center mr-3 shadow-lg shadow-brand-primary/30">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-[10px] font-black text-surface-400 uppercase tracking-widest leading-none mb-1">{t('teacher.totalImpact')}</div>
-                <div className="text-lg font-black text-surface-900 leading-none">
-                  {classes.reduce((acc, curr) => acc + curr.studentCount, 0)} {t('teacher.students.label')}
-                </div>
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
-              size="lg" 
-              className="rounded-[2rem] h-16 px-10 shadow-2xl shadow-brand-primary/40 group bg-brand-primary hover:bg-brand-primary/90 transition-all duration-500 active:scale-95"
-            >
-              <Plus className="w-6 h-6 mr-3 group-hover:rotate-180 transition-transform duration-700" />
-              <span className="font-black tracking-tight">{t('teacher.createClass')}</span>
-            </Button>
-          </motion.div>
-        </div>
+            <Plus className="w-6 h-6 mr-3 group-hover:rotate-180 transition-transform duration-500" />
+            {t('teacher.createClass')}
+          </Button>
+        </motion.div>
+      </div>
 
         {/* Dynamic Class Cards Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
@@ -250,7 +239,7 @@ export default function TeacherDashboard() {
                         
                         <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
                           <Calendar className="w-5 h-5 mr-3 text-brand-primary/40" />
-                          <span>{c.startDate ? new Date(c.startDate).toLocaleDateString('vi-VN') : 'TBA'}</span>
+                          <span>{c.startDate ? new Date(c.startDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US') : 'TBA'}</span>
                         </div>
 
                         <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
@@ -296,8 +285,8 @@ export default function TeacherDashboard() {
                   <div className="w-24 h-24 bg-brand-primary/5 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 animate-float">
                     <BookOpen className="w-12 h-12 text-brand-primary/40" />
                   </div>
-                  <h3 className="text-2xl font-black text-surface-900 mb-4">{t('teacher.noClasses')}</h3>
-                  <p className="text-surface-500 font-medium mb-10 max-w-md mx-auto">Start your teaching journey by creating your first class session today.</p>
+                  <h3 className="text-2xl font-black text-surface-900 mb-4">{t('teacher.noClasses') || 'Bạn chưa có lớp học nào'}</h3>
+                  <p className="text-surface-500 font-medium mb-10 max-w-md mx-auto">{t('teacher.noClassesDesc') || 'Bắt đầu hành trình giảng dạy của bạn bằng cách tạo lớp học đầu tiên ngay hôm nay.'}</p>
                   <Button 
                     onClick={() => { setEditingClass(null); setIsModalOpen(true); }} 
                     size="lg"
@@ -311,7 +300,6 @@ export default function TeacherDashboard() {
             </AnimatePresence>
           )}
         </div>
-      </div>
 
       <ClassModal 
         isOpen={isModalOpen}

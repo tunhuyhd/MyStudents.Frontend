@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["vietnamese", "latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-be-vietnam",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "MyStudents - Modern Education Platform",
   description: "Next-generation student management system",
 };
-
-import { LanguageProvider } from "@/context/LanguageContext";
-
-import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
 
 export default function RootLayout({
   children,
@@ -31,7 +32,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${beVietnamPro.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
         <LanguageProvider>

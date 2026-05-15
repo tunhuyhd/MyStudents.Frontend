@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Users, LayoutDashboard, ChevronRight, X, LogOut, User as UserIcon, Settings, Globe } from 'lucide-react';
+import { BookOpen, Users, LayoutDashboard, X, LogOut, Settings } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageSwitcher } from '../LanguageSwitcher';
@@ -41,92 +41,70 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-surface-900/60 backdrop-blur-sm z-[9990] lg:hidden"
+            className="fixed inset-0 bg-surface-900/40 backdrop-blur-sm z-[80] lg:hidden"
           />
         )}
       </AnimatePresence>
 
-      <div className={`fixed lg:sticky top-0 left-0 z-[9995] w-72 h-screen flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${
-        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      {/* Sidebar Container */}
+      <aside className={`fixed top-0 left-0 h-screen w-80 bg-white border-r border-surface-100 z-[100] transition-transform duration-500 ease-in-out lg:translate-x-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="flex-1 m-4 mr-0 bg-white/80 backdrop-blur-2xl border border-white rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col overflow-hidden relative group/sidebar">
-          {/* Internal Decorative Aura */}
-          <div className="absolute -top-20 -left-20 w-40 h-40 bg-brand-primary/10 aura-bg rounded-full animate-float pointer-events-none" />
-
-          {/* Sidebar Header */}
-          <div className="p-8 pb-10 flex items-center justify-between relative z-10">
-            <Link href="/" className="flex items-center space-x-3 group/logo">
-              <div className="w-10 h-10 bg-brand-primary rounded-[1rem] flex items-center justify-center shadow-2xl shadow-brand-primary/30 group-hover/logo:rotate-[15deg] transition-all duration-500">
-                <LayoutDashboard className="w-5 h-5 text-white" />
+        <div className="h-full flex flex-col p-8">
+          {/* Logo Section */}
+          <div className="flex items-center justify-between mb-12">
+            <Link href="/" className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-brand-primary rounded-2xl flex items-center justify-center shadow-lg shadow-brand-primary/20 text-white">
+                <LayoutDashboard className="w-6 h-6" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-black text-surface-900 tracking-tighter leading-none">Teacher</span>
-                <span className="text-[9px] font-black text-brand-primary uppercase tracking-[0.3em] leading-none mt-1">Lounge</span>
+              <div>
+                <h2 className="text-xl font-black text-surface-900 tracking-tighter leading-none">Teacher</h2>
+                <p className="text-[10px] font-black text-brand-primary uppercase tracking-widest mt-1">Lounge</p>
               </div>
             </Link>
-            <button onClick={onClose} className="p-2 hover:bg-surface-50 rounded-xl lg:hidden text-surface-400">
-              <X className="w-5 h-5" />
+            <button onClick={onClose} className="lg:hidden p-2 text-surface-400">
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Menu Items */}
-          <nav className="flex-1 px-3 space-y-2.5 relative z-10">
-            {menuItems.map((item, index) => {
-              const isActive = pathname === item.href;
+          {/* Navigation */}
+          <nav className="flex-1 space-y-2">
+            {menuItems.map((item) => {
+              const isActive = pathname === item.href || (item.href !== '/teacher' && pathname.startsWith(item.href));
               return (
-                <Link key={item.href} href={item.href}>
-                  <motion.div 
-                    initial={false}
-                    animate={isActive ? { x: 4 } : { x: 0 }}
-                    className={`relative group flex items-center px-6 py-4 rounded-[1.75rem] transition-all duration-500 ${
-                      isActive 
-                      ? 'bg-brand-primary text-white shadow-2xl shadow-brand-primary/30' 
+                <Link key={item.href} href={item.href} onClick={() => onClose()}>
+                  <div className={`flex items-center px-6 py-4 rounded-2xl font-black text-sm transition-all duration-300 ${
+                    isActive 
+                      ? 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20' 
                       : 'text-surface-400 hover:bg-surface-50 hover:text-surface-900'
-                    }`}
-                  >
-                    <item.icon className={`w-5 h-5 mr-3 transition-all duration-500 ${isActive ? 'text-white scale-110' : 'group-hover:text-brand-primary group-hover:scale-110'}`} />
-                    <span className="font-black tracking-tight text-xs">{item.title}</span>
-                    
-                    <AnimatePresence>
-                      {isActive && (
-                        <motion.div 
-                          layoutId="active-dot"
-                          className="ml-auto w-1 h-1 bg-white rounded-full shadow-[0_0_10px_#fff]"
-                        />
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                  }`}>
+                    <item.icon className="w-5 h-5 mr-4" />
+                    <span className="tracking-tight">{item.title}</span>
+                  </div>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Sidebar Footer */}
-          <div className="p-6 space-y-5 relative z-10 border-t border-surface-100/30">
-            {/* Language Selection in Sidebar */}
+          {/* User Section */}
+          <div className="mt-auto pt-8 border-t border-surface-50 space-y-6">
             <div className="px-2">
-              <div className="text-[9px] font-black text-surface-300 uppercase tracking-[0.2em] mb-3 ml-2">Preferences</div>
-              <LanguageSwitcher />
+               <LanguageSwitcher />
             </div>
-
-            {/* User Profile / Logout Action */}
-            <div className="bg-surface-50/50 rounded-[2rem] p-4 flex flex-col space-y-4 border border-surface-100/50 group/footer hover:bg-white hover:shadow-2xl transition-all duration-500">
-              <Link href="/me" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-brand-primary rounded-[0.8rem] shadow-sm flex items-center justify-center text-xs font-black text-white group-hover/footer:rotate-6 transition-transform">
-                  {user?.fullName?.substring(0, 2).toUpperCase() || 'US'}
+            
+            <div className="p-5 bg-surface-50 rounded-3xl">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center text-white font-black text-xs">
+                  {user?.fullName?.substring(0, 2).toUpperCase() || 'HU'}
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <div className="text-xs font-black text-surface-900 truncate">{user?.fullName || t('admin.title')}</div>
-                  <div className="text-[9px] font-bold text-brand-primary uppercase tracking-widest flex items-center">
-                    <div className="w-1 h-1 bg-green-500 rounded-full mr-1.5 animate-pulse" />
-                    {t('common.online')}
-                  </div>
+                  <p className="text-xs font-black text-surface-900 truncate">{user?.fullName}</p>
+                  <p className="text-[9px] font-bold text-brand-primary uppercase tracking-widest">{t('auth.teacherRole') || 'Giáo viên'}</p>
                 </div>
-              </Link>
-              
+              </div>
               <button 
                 onClick={logout}
-                className="w-full h-10 bg-white rounded-xl flex items-center justify-center space-x-2 text-red-500 font-black text-[10px] border border-red-50 hover:bg-red-50 transition-all active:scale-95 shadow-sm"
+                className="w-full h-11 bg-white rounded-xl border border-red-50 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center space-x-2"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>{t('auth.logout')}</span>
@@ -134,7 +112,7 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }

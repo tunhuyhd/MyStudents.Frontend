@@ -185,12 +185,8 @@ export default function ClassDetailPage() {
     .sort((a, b) => a.orderIndex - b.orderIndex);
 
   return (
-    <main className="min-h-screen pb-20 relative overflow-hidden bg-transparent">
-      <div className="absolute top-[-10%] left-[-5%] w-[400px] h-[400px] bg-brand-primary/5 aura-bg rounded-full animate-float pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[-5%] w-[500px] h-[500px] bg-brand-secondary/5 aura-bg rounded-full animate-float pointer-events-none" style={{ animationDelay: '-4s' }} />
-
-      <div className="max-w-7xl mx-auto px-6 pt-12 relative z-10">
-        <div className="mb-12">
+    <main className="min-h-screen pb-20 px-6 pt-0 lg:pt-4 relative overflow-hidden bg-transparent max-w-7xl mx-auto">
+      <div className="mb-12">
           <button 
             onClick={() => router.back()}
             className="group flex items-center text-surface-400 hover:text-brand-primary transition-colors mb-6 font-bold text-sm uppercase tracking-widest"
@@ -207,7 +203,7 @@ export default function ClassDetailPage() {
                   {classData.subjectName}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-7xl font-black text-surface-900 tracking-tighter leading-tight md:leading-none">
+              <h1 className="text-4xl md:text-6xl font-black text-surface-900 tracking-tighter leading-tight md:leading-none">
                 {classData.name}
               </h1>
               <div className="flex flex-wrap items-center gap-4 md:gap-8 text-surface-400 font-bold">
@@ -502,7 +498,6 @@ export default function ClassDetailPage() {
             )}
           </AnimatePresence>
         </div>
-      </div>
 
       <AddStudentToClassModal 
         isOpen={isAddStudentModalOpen} 

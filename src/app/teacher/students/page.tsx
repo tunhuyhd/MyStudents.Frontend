@@ -28,7 +28,7 @@ import StudentModal from '@/components/teacher/StudentModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
 
 export default function StudentsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   
@@ -109,7 +109,7 @@ export default function StudentsPage() {
   );
 
   return (
-    <div className="p-6 md:p-10 lg:p-14 space-y-12 pb-32">
+    <div className="max-w-7xl mx-auto px-6 pt-0 lg:pt-4 space-y-12 pb-32">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 relative z-10">
         <motion.div 
@@ -117,24 +117,25 @@ export default function StudentsPage() {
           animate={{ opacity: 1, x: 0 }}
           className="space-y-4"
         >
-          <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 rounded-full text-brand-primary text-xs font-black uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center px-4 py-1.5 bg-brand-primary/10 rounded-full text-brand-primary text-[10px] font-black uppercase tracking-[0.2em] border border-brand-primary/10">
             <Users className="w-4 h-4 mr-2" />
             {t('teacher.students.management') || 'Quản lý học sinh'}
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-surface-900 tracking-tighter leading-none">
+          <h1 className="text-4xl md:text-6xl font-black text-surface-900 tracking-tighter leading-none">
             {t('teacher.students.title') || 'Danh sách học sinh'}
           </h1>
-          <p className="text-surface-400 font-medium text-lg max-w-md">
+          <p className="text-surface-500 font-medium text-lg max-w-md leading-relaxed">
             {t('teacher.students.subtitle') || 'Quản lý hồ sơ, thông tin liên lạc và theo dõi tiến độ học tập của học sinh.'}
           </p>
         </motion.div>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-wrap items-center gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-wrap items-center gap-4 w-full md:w-auto"
         >
-          <div className="relative group">
+          <div className="relative group flex-1 md:flex-none">
             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
               <Search className="w-5 h-5 text-surface-300 group-focus-within:text-brand-primary transition-colors" />
             </div>
@@ -143,13 +144,13 @@ export default function StudentsPage() {
               placeholder={t('teacher.students.searchPlaceholder') || 'Tìm tên, email hoặc SĐT...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-16 pl-16 pr-8 bg-white border border-surface-100 rounded-[2rem] text-sm font-bold text-surface-700 placeholder:text-surface-300 focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary/50 transition-all w-full md:w-80 shadow-sm"
+              className="h-16 pl-16 pr-8 bg-white border border-surface-100 rounded-[2rem] text-sm font-bold text-surface-700 placeholder:text-surface-300 focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary/50 transition-all w-full md:w-80 shadow-sm outline-none"
             />
           </div>
 
           <Button 
             onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
-            className="h-16 px-8 rounded-[2rem] bg-brand-primary hover:bg-brand-primary/90 shadow-2xl shadow-brand-primary/20 text-white font-black group"
+            className="h-16 px-8 rounded-[2rem] bg-brand-primary hover:bg-brand-primary/90 shadow-2xl shadow-brand-primary/20 text-white font-black group w-full md:w-auto"
           >
             <UserPlus className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
             {t('teacher.students.addBtn') || 'Thêm học sinh'}
@@ -201,7 +202,7 @@ export default function StudentsPage() {
                       {student.lastName} {student.firstName}
                     </h3>
                     <div className="flex items-center mt-1 text-xs font-black text-brand-primary uppercase tracking-widest opacity-60">
-                      {student.gender === 0 ? 'Nam' : student.gender === 1 ? 'Nữ' : 'Khác'}
+                      {student.gender === 0 ? t('teacher.students.male') : student.gender === 1 ? t('teacher.students.female') : t('teacher.students.other')}
                     </div>
                   </div>
                 </div>
@@ -237,7 +238,7 @@ export default function StudentsPage() {
                 {/* Footer Info */}
                 <div className="mt-8 pt-8 border-t border-surface-50/50 flex items-center justify-between">
                   <div className="text-[10px] font-black text-surface-300 uppercase tracking-widest">
-                    Học sinh từ: {new Date(student.createdOn).toLocaleDateString('vi-VN')}
+                    {t('teacher.students.enrolledSince') || 'Học sinh từ'}: {new Date(student.createdOn).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US')}
                   </div>
                   <button 
                     onClick={() => router.push(`/teacher/students/${student.id}`)}
@@ -260,15 +261,15 @@ export default function StudentsPage() {
               <Users className="w-10 h-10 text-surface-200" />
             </div>
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-black text-surface-900 tracking-tight">Chưa có học sinh nào</h3>
-              <p className="text-surface-400 font-medium">Hãy bắt đầu bằng việc thêm học sinh đầu tiên vào hệ thống.</p>
+              <h3 className="text-2xl font-black text-surface-900 tracking-tight">{t('teacher.students.noStudentsTitle') || 'Chưa có học sinh nào'}</h3>
+              <p className="text-surface-400 font-medium">{t('teacher.students.noStudentsDesc') || 'Hãy bắt đầu bằng việc thêm học sinh đầu tiên vào hệ thống.'}</p>
             </div>
             <Button 
               onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
               className="h-14 px-10 rounded-2xl bg-brand-primary shadow-xl shadow-brand-primary/10 text-white font-black"
             >
               <Plus className="w-5 h-5 mr-3" />
-              Thêm học sinh ngay
+              {t('teacher.students.addNowBtn') || 'Thêm học sinh ngay'}
             </Button>
           </motion.div>
         )}

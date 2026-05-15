@@ -50,7 +50,8 @@
     "email": "Địa chỉ Email",
     "noAccount": "Chưa có tài khoản?",
     "haveAccount": "Đã có tài khoản?",
-    "createAccount": "Tạo tài khoản giáo viên"
+    "createAccount": "Tạo tài khoản giáo viên",
+    "teacherRole": "Giáo viên"
   },
   "profile": {
     "title": "Hồ sơ Giáo viên",
@@ -97,6 +98,7 @@
       "gender": "Giới tính",
       "male": "Nam",
       "female": "Nữ",
+      "other": "Khác",
       "school": "Trường học",
       "parentName": "Họ tên phụ huynh",
       "parentPhone": "SĐT Phụ huynh",
@@ -104,7 +106,11 @@
       "address": "Địa chỉ",
       "note": "Ghi chú",
       "deleteTitle": "Xác nhận xóa học sinh",
-      "deleteMsg": "Bạn có chắc chắn muốn xóa học sinh này không? Hành động này không thể hoàn tác."
+      "deleteMsg": "Bạn có chắc chắn muốn xóa học sinh này không? Hành động này không thể hoàn tác.",
+      "enrolledSince": "Học sinh từ",
+      "noStudentsTitle": "Chưa có học sinh nào",
+      "noStudentsDesc": "Hãy bắt đầu bằng việc thêm học sinh đầu tiên vào hệ thống.",
+      "addNowBtn": "Thêm học sinh ngay"
     },
     "createClass": "Tạo lớp học mới",
     "editClass": "Chỉnh sửa lớp học",
@@ -115,6 +121,7 @@
     "studentCount": "Số học sinh",
     "actions": "Thao tác",
     "noClasses": "Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!",
+    "noClassesDesc": "Bắt đầu hành trình giảng dạy của bạn bằng cách tạo lớp học đầu tiên ngay hôm nay.",
     "sessionsPerWeek": "buổi / tuần",
     "deleteTitle": "Xác nhận xóa lớp học",
     "deleteMessage": "Bạn có chắc chắn muốn xóa lớp học này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn và không thể hoàn tác.",

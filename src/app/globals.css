@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
   
   /* Bảng màu Mệnh Mộc - Dương Liễu Mộc */
   --color-brand-primary: #10b981;    /* Emerald Green */
@@ -28,7 +29,16 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     position: relative;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
   }
 
   body::before {

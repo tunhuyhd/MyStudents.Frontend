@@ -22,6 +22,7 @@ interface StudentSummary {
   fullName: string;
   email: string;
   status: number;
+  joinedAt: string;
 }
 
 interface Session {
@@ -65,6 +66,14 @@ export default function ClassDetailPage() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | undefined>(undefined);
   const [updatingStudentId, setUpdatingStudentId] = useState<string | null>(null);
 
+  // Pagination states for students
+  const [students, setStudents] = useState<StudentSummary[]>([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 10;
+
   const fetchClassDetail = async () => {
     try {
       const response = await api.get(`/classes/${id}`);
@@ -74,7 +83,7 @@ export default function ClassDetailPage() {
         status: data.status !== undefined ? data.status : data.Status,
         category: data.category !== undefined ? data.category : data.Category,
         subjectId: data.subjectId || data.SubjectId,
-        students: data.students || data.Students || [],
+        students: [], // Now fetched separately
         sessions: data.sessions || data.Sessions || [],
         schedules: data.schedules || data.Schedules || []
       };
@@ -86,9 +95,44 @@ export default function ClassDetailPage() {
     }
   };
 
+  const fetchClassStudents = async (page: number) => {
+    setStudentsLoading(true);
+    try {
+      const response = await api.get(`/classes/${id}/students`, {
+        params: { pageNumber: page, pageSize }
+      });
+      const { items, totalPages: total, totalCount: count } = response.data;
+      
+      const normalizedStudents = (items || []).map((s: any) => ({
+        ...s,
+        id: s.id || s.Id,
+        fullName: s.fullName || s.FullName,
+        email: s.email || s.Email,
+        status: s.status !== undefined ? s.status : s.Status,
+        joinedAt: s.joinedAt || s.JoinedAt
+      }));
+
+      setStudents(normalizedStudents);
+      setTotalPages(total);
+      setTotalCount(count);
+    } catch (error) {
+      console.error('Error fetching class students:', error);
+    } finally {
+      setStudentsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (id) fetchClassDetail();
+    if (id) {
+      fetchClassDetail();
+    }
   }, [id]);
+
+  useEffect(() => {
+    if (id && activeTab === 'students') {
+      fetchClassStudents(pageNumber);
+    }
+  }, [id, activeTab, pageNumber]);
 
   const handleSaveClass = async (data: CreateClassData) => {
     try {
@@ -106,7 +150,9 @@ export default function ClassDetailPage() {
   const handleAddStudent = async (studentId: string) => {
     try {
       await classService.addStudent(id as string, studentId);
-      await fetchClassDetail();
+      await fetchClassStudents(pageNumber);
+      // Also update overall count in classData
+      if (classData) setClassData({ ...classData, studentCount: classData.studentCount + 1 });
     } catch (err) {
       console.error('Failed to add student to class', err);
       throw err;
@@ -117,7 +163,7 @@ export default function ClassDetailPage() {
     setUpdatingStudentId(studentId);
     try {
       await classService.updateStudentStatus(id as string, studentId, status);
-      await fetchClassDetail();
+      await fetchClassStudents(pageNumber);
     } catch (err) {
       console.error('Failed to update student status', err);
     } finally {
@@ -130,7 +176,9 @@ export default function ClassDetailPage() {
     setUpdatingStudentId(studentId);
     try {
       await classService.removeStudent(id as string, studentId);
-      await fetchClassDetail();
+      await fetchClassStudents(pageNumber);
+      // Also update overall count in classData
+      if (classData) setClassData({ ...classData, studentCount: Math.max(0, classData.studentCount - 1) });
     } catch (err) {
       console.error('Failed to remove student from class', err);
     } finally {
@@ -309,17 +357,24 @@ export default function ClassDetailPage() {
                   </Button>
                 </div>
                 <div className="overflow-x-auto flex-1">
-                  {classData?.students?.length > 0 ? (
+                  {studentsLoading ? (
+                    <div className="py-20 flex flex-col items-center justify-center">
+                      <Loader2 className="w-10 h-10 animate-spin text-brand-primary mb-4" />
+                      <p className="text-surface-400 font-bold">{t('common.loading')}</p>
+                    </div>
+                  ) : students.length > 0 ? (
+                    <>
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-surface-50/30">
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.fullName')}</th>
+                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('teacher.details.joinedAt') || 'Ngày tham gia'}</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">Trạng thái</th>
                           <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest text-right">{t('teacher.actions')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-50">
-                        {classData.students.map((student) => {
+                        {students.map((student) => {
                           const statusInfo = getStatusLabel(student.status);
                           return (
                             <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
@@ -329,6 +384,12 @@ export default function ClassDetailPage() {
                                     {student.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
                                   </div>
                                   <span className="font-black text-surface-900">{student.fullName}</span>
+                                </div>
+                              </td>
+                              <td className="px-8 py-6">
+                                <div className="flex items-center text-sm font-bold text-surface-500">
+                                  <Calendar className="w-3.5 h-3.5 mr-2 opacity-40" />
+                                  {new Date(student.joinedAt).toLocaleDateString('vi-VN')}
                                 </div>
                               </td>
                               <td className="px-8 py-6">
@@ -351,6 +412,51 @@ export default function ClassDetailPage() {
                         })}
                       </tbody>
                     </table>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                      <div className="p-8 border-t border-surface-50 flex items-center justify-between">
+                        <div className="text-xs font-bold text-surface-400">
+                          Hiển thị <span className="text-surface-900">{(pageNumber - 1) * pageSize + 1}</span> - <span className="text-surface-900">{Math.min(pageNumber * pageSize, totalCount)}</span> trên <span className="text-surface-900">{totalCount}</span> học sinh
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={pageNumber === 1}
+                            onClick={() => setPageNumber(prev => prev - 1)}
+                            className="rounded-xl"
+                          >
+                            Trước
+                          </Button>
+                          <div className="flex items-center gap-1">
+                            {[...Array(totalPages)].map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => setPageNumber(i + 1)}
+                                className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${
+                                  pageNumber === i + 1 
+                                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                                    : 'text-surface-400 hover:bg-surface-50'
+                                }`}
+                              >
+                                {i + 1}
+                              </button>
+                            ))}
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={pageNumber === totalPages}
+                            onClick={() => setPageNumber(prev => prev + 1)}
+                            className="rounded-xl"
+                          >
+                            Sau
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    </>
                   ) : (
                     <div className="py-32 text-center">
                       <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">

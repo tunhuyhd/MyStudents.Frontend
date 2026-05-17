@@ -17,7 +17,8 @@
     "online": "Online",
     "offline": "Offline",
     "viewDetails": "View Details",
-    "selectDate": "Select Date"
+    "selectDate": "Select Date",
+    "goToTeacherSpace": "Go to Teacher Space"
   },
   "home": {
     "badge": "Modern Teacher Solution",
@@ -145,7 +146,8 @@
       "regularSession": "Regular Session",
       "present": "Present",
       "completed": "Completed",
-      "scheduled": "Scheduled"
+      "scheduled": "Scheduled",
+      "joinedAt": "Joined Date"
     },
     "modal": {
       "createTitle": "Create New Class",

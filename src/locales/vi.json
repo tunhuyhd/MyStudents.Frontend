@@ -17,7 +17,8 @@
     "online": "Trực tuyến",
     "offline": "Trực tiếp",
     "viewDetails": "Xem chi tiết",
-    "selectDate": "Chọn ngày"
+    "selectDate": "Chọn ngày",
+    "goToTeacherSpace": "Đến không gian Giáo viên"
   },
   "home": {
     "badge": "Giải pháp cho Giáo viên hiện đại",
@@ -145,7 +146,8 @@
       "regularSession": "Buổi học định kỳ",
       "present": "Hiện diện",
       "completed": "Hoàn thành",
-      "scheduled": "Đã lên lịch"
+      "scheduled": "Đã lên lịch",
+      "joinedAt": "Ngày tham gia"
     },
     "modal": {
       "createTitle": "Tạo lớp học mới",

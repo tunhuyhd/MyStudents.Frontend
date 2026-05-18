@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/Button';
@@ -16,9 +16,14 @@ import {
   Trash2,
   Clock,
   ChevronRight,
-  TrendingUp,
   Sparkles,
-  Zap
+  Zap,
+  Search,
+  Filter,
+  ArrowUpDown,
+  TrendingUp,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -40,6 +45,36 @@ export default function TeacherDashboard() {
   const [deletingClassId, setDeletingClassId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Filter, Sort, Pagination States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [year, setYear] = useState<number | ''>('');
+  const [sortBy, setSortBy] = useState('startDate');
+  const [sortDescending, setSortDescending] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 9; // Display 9 classes per page (3x3 grid)
+
+  // Custom Dropdown States
+  const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const yearDropdownRef = useRef<HTMLDivElement>(null);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target as Node)) {
+        setIsYearDropdownOpen(false);
+      }
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   useEffect(() => {
     if (!authLoading && (!user || user.role !== UserRoles.User)) {
       if (user?.role === UserRoles.Admin) {
@@ -50,13 +85,35 @@ export default function TeacherDashboard() {
       return;
     }
     if (user) fetchClasses();
-  }, [user, authLoading]);
+  }, [user, authLoading, pageNumber, year, sortBy, sortDescending]);
+
+  // Debounced search
+  useEffect(() => {
+    if (!user) return;
+    const delayDebounceFn = setTimeout(() => {
+      if (pageNumber === 1) {
+        fetchClasses();
+      } else {
+        setPageNumber(1); // Reset to page 1 on search will trigger fetch
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, user]);
 
   const fetchClasses = async () => {
     setLoading(true);
     try {
-      const res = await classService.getAll();
-      setClasses(res.data);
+      const res = await classService.getAll({
+        searchTerm,
+        year: year === '' ? undefined : Number(year),
+        sortBy,
+        sortDescending,
+        pageNumber,
+        pageSize
+      });
+      setClasses(res.data.items);
+      setTotalPages(res.data.totalPages);
+      setTotalCount(res.data.totalCount);
     } catch (err) {
       console.error('Failed to fetch classes', err);
     } finally {
@@ -155,6 +212,130 @@ export default function TeacherDashboard() {
             {t('teacher.createClass')}
           </Button>
         </motion.div>
+      </div>
+
+      {/* Filters and Controls */}
+      <div className="flex flex-col md:flex-row gap-4 bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-white">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
+          <input 
+            type="text" 
+            placeholder={t('common.search') || "Tìm kiếm lớp học, mã lớp..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-14 pl-12 pr-4 bg-white rounded-2xl border-none focus:ring-2 focus:ring-brand-primary/20 text-sm font-bold shadow-sm"
+          />
+        </div>
+        
+        <div className="flex flex-wrap gap-4">
+          {/* Year Filter Dropdown */}
+          <div className="relative" ref={yearDropdownRef}>
+            <button
+              onClick={() => { setIsYearDropdownOpen(!isYearDropdownOpen); setIsSortDropdownOpen(false); }}
+              className="h-14 bg-white rounded-2xl shadow-sm px-4 flex items-center justify-between min-w-[180px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
+            >
+              <div className="flex items-center text-surface-400">
+                <Filter className="w-5 h-5 mr-3" />
+                <span className="text-sm font-bold text-surface-900">
+                  {year === '' ? 'Tất cả các năm' : `Năm ${year}`}
+                </span>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform ${isYearDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {isYearDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-100 py-2 z-50 overflow-hidden"
+                >
+                  <button
+                    onClick={() => { setYear(''); setPageNumber(1); setIsYearDropdownOpen(false); }}
+                    className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                  >
+                    Tất cả các năm
+                    {year === '' && <Check className="w-4 h-4" />}
+                  </button>
+                  {[...Array(5)].map((_, i) => {
+                    const y = new Date().getFullYear() - i;
+                    return (
+                      <button
+                        key={y}
+                        onClick={() => { setYear(y); setPageNumber(1); setIsYearDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                      >
+                        Năm {y}
+                        {year === y && <Check className="w-4 h-4" />}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative" ref={sortDropdownRef}>
+            <button
+              onClick={() => { setIsSortDropdownOpen(!isSortDropdownOpen); setIsYearDropdownOpen(false); }}
+              className="h-14 bg-white rounded-2xl shadow-sm px-4 flex items-center justify-between min-w-[220px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
+            >
+              <div className="flex items-center text-surface-400">
+                <ArrowUpDown className="w-5 h-5 mr-3" />
+                <span className="text-sm font-bold text-surface-900">
+                  {sortBy === 'startDate' && sortDescending === true ? 'Mới nhất' :
+                   sortBy === 'startDate' && sortDescending === false ? 'Cũ nhất' :
+                   sortBy === 'name' && sortDescending === false ? 'Tên (A-Z)' :
+                   sortBy === 'name' && sortDescending === true ? 'Tên (Z-A)' :
+                   sortBy === 'studentCount' && sortDescending === true ? 'Học sinh (Nhiều nhất)' :
+                   'Học sinh (Ít nhất)'}
+                </span>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform ${isSortDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {isSortDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-100 py-2 z-50 overflow-hidden"
+                >
+                  {[
+                    { label: 'Mới nhất', valSortBy: 'startDate', valDesc: true },
+                    { label: 'Cũ nhất', valSortBy: 'startDate', valDesc: false },
+                    { label: 'Tên (A-Z)', valSortBy: 'name', valDesc: false },
+                    { label: 'Tên (Z-A)', valSortBy: 'name', valDesc: true },
+                    { label: 'Học sinh (Nhiều nhất)', valSortBy: 'studentCount', valDesc: true },
+                    { label: 'Học sinh (Ít nhất)', valSortBy: 'studentCount', valDesc: false },
+                  ].map((option) => {
+                    const isActive = sortBy === option.valSortBy && sortDescending === option.valDesc;
+                    return (
+                      <button
+                        key={option.label}
+                        onClick={() => {
+                          setSortBy(option.valSortBy);
+                          setSortDescending(option.valDesc);
+                          setPageNumber(1);
+                          setIsSortDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${isActive ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                      >
+                        {option.label}
+                        {isActive && <Check className="w-4 h-4" />}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
 
         {/* Dynamic Class Cards Layout */}
@@ -300,6 +481,48 @@ export default function TeacherDashboard() {
             </AnimatePresence>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/60 backdrop-blur-md p-6 rounded-3xl border border-white mt-8">
+            <div className="text-sm font-bold text-surface-500">
+              Hiển thị <span className="text-surface-900">{(pageNumber - 1) * pageSize + 1}</span> - <span className="text-surface-900">{Math.min(pageNumber * pageSize, totalCount)}</span> trên <span className="text-surface-900">{totalCount}</span> lớp học
+            </div>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                disabled={pageNumber === 1}
+                onClick={() => setPageNumber(prev => prev - 1)}
+                className="rounded-xl h-12 px-4 border-surface-100"
+              >
+                Trước
+              </Button>
+              <div className="flex items-center gap-1 hidden sm:flex">
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPageNumber(i + 1)}
+                    className={`w-12 h-12 rounded-xl text-sm font-black transition-all ${
+                      pageNumber === i + 1 
+                        ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                        : 'text-surface-500 hover:bg-surface-50'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+              <Button 
+                variant="outline" 
+                disabled={pageNumber === totalPages}
+                onClick={() => setPageNumber(prev => prev + 1)}
+                className="rounded-xl h-12 px-4 border-surface-100"
+              >
+                Sau
+              </Button>
+            </div>
+          </div>
+        )}
 
       <ClassModal 
         isOpen={isModalOpen}

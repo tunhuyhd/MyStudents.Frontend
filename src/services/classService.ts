@@ -32,8 +32,19 @@ export interface CreateClassData {
   schedules: Omit<ClassSchedule, 'id'>[];
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  pageNumber: number;
+  totalPages: number;
+  totalCount: number;
+  pageSize: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export const classService = {
-  getAll: () => api.get<Class[]>('/classes'),
+  getAll: (params?: { searchTerm?: string; year?: number; sortBy?: string; sortDescending?: boolean; pageNumber?: number; pageSize?: number }) => 
+    api.get<PaginatedResponse<Class>>('/classes', { params }),
   getById: (id: string) => api.get<Class>(`/classes/${id}`),
   create: (data: CreateClassData) => api.post<string>('/classes', data),
   update: (id: string, data: CreateClassData & { id: string }) => api.put(`/classes/${id}`, data),

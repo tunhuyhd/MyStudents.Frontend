@@ -123,7 +123,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
       await onSave({
         ...formData,
-        linkOnline: sanitizedLink || null,
+        linkOnline: sanitizedLink || undefined,
         schedules: formData.schedules.map(s => ({
           ...s,
           startTime: s.startTime.length === 5 ? `${s.startTime}:00` : s.startTime

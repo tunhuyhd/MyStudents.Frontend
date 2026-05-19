@@ -10,6 +10,7 @@ import {
 import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
+import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
 
 interface ClassSchedule {
   id?: string;
@@ -44,6 +45,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
   const [loading, setLoading] = useState(false);
   const [isSubjectOpen, setIsSubjectOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [activeDayDropdown, setActiveDayDropdown] = useState<number | null>(null);
   const [errorPopup, setErrorPopup] = useState<{ isOpen: boolean; message: string }>({
     isOpen: false,
     message: ''
@@ -178,7 +180,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full h-full md:h-[85vh] md:max-h-[800px] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+        className="relative w-full h-[100dvh] md:h-[85vh] md:max-h-[800px] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
       >
         {/* Sidebar Decor - Desktop */}
         <div className="hidden md:flex w-72 lg:w-80 bg-brand-primary/5 p-10 lg:p-12 flex-col justify-between relative overflow-hidden shrink-0">
@@ -190,10 +192,10 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
               <BookOpen className="w-7 h-7 text-brand-primary" />
             </div>
             <h2 className="text-3xl lg:text-4xl font-black text-surface-900 leading-tight mb-5 tracking-tighter">
-              {initialData ? 'Cập nhật Lớp học' : 'Tạo mới Lớp học'}
+              {initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
             </h2>
             <p className="text-surface-500 font-bold text-xs lg:text-sm leading-relaxed max-w-[200px]">
-              Tổ chức khóa học của bạn với các thiết lập chuyên nghiệp.
+              {t('teacher.modal.desc')}
             </p>
           </div>
 
@@ -207,9 +209,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   {step > s ? <Check className="w-6 h-6" /> : s}
                 </div>
                 <div className="flex flex-col">
-                  <span className={`text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${step === s ? 'text-brand-primary' : 'text-surface-300'}`}>Bước {s}</span>
+                  <span className={`text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${step === s ? 'text-brand-primary' : 'text-surface-300'}`}>{t('teacher.modal.stepLabel')} {s}</span>
                   <span className={`text-sm lg:text-base font-black ${step === s ? 'text-surface-900' : 'text-surface-400'}`}>
-                    {s === 1 ? 'Thông tin cơ bản' : 'Lịch trình khóa học'}
+                    {s === 1 ? t('teacher.modal.step1') : t('teacher.modal.step2')}
                   </span>
                 </div>
               </div>
@@ -225,7 +227,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
              </div>
              <div>
                 <h2 className="text-lg font-black text-surface-900">
-                  {initialData ? 'Cập nhật Lớp' : 'Tạo Lớp mới'}
+                  {initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
                 </h2>
                 <div className="flex gap-1 mt-1">
                   {[1, 2].map(s => (
@@ -259,27 +261,27 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên lớp học</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.nameLabel')}</label>
                       <div className="relative group">
                         <Layout className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
                           type="text" 
                           value={formData.name}
                           onChange={e => setFormData({...formData, name: e.target.value})}
-                          placeholder="Ví dụ: Toán nâng cao 12"
+                          placeholder={t('teacher.modal.namePlaceholder')}
                           className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none placeholder:text-surface-300"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Mã lớp</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.codeLabel')}</label>
                       <div className="relative group">
                         <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
                           type="text" 
                           value={formData.code}
                           onChange={e => setFormData({...formData, code: e.target.value})}
-                          placeholder="TOAN-12"
+                          placeholder={t('teacher.modal.codePlaceholder')}
                           className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none uppercase placeholder:text-surface-300"
                         />
                       </div>
@@ -288,13 +290,13 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2 relative">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Môn học</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.subjectLabel')}</label>
                       <button 
                         onClick={() => setIsSubjectOpen(!isSubjectOpen)}
                         className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
                       >
                         <span className="font-bold text-surface-900 text-base lg:text-lg">
-                          {subjects.find(s => s.id === formData.subjectId)?.name || 'Chọn môn học'}
+                          {subjects.find(s => s.id === formData.subjectId)?.name || t('teacher.modal.subjectPlaceholder')}
                         </span>
                         <ChevronDown className={`w-5 h-5 text-brand-primary/40 transition-transform duration-300 ${isSubjectOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -323,7 +325,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       </AnimatePresence>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Hình thức học</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.categoryLabel')}</label>
                       <div className="flex p-1.5 bg-surface-50/70 rounded-[1.5rem] h-14 lg:h-16">
                         <button 
                           onClick={() => setFormData({...formData, category: 1})}
@@ -332,7 +334,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                           }`}
                         >
                           <Globe className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
-                          Trực tuyến
+                          {t('common.online')}
                         </button>
                         <button 
                           onClick={() => setFormData({...formData, category: 2})}
@@ -341,7 +343,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                           }`}
                         >
                           <MapPin className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
-                          Trực tiếp
+                          {t('common.offline')}
                         </button>
                       </div>
                     </div>
@@ -349,7 +351,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
                   {initialData && (
                     <div className="space-y-2 relative">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trạng thái lớp học</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.statusLabel')}</label>
                       <button 
                         onClick={() => setIsStatusOpen(!isStatusOpen)}
                         className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
@@ -362,9 +364,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             'bg-red-500 shadow-lg shadow-red-500/30'
                           }`} />
                           <span className="font-bold text-surface-900 text-base lg:text-lg">
-                            {formData.status === 1 ? 'Đang hoạt động' : 
-                             formData.status === 2 ? 'Bảo lưu' : 
-                             formData.status === 3 ? 'Đã kết thúc' : 'Hủy bỏ'}
+                            {formData.status === 1 ? t('teacher.status.active') : 
+                             formData.status === 2 ? t('teacher.status.inactive') : 
+                             formData.status === 3 ? t('teacher.status.completed') : t('teacher.status.cancelled')}
                           </span>
                         </div>
                         <ChevronDown className="w-5 h-5 text-brand-primary/40" />
@@ -387,7 +389,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 <div className={`w-2 h-2 rounded-full ${
                                   s === 1 ? 'bg-green-500' : s === 2 ? 'bg-surface-300' : s === 3 ? 'bg-brand-primary' : 'bg-red-500'
                                 }`} />
-                                {s === 1 ? 'Đang hoạt động' : s === 2 ? 'Bảo lưu' : s === 3 ? 'Đã kết thúc' : 'Hủy bỏ'}
+                                {s === 1 ? t('teacher.status.active') : s === 2 ? t('teacher.status.inactive') : s === 3 ? t('teacher.status.completed') : t('teacher.status.cancelled')}
                               </button>
                             ))}
                           </motion.div>
@@ -406,25 +408,21 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ngày bắt đầu</label>
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.startDateLabel')}</label>
                       <div className="relative group">
-                        <CalendarIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
-                        <input 
-                          type="date" 
+                        <CustomDatePicker
                           value={formData.startDate}
-                          onChange={e => setFormData({...formData, startDate: e.target.value})}
+                          onChange={val => setFormData({...formData, startDate: val})}
                           className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Kết thúc dự kiến</label>
-                      <div className="relative group">
-                        <CalendarIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary" />
-                        <input 
-                          type="date" 
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.endDateLabel')}</label>
+                      <div className="relative group z-40">
+                        <CustomDatePicker
                           value={formData.expectedEndDate}
-                          onChange={e => setFormData({...formData, expectedEndDate: e.target.value})}
+                          onChange={val => setFormData({...formData, expectedEndDate: val})}
                           className="w-full h-14 lg:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base lg:text-lg font-bold text-surface-900 transition-all outline-none"
                         />
                       </div>
@@ -437,11 +435,11 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                         <div className="w-9 h-9 bg-brand-primary/10 rounded-[0.8rem] flex items-center justify-center">
                           <Clock className="w-5 h-5 text-brand-primary" />
                         </div>
-                        <h3 className="text-xl lg:text-2xl font-black text-surface-900 tracking-tight">Lịch học định kỳ</h3>
+                        <h3 className="text-xl lg:text-2xl font-black text-surface-900 tracking-tight">{t('teacher.modal.schedulesLabel')}</h3>
                       </div>
                       <button onClick={addSchedule} className="px-5 py-2.5 bg-brand-primary text-white rounded-xl font-black text-[10px] lg:text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-primary/20">
                         <Plus className="w-4 h-4 inline-block mr-1.5" />
-                        Thêm buổi
+                        {t('teacher.modal.addSession')}
                       </button>
                     </div>
 
@@ -453,24 +451,61 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             initial={{ opacity: 0, y: 10, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="flex flex-col lg:flex-row items-center gap-5 p-5 md:p-6 bg-surface-50/40 rounded-[2rem] border border-surface-50 group hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500"
+                            className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-5 p-5 md:p-6 bg-surface-50/40 rounded-[2rem] border border-surface-50 group hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500"
                           >
+                            <div className="w-full flex justify-between items-center lg:hidden">
+                              <span className="text-[10px] font-black text-brand-primary/60 uppercase tracking-[0.2em] px-1">
+                                {t('teacher.modal.sessionLabel')} {index + 1}
+                              </span>
+                              <button 
+                                onClick={() => removeSchedule(index)}
+                                className="p-2 text-surface-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                             <div className="w-full lg:flex-1 grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                               <div className="relative">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Thứ</label>
-                                <select 
-                                  value={schedule.dayOfWeek}
-                                  onChange={e => updateSchedule(index, 'dayOfWeek', parseInt(e.target.value))}
-                                  className="w-full h-12 md:h-14 px-5 bg-white rounded-xl md:rounded-2xl border-none text-xs md:text-sm font-bold text-surface-900 shadow-sm appearance-none cursor-pointer focus:ring-2 focus:ring-brand-primary/10"
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.dayLabel')}</label>
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveDayDropdown(activeDayDropdown === index ? null : index)}
+                                  className="w-full h-12 md:h-14 px-5 bg-white rounded-xl md:rounded-2xl border-none text-xs md:text-sm font-bold text-surface-900 shadow-sm focus:ring-2 focus:ring-brand-primary/10 flex items-center justify-between transition-all"
                                 >
-                                  {['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'].map((day, i) => (
-                                    <option key={i} value={i}>{day}</option>
-                                  ))}
-                                </select>
-                                <ChevronDown className="absolute right-4 bottom-[18px] md:bottom-[20px] w-4 h-4 text-brand-primary/30 pointer-events-none" />
+                                  {t(`days.${schedule.dayOfWeek}`)}
+                                  <ChevronDown className={`w-4 h-4 text-brand-primary/30 transition-transform duration-300 ${activeDayDropdown === index ? 'rotate-180' : ''}`} />
+                                </button>
+                                <AnimatePresence>
+                                  {activeDayDropdown === index && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: 5 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: 5 }}
+                                      transition={{ duration: 0.15 }}
+                                      className="absolute z-50 top-full mt-2 left-0 right-0 p-2 bg-white rounded-[1.25rem] shadow-xl border border-surface-50 max-h-48 overflow-y-auto scrollbar-hide"
+                                    >
+                                      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                                        <button
+                                          key={i}
+                                          type="button"
+                                          onClick={() => {
+                                            updateSchedule(index, 'dayOfWeek', i);
+                                            setActiveDayDropdown(null);
+                                          }}
+                                          className={`w-full p-3 rounded-lg text-left text-xs md:text-sm font-bold transition-all mb-1 last:mb-0 flex items-center justify-between ${
+                                            schedule.dayOfWeek === i ? 'bg-brand-primary text-white shadow-md' : 'text-surface-700 hover:bg-brand-primary/5'
+                                          }`}
+                                        >
+                                          {t(`days.${i}`)}
+                                          {schedule.dayOfWeek === i && <Check className="w-4 h-4" />}
+                                        </button>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </div>
                               <div className="relative">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Giờ học</label>
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.timeLabel')}</label>
                                 <input 
                                   type="time" 
                                   value={schedule.startTime}
@@ -479,7 +514,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 />
                               </div>
                               <div className="relative col-span-2 lg:col-span-1">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">Thời lượng</label>
+                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.durationLabel')}</label>
                                 <div className="flex items-center bg-white rounded-xl md:rounded-2xl px-5 h-12 md:h-14 shadow-sm">
                                   <input 
                                     type="number" 
@@ -489,13 +524,13 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                     onChange={e => updateSchedule(index, 'durationHours', parseFloat(e.target.value))}
                                     className="w-full bg-transparent border-none text-xs md:text-sm font-bold text-surface-900 outline-none"
                                   />
-                                  <span className="text-[9px] font-black text-brand-primary/40 uppercase tracking-widest ml-2 whitespace-nowrap">Tiếng</span>
+                                  <span className="text-[9px] font-black text-brand-primary/40 uppercase tracking-widest ml-2 whitespace-nowrap">{t('teacher.modal.hoursAbbr')}</span>
                                 </div>
                               </div>
                             </div>
                             <button 
                               onClick={() => removeSchedule(index)}
-                              className="lg:mt-4 p-3 md:p-4 text-surface-200 hover:text-red-500 hover:bg-red-50 rounded-xl md:rounded-2xl transition-all group-hover:text-surface-300"
+                              className="hidden lg:block lg:mt-4 p-3 md:p-4 text-surface-200 hover:text-red-500 hover:bg-red-50 rounded-xl md:rounded-2xl transition-all group-hover:text-surface-300 shrink-0"
                             >
                               <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
                             </button>
@@ -519,20 +554,20 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 className="flex items-center gap-2 md:gap-3 px-4 md:px-8 h-14 md:h-16 rounded-[1.5rem] font-black text-surface-500 hover:text-surface-900 transition-all group"
               >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
-                <span className="hidden md:inline uppercase tracking-widest text-[10px] md:text-xs">Quay lại</span>
+                <span className="hidden md:inline uppercase tracking-widest text-[10px] md:text-xs">{t('common.back')}</span>
               </button>
             )}
 
             <div className="flex gap-3 md:gap-4 w-full md:w-auto">
               <Button variant="outline" onClick={onClose} className="flex-1 md:flex-none rounded-[1.5rem] px-6 md:px-10 h-14 md:h-16 border-surface-100 font-black text-surface-600 hover:bg-surface-50 uppercase tracking-widest text-[10px] md:text-xs">
-                Hủy
+                {t('teacher.modal.cancel')}
               </Button>
               {step === 1 ? (
                 <Button 
                   onClick={() => setStep(2)}
                   className="flex-1 md:flex-none rounded-[1.5rem] px-8 md:px-12 h-14 md:h-16 shadow-2xl shadow-brand-primary/20 font-black group bg-brand-primary text-white uppercase tracking-widest text-[10px] md:text-xs"
                 >
-                  Tiếp tục
+                  {t('teacher.modal.continue')}
                   <ChevronRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               ) : (
@@ -541,7 +576,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   disabled={loading}
                   className="flex-1 md:flex-none rounded-[1.5rem] px-8 md:px-12 h-14 md:h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-[10px] md:text-xs"
                 >
-                  {loading ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : (initialData ? 'Lưu thay đổi' : 'Tạo lớp học')}
+                  {loading ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : (initialData ? t('teacher.modal.save') : t('teacher.modal.create'))}
                 </Button>
               )}
             </div>
@@ -575,7 +610,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   </div>
                 </div>
                 
-                <h3 className="text-2xl font-black text-surface-900 tracking-tight mb-4 uppercase">Trùng lịch học!</h3>
+                <h3 className="text-2xl font-black text-surface-900 tracking-tight mb-4 uppercase">{t('teacher.modal.overlapTitle')}</h3>
                 
                 <div className="bg-surface-50 p-6 rounded-2xl border border-surface-100 mb-8 w-full">
                   <p className="text-surface-600 font-bold leading-relaxed text-sm">
@@ -588,10 +623,10 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                     onClick={() => setErrorPopup({ ...errorPopup, isOpen: false })}
                     className="w-full h-14 rounded-2xl bg-brand-primary text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-brand-primary/20"
                   >
-                    Tôi đã hiểu
+                    {t('teacher.modal.understood')}
                   </Button>
                   <p className="text-[10px] font-black text-surface-300 uppercase tracking-widest mt-2">
-                    Vui lòng điều chỉnh lại lịch trình của bạn
+                    {t('teacher.modal.overlapHint')}
                   </p>
                 </div>
               </div>

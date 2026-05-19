@@ -18,7 +18,8 @@
     "offline": "Offline",
     "viewDetails": "View Details",
     "selectDate": "Select Date",
-    "goToTeacherSpace": "Go to Teacher Space"
+    "goToTeacherSpace": "Go to Teacher Space",
+    "month": "Month"
   },
   "home": {
     "badge": "Modern Teacher Solution",
@@ -170,7 +171,18 @@
       "schedulesLabel": "Regular Schedule",
       "addSession": "Add Session",
       "noSchedules": "No regular schedules",
-      "hoursAbbr": "h"
+      "hoursAbbr": "h",
+      "step1": "Basic Information",
+      "step2": "Course Schedule",
+      "stepLabel": "Step",
+      "desc": "Organize your course with professional settings.",
+      "dayLabel": "Day",
+      "timeLabel": "Time",
+      "durationLabel": "Duration",
+      "sessionLabel": "Session",
+      "overlapTitle": "Schedule Overlap!",
+      "overlapHint": "Please adjust your schedule accordingly",
+      "continue": "Continue"
     },
     "status": {
       "active": "Active",
@@ -193,7 +205,16 @@
     "3": "Wednesday",
     "4": "Thursday",
     "5": "Friday",
-    "6": "Saturday"
+    "6": "Saturday",
+    "short": {
+      "0": "Su",
+      "1": "Mo",
+      "2": "Tu",
+      "3": "We",
+      "4": "Th",
+      "5": "Fr",
+      "6": "Sa"
+    }
   },
   "errors": {
     "ERR_SCHEDULE_OVERLAP": "You already have class '{className}' on {day} from {startTime} to {endTime}. Cannot create or update class.",

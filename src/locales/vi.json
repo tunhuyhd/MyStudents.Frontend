@@ -18,7 +18,8 @@
     "offline": "Trực tiếp",
     "viewDetails": "Xem chi tiết",
     "selectDate": "Chọn ngày",
-    "goToTeacherSpace": "Đến không gian Giáo viên"
+    "goToTeacherSpace": "Đến không gian Giáo viên",
+    "month": "Tháng"
   },
   "home": {
     "badge": "Giải pháp cho Giáo viên hiện đại",
@@ -170,7 +171,18 @@
       "schedulesLabel": "Lịch học định kỳ",
       "addSession": "Thêm buổi",
       "noSchedules": "Chưa có lịch học định kỳ",
-      "hoursAbbr": "giờ"
+      "hoursAbbr": "giờ",
+      "step1": "Thông tin cơ bản",
+      "step2": "Lịch trình khóa học",
+      "stepLabel": "Bước",
+      "desc": "Tổ chức khóa học của bạn với các thiết lập chuyên nghiệp.",
+      "dayLabel": "Thứ",
+      "timeLabel": "Giờ học",
+      "durationLabel": "Thời lượng",
+      "sessionLabel": "Buổi",
+      "overlapTitle": "Trùng lịch học!",
+      "overlapHint": "Vui lòng điều chỉnh lại lịch trình của bạn",
+      "continue": "Tiếp tục"
     },
     "status": {
       "active": "Đang hoạt động",
@@ -193,7 +205,16 @@
     "3": "Thứ Tư",
     "4": "Thứ Năm",
     "5": "Thứ Sáu",
-    "6": "Thứ Bảy"
+    "6": "Thứ Bảy",
+    "short": {
+      "0": "CN",
+      "1": "T2",
+      "2": "T3",
+      "3": "T4",
+      "4": "T5",
+      "5": "T6",
+      "6": "T7"
+    }
   },
   "errors": {
     "ERR_SCHEDULE_OVERLAP": "Bạn đã có lớp học '{className}' vào {day} từ {startTime} đến {endTime} nên không thể tạo mới/ thay đổi thời gian lớp học.",

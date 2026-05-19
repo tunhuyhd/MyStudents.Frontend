@@ -32,6 +32,7 @@ import { UserRoles } from '@/constants/roles';
 import { classService, Class, CreateClassData } from '@/services/classService';
 import ClassModal from '@/components/teacher/ClassModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
+import { Toast } from '@/components/ui/Toast';
 
 export default function TeacherDashboard() {
   const { t, language } = useLanguage();
@@ -44,6 +45,11 @@ export default function TeacherDashboard() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingClassId, setDeletingClassId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({
+    isOpen: false,
+    message: '',
+    type: 'success'
+  });
 
   // Filter, Sort, Pagination States
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,11 +129,19 @@ export default function TeacherDashboard() {
 
   const handleSaveClass = async (data: CreateClassData) => {
     try {
-      if (editingClass) {
+      const isEdit = !!editingClass;
+      if (isEdit) {
         await classService.update(editingClass.id, { ...data, id: editingClass.id });
       } else {
         await classService.create(data);
       }
+      setIsModalOpen(false);
+      setEditingClass(null);
+      setToast({
+        isOpen: true,
+        message: isEdit ? 'Cập nhật lớp học thành công!' : 'Tạo lớp học mới thành công!',
+        type: 'success'
+      });
       fetchClasses();
     } catch (err) {
       console.error('Failed to save class', err);
@@ -538,6 +552,13 @@ export default function TeacherDashboard() {
         isLoading={isDeleting}
         title={t('teacher.deleteTitle') || "Xóa lớp học"}
         message={t('teacher.deleteMessage') || "Bạn có chắc chắn muốn xóa lớp học này? Hành động này không thể hoàn tác."}
+      />
+
+      <Toast 
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ ...toast, isOpen: false })}
       />
     </main>
   );

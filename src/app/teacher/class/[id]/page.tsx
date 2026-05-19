@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Users, Calendar, Clock, ChevronLeft, 
   Plus, Search, MoreVertical, CheckCircle2, AlertCircle,
-  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2, Sparkles
+  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2, Sparkles, Video, Globe
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
@@ -16,6 +16,7 @@ import { classService, CreateClassData, Class } from '@/services/classService';
 import AddStudentToClassModal from '@/components/teacher/AddStudentToClassModal';
 import StatusDropdown from '@/components/teacher/StatusDropdown';
 import RecordSessionModal from '@/components/teacher/RecordSessionModal';
+import { Toast } from '@/components/ui/Toast';
 
 interface StudentSummary {
   id: string;
@@ -47,6 +48,7 @@ interface ClassDetail {
   subjectName: string;
   startDate: string;
   expectedEndDate: string;
+  linkOnline?: string | null;
   studentCount: number;
   schedules: any[];
   students: StudentSummary[];
@@ -65,6 +67,11 @@ export default function ClassDetailPage() {
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | undefined>(undefined);
   const [updatingStudentId, setUpdatingStudentId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({
+    isOpen: false,
+    message: '',
+    type: 'success'
+  });
 
   // Pagination states for students
   const [students, setStudents] = useState<StudentSummary[]>([]);
@@ -83,6 +90,7 @@ export default function ClassDetailPage() {
         status: data.status !== undefined ? data.status : data.Status,
         category: data.category !== undefined ? data.category : data.Category,
         subjectId: data.subjectId || data.SubjectId,
+        linkOnline: data.linkOnline || data.LinkOnline || null,
         students: [], // Now fetched separately
         sessions: data.sessions || data.Sessions || [],
         schedules: data.schedules || data.Schedules || []
@@ -140,6 +148,11 @@ export default function ClassDetailPage() {
         await classService.update(classData.id, { ...data, id: classData.id });
         await fetchClassDetail();
         setIsModalOpen(false);
+        setToast({
+          isOpen: true,
+          message: 'Cập nhật thông tin lớp học thành công!',
+          type: 'success'
+        });
       }
     } catch (err) {
       console.error('Failed to save class', err);
@@ -321,6 +334,35 @@ export default function ClassDetailPage() {
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
               <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+                {classData.category === 0 && (
+                  <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-bl-[5rem] transition-all group-hover:w-40 group-hover:h-40" />
+                    <h3 className="text-2xl font-black text-surface-900 mb-6 flex items-center">
+                      <Video className="w-6 h-6 mr-4 text-brand-primary" />
+                      {t('teacher.details.onlineLink')}
+                    </h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 bg-surface-50/50 rounded-3xl border border-surface-100/50 hover:bg-white hover:shadow-lg transition-all duration-500">
+                      <div className="space-y-1">
+                        <div className="text-xs font-black text-surface-400 uppercase tracking-widest">{t('teacher.details.onlineLinkLabel')}</div>
+                        <div className="text-base font-bold text-surface-700 break-all select-all">
+                          {classData.linkOnline || t('teacher.details.noOnlineLink')}
+                        </div>
+                      </div>
+                      {classData.linkOnline && (
+                        <a 
+                          href={classData.linkOnline} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center h-12 px-6 bg-brand-primary hover:bg-brand-primary/95 text-white rounded-[1.25rem] font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-primary/10 shrink-0"
+                        >
+                          {t('teacher.details.joinMeeting')}
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-bl-[5rem] transition-all group-hover:w-40 group-hover:h-40" />
                   <h3 className="text-2xl font-black text-surface-900 mb-8 flex items-center">
@@ -625,6 +667,13 @@ export default function ClassDetailPage() {
         onClose={() => setIsModalOpen(false)} 
         onSave={handleSaveClass} 
         initialData={classData as any as Class} 
+      />
+
+      <Toast 
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ ...toast, isOpen: false })}
       />
     </main>
   );

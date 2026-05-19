@@ -28,6 +28,7 @@ interface CreateClassData {
   subjectId: string;
   startDate: string;
   expectedEndDate: string;
+  linkOnline?: string;
   schedules: ClassSchedule[];
 }
 
@@ -55,7 +56,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     name: '',
     code: '',
     status: 1,
-    category: 1,
+    category: 0, // 0: Online, 1: Offline
     subjectId: '',
     startDate: new Date().toISOString().split('T')[0],
     expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -80,8 +81,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         name: initialData.name || '',
         code: initialData.code || '',
         status: initialData.status || 1,
-        category: initialData.category || 1,
+        category: initialData.category !== undefined ? initialData.category : 0,
         subjectId: initialData.subjectId || '',
+        linkOnline: initialData.linkOnline || '',
         startDate: (initialData.startDate && !initialData.startDate.startsWith('0001')) 
           ? initialData.startDate.split('T')[0] 
           : new Date().toISOString().split('T')[0],
@@ -100,8 +102,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         name: '',
         code: '',
         status: 1,
-        category: 1,
+        category: 0,
         subjectId: '',
+        linkOnline: '',
         startDate: new Date().toISOString().split('T')[0],
         expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
@@ -113,13 +116,20 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      let sanitizedLink = formData.linkOnline?.trim() || '';
+      if (sanitizedLink && !/^https?:\/\//i.test(sanitizedLink)) {
+        sanitizedLink = `https://${sanitizedLink}`;
+      }
+
       await onSave({
         ...formData,
+        linkOnline: sanitizedLink || null,
         schedules: formData.schedules.map(s => ({
           ...s,
           startTime: s.startTime.length === 5 ? `${s.startTime}:00` : s.startTime
         }))
       });
+      onClose();
     } catch (error: any) {
       console.error('Error saving class:', error);
       
@@ -328,18 +338,18 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.categoryLabel')}</label>
                       <div className="flex p-1.5 bg-surface-50/70 rounded-[1.5rem] h-14 lg:h-16">
                         <button 
-                          onClick={() => setFormData({...formData, category: 1})}
+                          onClick={() => setFormData({...formData, category: 0})}
                           className={`flex-1 flex items-center justify-center gap-2 lg:gap-3 rounded-[1rem] font-bold text-xs lg:text-sm whitespace-nowrap px-2 lg:px-4 transition-all duration-500 ${
-                            formData.category === 1 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
+                            formData.category === 0 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
                           }`}
                         >
                           <Globe className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
                           {t('common.online')}
                         </button>
                         <button 
-                          onClick={() => setFormData({...formData, category: 2})}
+                          onClick={() => setFormData({...formData, category: 1})}
                           className={`flex-1 flex items-center justify-center gap-2 lg:gap-3 rounded-[1rem] font-bold text-xs lg:text-sm whitespace-nowrap px-2 lg:px-4 transition-all duration-500 ${
-                            formData.category === 2 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
+                            formData.category === 1 ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' : 'text-surface-400 hover:text-surface-600'
                           }`}
                         >
                           <MapPin className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
@@ -348,6 +358,24 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       </div>
                     </div>
                   </div>
+                  
+                  {formData.category === 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      className="space-y-2 overflow-hidden"
+                    >
+                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.linkOnlineLabel')}</label>
+                      <input
+                        type="text"
+                        value={formData.linkOnline || ''}
+                        onChange={(e) => setFormData({...formData, linkOnline: e.target.value})}
+                        className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:bg-white focus:border-brand-primary/20 focus:ring-4 focus:ring-brand-primary/5 transition-all text-base lg:text-lg font-bold text-surface-900 placeholder:text-surface-400 placeholder:font-medium"
+                        placeholder={t('teacher.modal.linkOnlinePlaceholder')}
+                      />
+                    </motion.div>
+                  )}
 
                   {initialData && (
                     <div className="space-y-2 relative">

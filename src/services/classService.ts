@@ -18,6 +18,7 @@ export interface Class {
   studentCount: number;
   startDate: string;
   expectedEndDate: string;
+  linkOnline?: string | null;
   schedules: ClassSchedule[];
 }
 
@@ -29,6 +30,7 @@ export interface CreateClassData {
   subjectId: string;
   startDate: string;
   expectedEndDate: string;
+  linkOnline?: string;
   schedules: Omit<ClassSchedule, 'id'>[];
 }
 

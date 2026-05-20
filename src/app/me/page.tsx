@@ -46,10 +46,19 @@ export default function ProfilePage() {
 
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [showViewerModal, setShowViewerModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,6 +78,10 @@ export default function ProfilePage() {
       return;
     }
 
+    // Generate local preview URL instantly
+    const localPreview = URL.createObjectURL(file);
+    setPreviewUrl(localPreview);
+
     setAvatarLoading(true);
     setAvatarError('');
     const formData = new FormData();
@@ -83,6 +96,7 @@ export default function ProfilePage() {
       await refreshUser();
     } catch (err: any) {
       console.error('Failed to upload avatar', err);
+      setPreviewUrl(null); // Revert preview on error
       setAvatarError(t('profile.avatarUploadFailed') || 'Failed to upload avatar');
       setTimeout(() => setAvatarError(''), 4000);
     } finally {
@@ -94,6 +108,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       setProfileData({ fullName: user.fullName, email: user.email });
+      // Reset previewUrl once user is refreshed with new image, so we render the CDN image
+      setPreviewUrl(null);
     }
   }, [user]);
 
@@ -158,9 +174,9 @@ export default function ProfilePage() {
                         <Loader2 className="w-6 h-6 text-white animate-spin" />
                       </div>
                     ) : null}
-                    {user.imageUrl ? (
+                    {previewUrl || user.imageUrl ? (
                       <img 
-                        src={getAvatarUrl(user.imageUrl) || ''} 
+                        src={previewUrl || getAvatarUrl(user.imageUrl) || ''} 
                         alt={user.fullName} 
                         className="w-full h-full object-cover"
                       />
@@ -400,9 +416,9 @@ export default function ProfilePage() {
               className="max-w-2xl max-h-[80vh] flex items-center justify-center overflow-hidden rounded-3xl shadow-2xl relative"
               onClick={(e) => e.stopPropagation()}
             >
-              {user.imageUrl ? (
+              {previewUrl || user.imageUrl ? (
                 <img 
-                  src={getAvatarUrl(user.imageUrl) || ''} 
+                  src={previewUrl || getAvatarUrl(user.imageUrl) || ''} 
                   alt={user.fullName} 
                   className="max-w-full max-h-[80vh] object-contain rounded-3xl"
                 />

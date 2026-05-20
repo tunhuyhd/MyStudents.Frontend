@@ -52,4 +52,12 @@ api.interceptors.response.use(
   }
 );
 
+export const getAvatarUrl = (url?: string | null) => {
+  if (!url) return null;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  return `${API_URL}${url}`;
+};
+
 export default api;

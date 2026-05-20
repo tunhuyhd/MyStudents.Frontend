@@ -66,7 +66,14 @@
     "confirmPassword": "Xác nhận mật khẩu mới",
     "passwordMismatch": "Mật khẩu xác nhận không khớp.",
     "passwordSuccess": "Đổi mật khẩu thành công!",
-    "passwordError": "Đổi mật khẩu thất bại."
+    "passwordError": "Đổi mật khẩu thất bại.",
+    "avatarTitle": "Ảnh đại diện",
+    "viewAvatar": "Xem ảnh đại diện",
+    "chooseNewPhoto": "Chọn ảnh mới",
+    "cancel": "Hủy",
+    "avatarSizeLimit": "Kích thước tệp vượt quá giới hạn 5MB",
+    "avatarTypeInvalid": "Tệp phải là định dạng hình ảnh",
+    "avatarUploadFailed": "Tải ảnh đại diện thất bại"
   },
   "admin": {
     "panel": "Quản trị hệ thống",

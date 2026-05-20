@@ -7,9 +7,21 @@ import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { GraduationCap, LogOut, User as UserIcon, Menu, X, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getAvatarUrl } from '@/lib/api';
 
 import { useLanguage } from '@/context/LanguageContext';
 import { UserRoles } from '@/constants/roles';
+
+const getInitials = (name: string) => {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  const first = parts[0];
+  const last = parts[parts.length - 1];
+  return (first[0] + last[0]).toUpperCase();
+};
 
 export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { t } = useLanguage();
@@ -18,30 +30,52 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
 
   const isAdmin = user?.role === UserRoles.Admin;
 
-  const NavLinks = () => (
-    <>
-      {user && isAdmin && (
-        <Link 
-          href="/admin" 
-          onClick={() => setIsMenuOpen(false)}
-          className="flex items-center space-x-2 text-sm font-black text-brand-primary hover:opacity-70 transition-opacity uppercase tracking-tighter"
-        >
-          <ShieldCheck className="w-4 h-4" />
-          <span>{t('admin.panel')}</span>
-        </Link>
-      )}
-      {user ? (
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+  const NavLinks = () => {
+    // Generate background color based on name hash for initials avatar
+    const getInitialsBg = (name: string) => {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const h = Math.abs(hash) % 360;
+      return `linear-gradient(135deg, hsl(${h}, 80%, 60%) 0%, hsl(${(h + 40) % 360}, 85%, 50%) 100%)`;
+    };
+
+    return (
+      <>
+        {user && isAdmin && (
           <Link 
-            href="/me" 
+            href="/admin" 
             onClick={() => setIsMenuOpen(false)}
-            className="flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-full border border-surface-100 hover:bg-surface-100 transition-all active:scale-95 group w-full md:w-auto justify-center"
+            className="flex items-center space-x-2 text-sm font-black text-brand-primary hover:opacity-70 transition-opacity uppercase tracking-tighter"
           >
-            <div className="w-6 h-6 bg-brand-primary/10 rounded-full flex items-center justify-center group-hover:bg-brand-primary group-hover:text-white transition-colors">
-              <UserIcon className="w-3.5 h-3.5 text-brand-primary group-hover:text-white" />
-            </div>
-            <span className="text-sm font-bold text-surface-700">{t('common.hello')}, {user.fullName}</span>
+            <ShieldCheck className="w-4 h-4" />
+            <span>{t('admin.panel')}</span>
           </Link>
+        )}
+        {user ? (
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            <Link 
+              href="/me" 
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-full border border-surface-100 hover:bg-surface-100 transition-all active:scale-95 group w-full md:w-auto justify-center"
+            >
+              {user.imageUrl ? (
+                <img 
+                  src={getAvatarUrl(user.imageUrl) || ''} 
+                  alt={user.fullName} 
+                  className="w-6 h-6 rounded-full object-cover border border-brand-primary/20 shrink-0"
+                />
+              ) : (
+                <div 
+                  style={{ background: getInitialsBg(user.fullName) }}
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shrink-0 shadow-sm"
+                >
+                  {getInitials(user.fullName)}
+                </div>
+              )}
+              <span className="text-sm font-bold text-surface-700 truncate max-w-[120px]">{t('common.hello')}, {user.fullName}</span>
+            </Link>
           <button 
             onClick={() => { logout(); setIsMenuOpen(false); }}
             className="flex items-center space-x-2 text-sm font-bold text-red-500 hover:text-red-600 transition-colors px-4 py-2"
@@ -65,7 +99,8 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         </div>
       )}
     </>
-  );
+    );
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-100 px-6 py-4">

@@ -66,7 +66,14 @@
     "confirmPassword": "Confirm New Password",
     "passwordMismatch": "Passwords do not match.",
     "passwordSuccess": "Password changed successfully!",
-    "passwordError": "Password change failed."
+    "passwordError": "Password change failed.",
+    "avatarTitle": "Profile Picture",
+    "viewAvatar": "View profile picture",
+    "chooseNewPhoto": "Choose new photo",
+    "cancel": "Cancel",
+    "avatarSizeLimit": "File size exceeds 5MB limit",
+    "avatarTypeInvalid": "File must be an image",
+    "avatarUploadFailed": "Failed to upload avatar"
   },
   "admin": {
     "panel": "System Admin",

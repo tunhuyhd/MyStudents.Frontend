@@ -64,7 +64,11 @@
     "confirmPassword": "Xác nhận mật khẩu mới",
     "passwordMismatch": "Mật khẩu xác nhận không khớp.",
     "passwordSuccess": "Đổi mật khẩu thành công!",
-    "passwordError": "Đổi mật khẩu thất bại."
+    "passwordError": "Đổi mật khẩu thất bại.",
+    "avatarTitle": "Ảnh đại diện",
+    "viewAvatar": "Xem ảnh đại diện",
+    "chooseNewPhoto": "Chọn ảnh mới",
+    "cancel": "Hủy"
   },
   "admin": {
     "panel": "Quản trị hệ thống",

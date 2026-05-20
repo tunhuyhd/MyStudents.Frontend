@@ -10,6 +10,7 @@ interface User {
   email: string;
   fullName: string;
   role: string;
+  imageUrl?: string | null;
 }
 
 interface AuthContextType {

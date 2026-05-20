@@ -87,6 +87,7 @@ export default function ProfilePage() {
       setTimeout(() => setAvatarError(''), 4000);
     } finally {
       setAvatarLoading(false);
+      e.target.value = ''; // Reset file input to allow selecting the same file again
     }
   };
 

@@ -68,7 +68,10 @@
     "avatarTitle": "Profile Picture",
     "viewAvatar": "View profile picture",
     "chooseNewPhoto": "Choose new photo",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "avatarSizeLimit": "File size exceeds 5MB limit",
+    "avatarTypeInvalid": "File must be an image",
+    "avatarUploadFailed": "Failed to upload avatar"
   },
   "admin": {
     "panel": "System Admin",

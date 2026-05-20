@@ -68,7 +68,10 @@
     "avatarTitle": "Ảnh đại diện",
     "viewAvatar": "Xem ảnh đại diện",
     "chooseNewPhoto": "Chọn ảnh mới",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "avatarSizeLimit": "Kích thước tệp vượt quá giới hạn 5MB",
+    "avatarTypeInvalid": "Tệp phải là định dạng hình ảnh",
+    "avatarUploadFailed": "Tải ảnh đại diện thất bại"
   },
   "admin": {
     "panel": "Quản trị hệ thống",

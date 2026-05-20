@@ -57,7 +57,12 @@ export const getAvatarUrl = (url?: string | null) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  return `${API_URL}${url}`;
+  if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+    const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+    return `${API_URL}${cleanUrl}`;
+  }
+  const cloudinaryBaseUrl = process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL || '';
+  return `${cloudinaryBaseUrl}${url}`;
 };
 
 export default api;

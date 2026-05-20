@@ -57,7 +57,7 @@ export const getAvatarUrl = (url?: string | null) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+  if (url.startsWith('/uploads/') || url.startsWith('uploads/') || url.startsWith('/api/') || url.startsWith('api/')) {
     const cleanUrl = url.startsWith('/') ? url : `/${url}`;
     return `${API_URL}${cleanUrl}`;
   }

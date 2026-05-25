@@ -53,7 +53,20 @@
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
     "createAccount": "Create Teacher Account",
-    "teacherRole": "Teacher"
+    "teacherRole": "Teacher",
+    "forgotPassword": "Forgot Password?",
+    "forgotPasswordDesc": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send Password Reset Link",
+    "backToLogin": "Back to Login",
+    "forgotPasswordSuccess": "If the account exists on our system, a reset email has been sent.",
+    "resetPassword": "Reset Password",
+    "resetPasswordDesc": "Enter a new password for your account",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "passwordMismatch": "Passwords do not match.",
+    "resetSuccess": "Password reset successfully! You can now login with your new password.",
+    "invalidToken": "The password reset link is invalid or has expired.",
+    "requestNewLink": "Request a new reset link"
   },
   "profile": {
     "title": "Teacher Profile",

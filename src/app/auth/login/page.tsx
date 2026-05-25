@@ -88,6 +88,12 @@ export default function UserLoginPage() {
               required
             />
 
+            <div className="flex justify-end !mt-2">
+              <Link href="/auth/forgot-password" className="text-sm font-bold text-brand-primary hover:underline">
+                {t('auth.forgotPassword')}
+              </Link>
+            </div>
+
             {error && <p className="text-sm text-red-500 font-bold text-center">{error}</p>}
 
             <Button type="submit" className="w-full h-14 rounded-2xl shadow-xl shadow-brand-primary/40" isLoading={loading}>

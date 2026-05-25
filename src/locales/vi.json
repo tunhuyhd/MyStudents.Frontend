@@ -53,7 +53,20 @@
     "noAccount": "Chưa có tài khoản?",
     "haveAccount": "Đã có tài khoản?",
     "createAccount": "Tạo tài khoản giáo viên",
-    "teacherRole": "Giáo viên"
+    "teacherRole": "Giáo viên",
+    "forgotPassword": "Quên mật khẩu?",
+    "forgotPasswordDesc": "Nhập email của bạn để nhận liên kết đặt lại mật khẩu",
+    "sendResetLink": "Gửi liên kết đặt lại mật khẩu",
+    "backToLogin": "Quay lại đăng nhập",
+    "forgotPasswordSuccess": "Nếu tài khoản tồn tại trên hệ thống, email hướng dẫn đã được gửi.",
+    "resetPassword": "Đặt lại mật khẩu",
+    "resetPasswordDesc": "Nhập mật khẩu mới cho tài khoản của bạn",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu mới",
+    "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+    "resetSuccess": "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.",
+    "invalidToken": "Liên kết đặt lại mật khẩu đã hết hạn hoặc không hợp lệ.",
+    "requestNewLink": "Gửi lại email đặt lại mật khẩu"
   },
   "profile": {
     "title": "Hồ sơ Giáo viên",

@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { Toast } from '@/components/ui/Toast';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface User {
   id: string;
@@ -17,28 +19,30 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (token: string, refreshToken: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
+  clearSession: () => void;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+async function fetchCurrentUser(): Promise<User | null> {
+  if (!localStorage.getItem('accessToken')) return null;
+  const response = await api.get<User>('/auth/me');
+  return response.data;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { t } = useLanguage();
+  const [logoutError, setLogoutError] = useState(false);
 
   const refreshUser = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await api.get('/auth/me');
-      setUser(res.data);
+      const currentUser = await fetchCurrentUser();
+      setUser(currentUser);
     } catch (error) {
       console.error('Failed to fetch user', error);
       setUser(null);
@@ -48,7 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    refreshUser();
+    let active = true;
+    fetchCurrentUser()
+      .then((currentUser) => {
+        if (active) setUser(currentUser);
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to restore session', error);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
   }, []);
 
   const login = (token: string, refreshToken: string) => {
@@ -57,16 +72,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshUser();
   };
 
-  const logout = () => {
+  const clearSession = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setUser(null);
-    router.push('/');
+    router.push('/auth/login');
+  };
+
+  const logout = async () => {
+    // Keep credentials until the server has revoked the session. On a network
+    // failure, callers can retry instead of reporting a successful logout.
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      const status = (error as { response?: { status?: number } }).response?.status;
+      if (status !== 401) {
+        setLogoutError(true);
+        return;
+      }
+    }
+    clearSession();
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, clearSession, refreshUser }}>
       {children}
+      <Toast isOpen={logoutError} message={t('auth.logoutError')} type="error" onClose={() => setLogoutError(false)} />
     </AuthContext.Provider>
   );
 }

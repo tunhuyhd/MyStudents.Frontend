@@ -40,6 +40,8 @@
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
+    "logoutError": "Could not sign out. Check your connection and try again.",
+    "passwordTooShort": "Use a password with at least 12 characters.",
     "welcomeBack": "Welcome Back",
     "loginDesc": "Login to manage your classes",
     "loginFailed": "Login failed. Please check your credentials.",

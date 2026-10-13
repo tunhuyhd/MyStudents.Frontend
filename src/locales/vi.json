@@ -40,6 +40,8 @@
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "logout": "Đăng xuất",
+    "logoutError": "Chưa thể đăng xuất. Vui lòng kiểm tra kết nối và thử lại.",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 12 ký tự.",
     "welcomeBack": "Chào mừng quay lại",
     "loginDesc": "Đăng nhập để quản lý lớp học của bạn",
     "loginFailed": "Đăng nhập thất bại. Kiểm tra lại thông tin.",

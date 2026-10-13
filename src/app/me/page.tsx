@@ -33,7 +33,7 @@ const getInitialsBg = (name: string) => {
 
 export default function ProfilePage() {
   const { t } = useLanguage();
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, clearSession } = useAuth();
   const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
@@ -134,6 +134,10 @@ export default function ProfilePage() {
       setMessage({ text: t('profile.passwordMismatch') || 'Mismatch!', type: 'error' });
       return;
     }
+    if (passwordData.newPassword.length < 12) {
+      setMessage({ text: t('auth.passwordTooShort'), type: 'error' });
+      return;
+    }
     setLoading(true);
     setMessage({ text: '', type: '' });
     try {
@@ -143,6 +147,7 @@ export default function ProfilePage() {
       });
       setMessage({ text: t('profile.passwordSuccess') || 'Success!', type: 'success' });
       setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      clearSession();
     } catch (err: any) {
       setMessage({ text: err.response?.data?.message || t('profile.passwordError'), type: 'error' });
     } finally {

@@ -127,7 +127,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
           <LanguageSwitcher />
-          {!loading && <NavLinks />}
+          {!loading && NavLinks()}
         </div>
 
         {/* Mobile Toggle */}
@@ -152,7 +152,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             className="md:hidden overflow-hidden bg-white border-t border-surface-50 mt-4"
           >
             <div className="flex flex-col space-y-6 py-6 items-center">
-              {!loading && <NavLinks />}
+              {!loading && NavLinks()}
             </div>
           </motion.div>
         )}

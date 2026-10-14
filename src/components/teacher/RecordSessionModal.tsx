@@ -1,24 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Check, UserX, Clock, AlertCircle, 
   Save, Loader2, Calendar, Clock as ClockIcon, FileText, ArrowRight, ChevronLeft, Settings2
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import { classService } from '@/services/classService';
+import { ClassSchedule, classService, SessionAttendance } from '@/services/classService';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
-
-interface Attendance {
-  id: string;
-  studentId: string;
-  studentName: string;
-  studentEmail?: string;
-  status: number;
-  note?: string;
-}
+import { apiErrorMessage } from '@/lib/apiError';
 
 interface RecordSessionModalProps {
   isOpen: boolean;
@@ -56,7 +48,39 @@ export default function RecordSessionModal({
     note: initialData?.note || ''
   });
 
-  const [attendances, setAttendances] = useState<Attendance[]>([]);
+  const [attendances, setAttendances] = useState<SessionAttendance[]>([]);
+
+  const loadScheduleDefaults = useCallback(async (dateStr: string) => {
+    try {
+      const response = await api.get<{ schedules?: ClassSchedule[]; Schedules?: ClassSchedule[] }>(`/classes/${classId}`);
+      const classData = response.data;
+      const schedules = classData.schedules || classData.Schedules || [];
+
+      if (schedules.length > 0) {
+        const selectedDate = new Date(dateStr);
+        const dayOfWeek = selectedDate.getDay();
+        const matchingSchedule = schedules.find(schedule => schedule.dayOfWeek === dayOfWeek);
+
+        const targetSchedule = matchingSchedule || schedules[0];
+        const start = targetSchedule.startTime.substring(0, 5);
+
+        const [h, m] = start.split(':').map(Number);
+        const totalMinutes = h * 60 + m + (targetSchedule.durationHours * 60);
+        const endH = Math.floor(totalMinutes / 60) % 24;
+        const endM = Math.floor(totalMinutes % 60);
+        const end = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+
+        setSessionData(prev => ({
+          ...prev,
+          date: dateStr,
+          startTime: start,
+          endTime: end
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading schedules:', error);
+    }
+  }, [classId]);
 
   useEffect(() => {
     const initModal = async () => {
@@ -65,7 +89,7 @@ export default function RecordSessionModal({
         setLoading(true);
         try {
           try {
-            const response = await api.get(`/sessions/${sessionId}`);
+            const response = await api.get<{ date: string; startTime: string; endTime: string; note?: string }>(`/sessions/${sessionId}`);
             const data = response.data;
             setSessionData({
               date: data.date.substring(0, 10),
@@ -73,7 +97,7 @@ export default function RecordSessionModal({
               endTime: data.endTime.substring(0, 5),
               note: data.note || ''
             });
-          } catch (e) {
+          } catch {
             console.warn('Session detail endpoint failed, using initial values if available');
           }
           
@@ -81,9 +105,9 @@ export default function RecordSessionModal({
           setAttendances(attRes.data);
           // Only switch to attendance if it's an existing session being opened
           if (isOpen && initialSessionId) setStep('attendance');
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Error loading session data:', error);
-          setError('Không thể tải dữ liệu điểm danh. Vui lòng kiểm tra lại kết nối.');
+          setError(apiErrorMessage(error, t, 'common.saveError'));
         } finally {
           setLoading(false);
         }
@@ -96,6 +120,8 @@ export default function RecordSessionModal({
     if (isOpen) {
       initModal();
     } else {
+      // Restore the selected session from the owning view after closing.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionId(initialSessionId);
       if (initialData) {
         setSessionData({
@@ -106,39 +132,7 @@ export default function RecordSessionModal({
         });
       }
     }
-  }, [sessionId, isOpen, classId, initialSessionId, initialData]);
-
-  const loadScheduleDefaults = async (dateStr: string) => {
-    try {
-      const response = await api.get(`/classes/${classId}`);
-      const classData = response.data;
-      const schedules = classData.schedules || classData.Schedules || [];
-      
-      if (schedules.length > 0) {
-        const selectedDate = new Date(dateStr);
-        const dayOfWeek = selectedDate.getDay();
-        const matchingSchedule = schedules.find((s: any) => s.dayOfWeek === dayOfWeek);
-        
-        const targetSchedule = matchingSchedule || schedules[0];
-        const start = targetSchedule.startTime.substring(0, 5);
-        
-        const [h, m] = start.split(':').map(Number);
-        const totalMinutes = h * 60 + m + (targetSchedule.durationHours * 60);
-        const endH = Math.floor(totalMinutes / 60) % 24;
-        const endM = Math.floor(totalMinutes % 60);
-        const end = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-        
-        setSessionData(prev => ({
-          ...prev,
-          date: dateStr,
-          startTime: start,
-          endTime: end
-        }));
-      }
-    } catch (error) {
-      console.error('Error loading schedules:', error);
-    }
-  };
+  }, [sessionId, isOpen, classId, initialSessionId, initialData, sessionData.date, loadScheduleDefaults, t]);
 
   const handleDateChange = (newDate: string) => {
     setSessionData(prev => ({ ...prev, date: newDate }));
@@ -179,9 +173,8 @@ export default function RecordSessionModal({
         setAttendances(attRes.data);
         setStep('attendance');
       }
-    } catch (err: any) {
-      console.error('Failed to save session', err);
-      setError(err.response?.data?.message || 'Không thể lưu buổi học. Vui lòng thử lại.');
+    } catch (error: unknown) {
+      setError(apiErrorMessage(error, t, 'common.saveError'));
     } finally {
       setSaving(false);
     }

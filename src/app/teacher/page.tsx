@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/Button';
@@ -81,32 +81,7 @@ export default function TeacherDashboard() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== UserRoles.User)) {
-      if (user?.role === UserRoles.Admin) {
-        router.push('/admin');
-      } else {
-        router.push('/auth/login');
-      }
-      return;
-    }
-    if (user) fetchClasses();
-  }, [user, authLoading, pageNumber, year, sortBy, sortDescending]);
-
-  // Debounced search
-  useEffect(() => {
-    if (!user) return;
-    const delayDebounceFn = setTimeout(() => {
-      if (pageNumber === 1) {
-        fetchClasses();
-      } else {
-        setPageNumber(1); // Reset to page 1 on search will trigger fetch
-      }
-    }, 500);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, user]);
-
-  const fetchClasses = async () => {
+  const fetchClasses = useCallback(async () => {
     setLoading(true);
     try {
       const res = await classService.getAll({
@@ -125,7 +100,17 @@ export default function TeacherDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, year, sortBy, sortDescending, pageNumber, pageSize]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user || user.role !== UserRoles.User) {
+      router.push(user?.role === UserRoles.Admin ? '/admin' : '/auth/login');
+      return;
+    }
+    const timer = window.setTimeout(() => { void fetchClasses(); }, searchTerm.trim() ? 500 : 0);
+    return () => window.clearTimeout(timer);
+  }, [user, authLoading, router, fetchClasses, searchTerm]);
 
   const handleSaveClass = async (data: CreateClassData) => {
     try {
@@ -236,7 +221,7 @@ export default function TeacherDashboard() {
             type="text" 
             placeholder={t('common.search') || "Tìm kiếm lớp học, mã lớp..."}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value); setPageNumber(1); }}
             className="w-full h-14 pl-12 pr-4 bg-white rounded-2xl border-none focus:ring-2 focus:ring-brand-primary/20 text-sm font-bold shadow-sm"
           />
         </div>

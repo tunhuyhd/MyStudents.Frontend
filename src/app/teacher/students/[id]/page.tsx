@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,16 +37,7 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== UserRoles.User)) {
-      router.push('/auth/login');
-      return;
-    }
-    if (user && studentId) fetchStudent();
-  }, [user, authLoading, studentId]);
-
-  const fetchStudent = async () => {
-    setLoading(true);
+  const fetchStudent = useCallback(async () => {
     try {
       const res = await studentService.getById(studentId);
       setStudent(res.data);
@@ -56,12 +47,26 @@ export default function StudentDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [studentId, router]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user || user.role !== UserRoles.User) {
+      router.push('/auth/login');
+      return;
+    }
+    if (studentId) {
+      // Fetch server state after the route parameter becomes available.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void fetchStudent();
+    }
+  }, [user, authLoading, studentId, router, fetchStudent]);
 
   const handleSaveStudent = async (data: CreateStudentData) => {
     try {
       await studentService.update(studentId, { ...data, id: studentId });
-      fetchStudent();
+      setLoading(true);
+      await fetchStudent();
     } catch (err) {
       console.error('Failed to update student', err);
       throw err;

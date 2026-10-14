@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
@@ -29,8 +30,9 @@ export default function AdminLoginPage() {
       const res = await api.post('/admin/login', { username, password });
       authLogin(res.data.token, res.data.refreshToken);
       window.location.href = '/admin';
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Access Denied: Invalid admin credentials.');
+    } catch (error: unknown) {
+      const message = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message : undefined;
+      setError(message || 'Access Denied: Invalid admin credentials.');
     } finally {
       setLoading(false);
     }

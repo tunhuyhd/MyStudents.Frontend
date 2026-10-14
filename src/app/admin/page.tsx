@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import ZodiacBackground from '@/components/ZodiacBackground';
@@ -39,16 +39,7 @@ export default function AdminDashboard() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
 
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== 'Admin')) {
-      router.push('/');
-      return;
-    }
-    fetchData();
-  }, [user, authLoading]);
-
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = useCallback(async () => {
     try {
       const [usersRes, rolesRes] = await Promise.all([
         api.get('/admin/users'),
@@ -61,7 +52,18 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user || user.role !== 'Admin') {
+      router.push('/');
+      return;
+    }
+    // Fetch server state; its updates are applied after the request completes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchData();
+  }, [user, authLoading, router, fetchData]);
 
   const handleUpdateRole = async (userId: string, newRoleId: string) => {
     setUpdatingId(userId);
@@ -69,6 +71,7 @@ export default function AdminDashboard() {
       await api.put(`/admin/users/${userId}/role`, newRoleId, {
         headers: { 'Content-Type': 'application/json' }
       });
+      setLoading(true);
       await fetchData(); // Refresh data
     } catch (err) {
       console.error('Failed to update role', err);

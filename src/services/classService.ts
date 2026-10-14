@@ -44,6 +44,30 @@ export interface PaginatedResponse<T> {
   hasPreviousPage: boolean;
 }
 
+export interface AvailableStudent {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email?: string | null;
+}
+
+export interface SessionAttendance {
+  id: string;
+  studentId: string;
+  studentName: string;
+  studentEmail?: string;
+  status: number;
+  note?: string;
+}
+
+export interface CreateSessionData {
+  classId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  note?: string;
+}
+
 export const classService = {
   getAll: (params?: { searchTerm?: string; year?: number; sortBy?: string; sortDescending?: boolean; pageNumber?: number; pageSize?: number }) => 
     api.get<PaginatedResponse<Class>>('/classes', { params }),
@@ -60,11 +84,11 @@ export const classService = {
     }),
   removeStudent: (classId: string, studentId: string) => api.delete<boolean>(`/classes/${classId}/students/${studentId}`),
   getAvailableStudents: (classId: string, searchTerm: string = '') => 
-    api.get<any[]>(`/classes/${classId}/available-students?searchTerm=${searchTerm}`),
+    api.get<AvailableStudent[]>(`/classes/${classId}/available-students`, { params: { searchTerm } }),
   
   // Sessions
-  createSession: (data: any) => api.post<string>('/sessions', data),
-  getSessionAttendances: (sessionId: string) => api.get<any[]>(`/sessions/${sessionId}/attendances`),
+  createSession: (data: CreateSessionData) => api.post<string>('/sessions', data),
+  getSessionAttendances: (sessionId: string) => api.get<SessionAttendance[]>(`/sessions/${sessionId}/attendances`),
   updateAttendance: (data: { attendanceId: string; status: number; note?: string }) => 
     api.put<boolean>('/sessions/attendances', data),
 };

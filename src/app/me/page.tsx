@@ -9,6 +9,7 @@ import api, { getAvatarUrl } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, ShieldCheck, Save, KeyRound, Camera, Loader2, Eye, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { apiErrorMessage } from '@/lib/apiError';
 
 const getInitials = (name: string) => {
   if (!name) return '?';
@@ -94,10 +95,9 @@ export default function ProfilePage() {
         },
       });
       await refreshUser();
-    } catch (err: any) {
-      console.error('Failed to upload avatar', err);
+    } catch (err: unknown) {
       setPreviewUrl(null); // Revert preview on error
-      setAvatarError(t('profile.avatarUploadFailed') || 'Failed to upload avatar');
+      setAvatarError(apiErrorMessage(err, t, 'profile.avatarUploadFailed'));
       setTimeout(() => setAvatarError(''), 4000);
     } finally {
       setAvatarLoading(false);
@@ -107,6 +107,8 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (user) {
+      // Synchronize the editable form with the authenticated profile after refresh.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProfileData({ fullName: user.fullName, email: user.email });
       // Reset previewUrl once user is refreshed with new image, so we render the CDN image
       setPreviewUrl(null);
@@ -121,8 +123,8 @@ export default function ProfilePage() {
       await api.put('/auth/profile', profileData);
       await refreshUser();
       setMessage({ text: t('common.saveSuccess') || 'Success!', type: 'success' });
-    } catch (err: any) {
-      setMessage({ text: t('common.saveError') || 'Error!', type: 'error' });
+    } catch (error: unknown) {
+      setMessage({ text: apiErrorMessage(error, t, 'common.saveError'), type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -148,8 +150,8 @@ export default function ProfilePage() {
       setMessage({ text: t('profile.passwordSuccess') || 'Success!', type: 'success' });
       setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
       clearSession();
-    } catch (err: any) {
-      setMessage({ text: err.response?.data?.message || t('profile.passwordError'), type: 'error' });
+    } catch (error: unknown) {
+      setMessage({ text: apiErrorMessage(error, t, 'profile.passwordError'), type: 'error' });
     } finally {
       setLoading(false);
     }

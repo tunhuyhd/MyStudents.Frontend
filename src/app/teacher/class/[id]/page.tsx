@@ -12,7 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import ClassModal from '@/components/teacher/ClassModal';
-import { classService, CreateClassData, Class } from '@/services/classService';
+import { classService, CreateClassData, Class, ClassSchedule } from '@/services/classService';
 import AddStudentToClassModal from '@/components/teacher/AddStudentToClassModal';
 import StatusDropdown from '@/components/teacher/StatusDropdown';
 import RecordSessionModal from '@/components/teacher/RecordSessionModal';
@@ -50,9 +50,22 @@ interface ClassDetail {
   expectedEndDate: string;
   linkOnline?: string | null;
   studentCount: number;
-  schedules: any[];
+  schedules: ClassSchedule[];
   students: StudentSummary[];
   sessions: Session[];
+}
+
+interface ClassStudentResponse {
+  id?: string;
+  Id?: string;
+  fullName?: string;
+  FullName?: string;
+  email?: string;
+  Email?: string;
+  status?: number;
+  Status?: number;
+  joinedAt?: string;
+  JoinedAt?: string;
 }
 
 export default function ClassDetailPage() {
@@ -106,18 +119,18 @@ export default function ClassDetailPage() {
   const fetchClassStudents = async (page: number) => {
     setStudentsLoading(true);
     try {
-      const response = await api.get(`/classes/${id}/students`, {
+      const response = await api.get<{ items: ClassStudentResponse[]; totalPages: number; totalCount: number }>(`/classes/${id}/students`, {
         params: { pageNumber: page, pageSize }
       });
       const { items, totalPages: total, totalCount: count } = response.data;
       
-      const normalizedStudents = (items || []).map((s: any) => ({
+      const normalizedStudents = (items || []).map(s => ({
         ...s,
-        id: s.id || s.Id,
-        fullName: s.fullName || s.FullName,
-        email: s.email || s.Email,
-        status: s.status !== undefined ? s.status : s.Status,
-        joinedAt: s.joinedAt || s.JoinedAt
+        id: s.id || s.Id || '',
+        fullName: s.fullName || s.FullName || '',
+        email: s.email || s.Email || '',
+        status: s.status !== undefined ? s.status : s.Status ?? 1,
+        joinedAt: s.joinedAt || s.JoinedAt || ''
       }));
 
       setStudents(normalizedStudents);
@@ -132,12 +145,16 @@ export default function ClassDetailPage() {
 
   useEffect(() => {
     if (id) {
+      // Fetch server state after the route parameter changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchClassDetail();
     }
   }, [id]);
 
   useEffect(() => {
     if (id && activeTab === 'students') {
+      // Fetch the selected page when the students tab becomes active.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchClassStudents(pageNumber);
     }
   }, [id, activeTab, pageNumber]);
@@ -233,7 +250,7 @@ export default function ClassDetailPage() {
 
   if (!classData) return null;
 
-  const tabs = [
+  const tabs: { id: typeof activeTab; label: string; icon: typeof BookOpen }[] = [
     { id: 'overview', label: t('teacher.details.overview'), icon: BookOpen },
     { id: 'students', label: t('teacher.details.students'), icon: Users },
     { id: 'sessions', label: t('teacher.details.sessions'), icon: Calendar },
@@ -311,7 +328,7 @@ export default function ClassDetailPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`relative flex items-center space-x-3 px-4 md:px-8 py-3 md:py-4 rounded-[1.25rem] md:rounded-[1.75rem] font-black text-sm transition-all duration-500 ${
                 activeTab === tab.id ? 'text-white' : 'text-surface-400 hover:text-surface-600'
               }`}
@@ -666,7 +683,7 @@ export default function ClassDetailPage() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         onSave={handleSaveClass} 
-        initialData={classData as any as Class} 
+        initialData={classData as Class}
       />
 
       <Toast 

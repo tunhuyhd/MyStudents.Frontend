@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, UserPlus, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
-import { classService } from '@/services/classService';
+import { AvailableStudent, classService } from '@/services/classService';
 
 interface AddStudentToClassModalProps {
   isOpen: boolean;
@@ -21,31 +21,31 @@ export default function AddStudentToClassModal({
   classId 
 }: AddStudentToClassModalProps) {
   const { t } = useLanguage();
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<AvailableStudent[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [addingId, setAddingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (isOpen) {
-        fetchStudents();
-      }
-    }, 300); // Debounce search
-    return () => clearTimeout(timer);
-  }, [isOpen, searchQuery]);
-
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     setLoading(true);
     try {
       const res = await classService.getAvailableStudents(classId, searchQuery);
       setStudents(res.data);
-    } catch (err) {
-      console.error('Failed to fetch students', err);
+    } catch (error: unknown) {
+      console.error('Failed to fetch students', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [classId, searchQuery]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isOpen) {
+        void fetchStudents();
+      }
+    }, 300); // Debounce search
+    return () => clearTimeout(timer);
+  }, [isOpen, fetchStudents]);
 
   const handleAdd = async (id: string) => {
     setAddingId(id);

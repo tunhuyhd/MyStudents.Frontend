@@ -11,32 +11,19 @@ import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
+import { Class, ClassSchedule, CreateClassData as ClassPayload } from '@/services/classService';
+import { apiErrorMessage } from '@/lib/apiError';
 
-interface ClassSchedule {
+interface ClassFormData extends Omit<ClassPayload, 'schedules'> {
   id?: string;
-  dayOfWeek: number;
-  startTime: string;
-  durationHours: number;
-}
-
-interface CreateClassData {
-  id?: string;
-  name: string;
-  code: string;
-  status: number;
-  category: number; // 1: Online, 2: Offline
-  subjectId: string;
-  startDate: string;
-  expectedEndDate: string;
-  linkOnline?: string;
   schedules: ClassSchedule[];
 }
 
 interface ClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: CreateClassData) => Promise<void>;
-  initialData?: any;
+  onSave: (data: ClassPayload) => Promise<void>;
+  initialData?: Class | null;
 }
 
 export default function ClassModal({ isOpen, onClose, onSave, initialData }: ClassModalProps) {
@@ -52,14 +39,14 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     message: ''
   });
   
-  const [formData, setFormData] = useState<CreateClassData>({
+  const [formData, setFormData] = useState<ClassFormData>({
     name: '',
     code: '',
     status: 1,
     category: 0, // 0: Online, 1: Offline
     subjectId: '',
     startDate: new Date().toISOString().split('T')[0],
-    expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    expectedEndDate: new Date(new Date().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
   });
 
@@ -77,6 +64,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
   useEffect(() => {
     if (initialData) {
+      // Keep the form aligned with the selected class when the modal opens.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: initialData.name || '',
         code: initialData.code || '',
@@ -91,7 +80,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
           ? initialData.expectedEndDate.split('T')[0] 
           : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         schedules: initialData.schedules?.length > 0 
-          ? initialData.schedules.map((s: any) => ({
+          ? initialData.schedules.map(s => ({
               ...s,
               startTime: s.startTime.length > 8 ? s.startTime.substring(0, 8) : s.startTime
             }))
@@ -106,7 +95,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         subjectId: '',
         linkOnline: '',
         startDate: new Date().toISOString().split('T')[0],
-        expectedEndDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        expectedEndDate: new Date(new Date().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
       });
     }
@@ -130,25 +119,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         }))
       });
       onClose();
-    } catch (error: any) {
-      console.error('Error saving class:', error);
-      
-      const errorData = error.response?.data;
-      
-      // If it's a structured business error
-      if (errorData?.errorCode) {
-        const translatedMessage = (t as any)(`errors.${errorData.errorCode}`, errorData.parameters);
-        setErrorPopup({ isOpen: true, message: translatedMessage });
-      } else {
-        // Fallback for other errors
-        const errorMessage = errorData?.message || error.message || t('common.saveError');
-        
-        if (typeof errorMessage === 'string' && (errorMessage.includes('Bạn đã có lớp học') || errorMessage.includes('trùng nhau'))) {
-          setErrorPopup({ isOpen: true, message: errorMessage });
-        } else {
-          alert(errorMessage);
-        }
-      }
+    } catch (error: unknown) {
+      setErrorPopup({ isOpen: true, message: apiErrorMessage(error, t, 'common.saveError') });
     } finally {
       setLoading(false);
     }
@@ -164,7 +136,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     });
   };
 
-  const updateSchedule = (index: number, field: keyof ClassSchedule, value: any) => {
+  const updateSchedule = (index: number, field: keyof ClassSchedule, value: string | number) => {
     const newSchedules = [...formData.schedules];
     newSchedules[index] = { ...newSchedules[index], [field]: value };
     setFormData({ ...formData, schedules: newSchedules });

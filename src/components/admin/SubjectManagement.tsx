@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { subjectService, Subject } from '@/services/subjectService';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -11,27 +11,25 @@ import { useLanguage } from '@/context/LanguageContext';
 export default function SubjectManagement() {
   const { t } = useLanguage();
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({ name: '', description: '' });
 
-  useEffect(() => {
-    fetchSubjects();
-  }, []);
-
-  const fetchSubjects = async () => {
-    setLoading(true);
+  const fetchSubjects = useCallback(async () => {
     try {
       const res = await subjectService.getAll();
       setSubjects(res.data);
     } catch (err) {
       console.error('Failed to fetch subjects', err);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Fetch the subject list; state updates follow the completed API request.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchSubjects();
+  }, [fetchSubjects]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

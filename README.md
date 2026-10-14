@@ -19,7 +19,7 @@ npm ci
 npm run dev
 npm test
 npx tsc --noEmit --incremental false
-npm run lint:student-list
+npm run lint
 npm run build
 ```
 

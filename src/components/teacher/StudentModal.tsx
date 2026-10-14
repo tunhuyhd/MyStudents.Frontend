@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, User, Mail, GraduationCap, Phone, MapPin, Calendar, ChevronLeft, ChevronRight, UserCircle, Users, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { Student, CreateStudentData } from '@/services/studentService';
 import { useLanguage } from '@/context/LanguageContext';
+import { apiErrorMessage } from '@/lib/apiError';
 
 interface StudentModalProps {
   isOpen: boolean;
@@ -27,13 +28,15 @@ const CustomDatePicker = ({
   t: (key: string) => string
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [viewDate, setViewDate] = useState(new Date(value || Date.now()));
+  const [viewDate, setViewDate] = useState(new Date(value || new Date()));
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [inputValue, setInputValue] = useState(value ? new Date(value).toLocaleDateString('vi-VN') : '');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (value) {
+      // Reflect an externally selected date in the editable date field.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputValue(new Date(value).toLocaleDateString('vi-VN'));
     }
   }, [value]);
@@ -226,6 +229,8 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
   useEffect(() => {
     if (initialData) {
+      // Reset the form when the modal switches between create and edit.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         firstName: initialData.firstName,
         lastName: initialData.lastName,
@@ -276,10 +281,8 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
     try {
       await onSave(formData);
       onClose();
-    } catch (err: any) {
-      console.error(err);
-      const message = err.response?.data?.message || err.message || 'Có lỗi xảy ra khi lưu thông tin học sinh';
-      setError(message);
+    } catch (error: unknown) {
+      setError(apiErrorMessage(error, t, 'common.saveError'));
     } finally {
       setLoading(false);
     }

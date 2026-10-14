@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
+import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { GraduationCap, ArrowLeft, LogIn } from 'lucide-react';
@@ -36,8 +37,8 @@ export default function UserLoginPage() {
       } else {
         window.location.href = '/teacher';
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || t('auth.loginFailed'));
+    } catch (err: unknown) {
+      setError(apiErrorMessage(err, t, 'auth.loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,8 @@ export default function UserLoginPage() {
               required
             />
 
-            {error && <p className="text-sm text-red-500 font-bold text-center">{error}</p>}
+            <Link href="/auth/forgot-password" className="block text-sm font-bold text-brand-primary hover:underline">{t('auth.forgotPassword')}</Link>
+            {error && <p role="alert" className="text-sm text-red-500 font-bold text-center">{error}</p>}
 
             <Button type="submit" className="w-full h-14 rounded-2xl shadow-xl shadow-brand-primary/40" isLoading={loading}>
               {t('common.login')}

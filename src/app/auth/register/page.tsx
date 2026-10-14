@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
+import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { UserPlus, ArrowLeft } from 'lucide-react';
@@ -33,8 +34,8 @@ export default function RegisterPage() {
       const res = await api.post('/auth/register', formData);
       authLogin(res.data.token, res.data.refreshToken);
       window.location.href = '/teacher';
-    } catch (err: any) {
-      setError(err.response?.data?.message || t('auth.registrationFailed'));
+    } catch (err: unknown) {
+      setError(apiErrorMessage(err, t, 'auth.registrationFailed'));
     } finally {
       setLoading(false);
     }
@@ -101,6 +102,8 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 className="bg-surface-50 border-transparent focus:bg-white"
                 value={formData.password}
+                minLength={12}
+                maxLength={128}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                 required
               />

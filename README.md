@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyStudents Frontend
 
-## Getting Started
+Ứng dụng Next.js 16 cho giáo viên và quản trị viên.
 
-First, run the development server:
+## Cấu hình
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Tạo `.env.local` (không commit file này) và đặt URL gốc của API:
+
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:5268
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Biến này không bao gồm `/api/v1`; client tự thêm tiền tố đó. API phải cấu hình CORS cho `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Chạy và kiểm tra
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+npm ci
+npm run dev
+npm test
+npx tsc --noEmit --incremental false
+npm run lint:student-list
+npm run build
+```
 
-## Learn More
+Mở `http://localhost:3000`. Production dùng `npm run build` và `npm start`. Build Next.js tải font Inter và Be Vietnam Pro từ Google Fonts; build cần kết nối mạng hoặc cache font tương ứng.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Danh sách học sinh dùng API phân trang, tìm kiếm và lọc trạng thái; endpoint tương thích cũ `/api/v1/students` vẫn giữ phản hồi dạng mảng và phân trang nội bộ theo lô 100 bản ghi.

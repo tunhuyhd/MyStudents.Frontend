@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,5 +17,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run lint:student-list
       - run: npm test
       - run: npx tsc --noEmit --incremental false
+      - run: npm run build

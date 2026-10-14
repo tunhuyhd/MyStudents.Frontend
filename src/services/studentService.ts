@@ -31,8 +31,25 @@ export interface CreateStudentData {
   note?: string;
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  pageNumber: number;
+  totalPages: number;
+  totalCount: number;
+  pageSize: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface StudentListParams {
+  pageNumber: number;
+  pageSize: number;
+  searchTerm?: string;
+  status?: number;
+}
+
 export const studentService = {
-  getAll: () => api.get<Student[]>('/students'),
+  getAll: (params: StudentListParams, signal?: AbortSignal) => api.get<PaginatedResponse<Student>>('/students/paged', { params, signal }),
   getById: (id: string) => api.get<Student>(`/students/${id}`),
   create: (data: CreateStudentData) => api.post<string>('/students', data),
   update: (id: string, data: CreateStudentData & { id: string }) => api.put(`/students/${id}`, data),

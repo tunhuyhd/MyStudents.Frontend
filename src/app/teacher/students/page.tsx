@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Users, 
   Plus, 
   Search,
-  MoreVertical, 
   Edit, 
   Trash2,
   Phone,
@@ -16,17 +15,20 @@ import {
   GraduationCap,
   MapPin,
   ChevronRight,
+  ChevronLeft,
   Filter,
   UserPlus,
-  Loader2
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { UserRoles } from '@/constants/roles';
 
-import { studentService, Student, CreateStudentData } from '@/services/studentService';
+import { studentService, Student, CreateStudentData, PaginatedResponse } from '@/services/studentService';
 import StudentModal from '@/components/teacher/StudentModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
+import { apiErrorMessage } from '@/lib/apiError';
 
 export default function StudentsPage() {
   const { t, language } = useLanguage();
@@ -36,6 +38,12 @@ export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageInfo, setPageInfo] = useState<Pick<PaginatedResponse<Student>, 'totalPages' | 'totalCount' | 'pageSize' | 'hasNextPage' | 'hasPreviousPage'>>({ totalPages: 0, totalCount: 0, pageSize: 12, hasNextPage: false, hasPreviousPage: false });
+  const [reloadKey, setReloadKey] = useState(0);
+  const [listError, setListError] = useState('');
+  const [actionError, setActionError] = useState('');
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,20 +58,41 @@ export default function StudentsPage() {
       router.push('/auth/login');
       return;
     }
-    if (user) fetchStudents();
-  }, [user, authLoading]);
+    if (!user) return;
 
-  const fetchStudents = async () => {
-    setLoading(true);
-    try {
-      const res = await studentService.getAll();
-      setStudents(res.data);
-    } catch (err) {
-      console.error('Failed to fetch students', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setLoading(true);
+      setListError('');
+      try {
+        const res = await studentService.getAll({
+          pageNumber,
+          pageSize: 12,
+          searchTerm: searchQuery.trim() || undefined,
+          status: statusFilter ? Number(statusFilter) : undefined,
+        }, controller.signal);
+        if (controller.signal.aborted) return;
+        setStudents(res.data.items);
+        setPageInfo({
+          totalPages: res.data.totalPages,
+          totalCount: res.data.totalCount,
+          pageSize: res.data.pageSize,
+          hasNextPage: res.data.hasNextPage,
+          hasPreviousPage: res.data.hasPreviousPage,
+        });
+        if (res.data.totalPages > 0 && pageNumber > res.data.totalPages) setPageNumber(res.data.totalPages);
+      } catch (error: unknown) {
+        if (!controller.signal.aborted) setListError(apiErrorMessage(error, t, 'teacher.students.loadError'));
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }, searchQuery.trim() ? 300 : 0);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [user, authLoading, router, pageNumber, searchQuery, statusFilter, reloadKey, t]);
 
   const handleSaveStudent = async (data: CreateStudentData) => {
     try {
@@ -72,7 +101,10 @@ export default function StudentsPage() {
       } else {
         await studentService.create(data);
       }
-      fetchStudents();
+      setSearchQuery('');
+      setStatusFilter('');
+      setPageNumber(1);
+      setReloadKey(key => key + 1);
     } catch (err) {
       console.error('Failed to save student', err);
       throw err;
@@ -92,12 +124,13 @@ export default function StudentsPage() {
   const handleConfirmDelete = async () => {
     if (!deletingStudentId) return;
     setIsDeleting(true);
+    setActionError('');
     try {
       await studentService.delete(deletingStudentId);
       setIsDeleteModalOpen(false);
-      fetchStudents();
-    } catch (err) {
-      console.error('Failed to delete student', err);
+      setReloadKey(key => key + 1);
+    } catch (error: unknown) {
+      setActionError(apiErrorMessage(error, t, 'common.saveError'));
     } finally {
       setIsDeleting(false);
       setDeletingStudentId(null);
@@ -107,21 +140,18 @@ export default function StudentsPage() {
   const handleUpdateStatus = async (studentId: string, currentStatus: number) => {
     const newStatus = currentStatus === 1 ? 2 : 1;
     setUpdatingStatusId(studentId);
+    setActionError('');
     try {
       await studentService.updateStatus(studentId, newStatus);
-      setStudents(prev => prev.map(s => s.id === studentId ? { ...s, status: newStatus } : s));
-    } catch (err) {
-      console.error('Failed to update status', err);
+      setReloadKey(key => key + 1);
+    } catch (error: unknown) {
+      setActionError(apiErrorMessage(error, t, 'common.saveError'));
     } finally {
       setUpdatingStatusId(null);
     }
   };
 
-  const filteredStudents = students.filter(s => 
-    `${s.firstName} ${s.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.phone?.includes(searchQuery)
-  );
+  const hasActiveFilters = Boolean(searchQuery.trim() || statusFilter);
 
   return (
     <div className="max-w-7xl mx-auto px-6 pt-0 lg:pt-4 space-y-12 pb-32">
@@ -158,10 +188,38 @@ export default function StudentsPage() {
               type="text"
               placeholder={t('teacher.students.searchPlaceholder') || 'Tìm tên, email hoặc SĐT...'}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label={t('teacher.students.searchLabel')}
+              maxLength={200}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPageNumber(1);
+                setStudents([]);
+                setPageInfo({ totalPages: 0, totalCount: 0, pageSize: 12, hasNextPage: false, hasPreviousPage: false });
+                setLoading(true);
+              }}
               className="h-16 pl-16 pr-8 bg-white border border-surface-100 rounded-[2rem] text-sm font-bold text-surface-700 placeholder:text-surface-300 focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary/50 transition-all w-full md:w-80 shadow-sm outline-none"
             />
           </div>
+
+          <label className="relative flex-1 md:flex-none">
+            <span className="sr-only">{t('teacher.students.statusFilter')}</span>
+            <Filter aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none" />
+            <select
+              value={statusFilter}
+              onChange={event => {
+                setStatusFilter(event.target.value);
+                setPageNumber(1);
+                setStudents([]);
+                setPageInfo({ totalPages: 0, totalCount: 0, pageSize: 12, hasNextPage: false, hasPreviousPage: false });
+                setLoading(true);
+              }}
+              className="h-16 w-full md:w-52 pl-11 pr-5 rounded-[2rem] border border-surface-100 bg-white text-sm font-bold text-surface-700 shadow-sm outline-none focus:border-brand-primary/50 focus:ring-4 focus:ring-brand-primary/10"
+            >
+              <option value="">{t('teacher.students.allStatuses')}</option>
+              <option value="1">{t('teacher.status.active')}</option>
+              <option value="2">{t('teacher.status.inactive')}</option>
+            </select>
+          </label>
 
           <Button 
             onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
@@ -173,17 +231,26 @@ export default function StudentsPage() {
         </motion.div>
       </div>
 
+      {actionError && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{actionError}</p>}
+
       {/* Main Grid Section */}
       <div className="relative z-10">
-        {loading ? (
+        {listError ? (
+          <div role="alert" className="flex flex-col items-center justify-center gap-4 rounded-[2rem] border border-red-200 bg-red-50 p-10 text-center">
+            <p className="font-semibold text-red-800">{listError}</p>
+            <Button onClick={() => setReloadKey(key => key + 1)} className="rounded-xl bg-white px-5 py-3 text-red-700 shadow-sm">
+              <RefreshCw className="mr-2 h-4 w-4" />{t('teacher.students.retry')}
+            </Button>
+          </div>
+        ) : loading && students.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map(i => (
               <div key={i} className="h-64 bg-white/50 animate-pulse rounded-[3rem] border border-surface-50" />
             ))}
           </div>
-        ) : filteredStudents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredStudents.map((student, idx) => (
+        ) : students.length > 0 ? (
+          <div aria-busy={loading} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-opacity ${loading ? 'opacity-60' : ''}`}>
+            {students.map((student, idx) => (
               <motion.div
                 key={student.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -192,16 +259,18 @@ export default function StudentsPage() {
                 className="group relative bg-white hover:bg-brand-primary/5 border border-surface-50 hover:border-brand-primary/20 rounded-[3rem] p-8 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-brand-primary/5 flex flex-col"
               >
                 {/* Actions Dropdown Overay (Simplified for direct access) */}
-                <div className="absolute top-6 right-6 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-6 right-6 flex space-x-2 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                   <button 
                     onClick={() => handleEdit(student)}
-                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-400 hover:text-brand-primary hover:scale-110 transition-all"
+                    aria-label={t('teacher.students.editStudent', { name: `${student.firstName} ${student.lastName}` })}
+                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-500 hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => handleDeleteClick(student.id)}
-                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-400 hover:text-red-500 hover:scale-110 transition-all"
+                    aria-label={t('teacher.students.deleteStudent', { name: `${student.firstName} ${student.lastName}` })}
+                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-500 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -222,6 +291,8 @@ export default function StudentsPage() {
                       </span>
                       <button
                         onClick={() => handleUpdateStatus(student.id, student.status)}
+                        aria-label={t('teacher.students.changeStatus', { name: `${student.firstName} ${student.lastName}` })}
+                        aria-busy={updatingStatusId === student.id}
                         disabled={updatingStatusId === student.id}
                         className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
                           student.status === 1 
@@ -291,17 +362,38 @@ export default function StudentsPage() {
               <Users className="w-10 h-10 text-surface-200" />
             </div>
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-black text-surface-900 tracking-tight">{t('teacher.students.noStudentsTitle') || 'Chưa có học sinh nào'}</h3>
-              <p className="text-surface-400 font-medium">{t('teacher.students.noStudentsDesc') || 'Hãy bắt đầu bằng việc thêm học sinh đầu tiên vào hệ thống.'}</p>
+              <h3 className="text-2xl font-black text-surface-900 tracking-tight">{hasActiveFilters ? t('teacher.students.noResultsTitle') : t('teacher.students.noStudentsTitle')}</h3>
+              <p className="text-surface-400 font-medium">{hasActiveFilters ? t('teacher.students.noResultsDesc') : t('teacher.students.noStudentsDesc')}</p>
             </div>
-            <Button 
-              onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
-              className="h-14 px-10 rounded-2xl bg-brand-primary shadow-xl shadow-brand-primary/10 text-white font-black"
-            >
-              <Plus className="w-5 h-5 mr-3" />
-              {t('teacher.students.addNowBtn') || 'Thêm học sinh ngay'}
-            </Button>
+            {hasActiveFilters ? (
+              <Button onClick={() => { setSearchQuery(''); setStatusFilter(''); setPageNumber(1); }} className="h-14 px-10 rounded-2xl bg-white border border-surface-200 text-surface-700 font-bold">
+                {t('teacher.students.clearFilters')}
+              </Button>
+            ) : (
+              <Button onClick={() => { setEditingStudent(null); setIsModalOpen(true); }} className="h-14 px-10 rounded-2xl bg-brand-primary shadow-xl shadow-brand-primary/10 text-white font-black">
+                <Plus className="w-5 h-5 mr-3" />{t('teacher.students.addNowBtn')}
+              </Button>
+            )}
           </motion.div>
+        )}
+        {!listError && pageInfo.totalCount > 0 && (
+          <div className="mt-8 flex flex-col gap-4 rounded-3xl border border-surface-100 bg-white px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+            <p aria-live="polite" className="text-sm font-semibold text-surface-500">
+              {t('teacher.students.resultsCount', { count: pageInfo.totalCount })}
+              {loading && <span className="ml-2">· {t('common.loading')}</span>}
+            </p>
+            {pageInfo.totalPages > 1 && (
+              <nav aria-label={t('teacher.students.pagination')} className="flex items-center justify-between gap-3 sm:justify-end">
+                <Button type="button" onClick={() => setPageNumber(page => Math.max(1, page - 1))} disabled={!pageInfo.hasPreviousPage || loading} className="rounded-xl border border-surface-200 bg-white px-4 py-2 text-sm font-bold text-surface-700 disabled:opacity-50">
+                  <ChevronLeft aria-hidden="true" className="mr-1 h-4 w-4" />{t('teacher.students.previousPage')}
+                </Button>
+                <span className="whitespace-nowrap text-sm font-bold text-surface-600">{t('teacher.students.pageOf', { page: pageNumber, total: pageInfo.totalPages })}</span>
+                <Button type="button" onClick={() => setPageNumber(page => page + 1)} disabled={!pageInfo.hasNextPage || loading} className="rounded-xl border border-surface-200 bg-white px-4 py-2 text-sm font-bold text-surface-700 disabled:opacity-50">
+                  {t('teacher.students.nextPage')}<ChevronRight aria-hidden="true" className="ml-1 h-4 w-4" />
+                </Button>
+              </nav>
+            )}
+          </div>
         )}
       </div>
 

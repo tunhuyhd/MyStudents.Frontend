@@ -13,8 +13,15 @@
   --color-surface-100: #ecfdf5;
   --color-surface-200: #d1fae5;
   --color-surface-300: #a7f3d0;
+  --color-surface-400: #527568;
+  --color-surface-500: #47695c;
+  --color-surface-600: #36584b;
+  --color-surface-700: #24483a;
   --color-surface-800: #064e3b;
   --color-surface-900: #022c22;
+  --color-surface-950: #011c16;
+  --color-brand-action: #047857;
+  --color-brand-action-hover: #065f46;
   --breakpoint-xs: 320px;
 }
 
@@ -32,6 +39,29 @@
     -moz-osx-font-smoothing: grayscale;
     position: relative;
     letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-action);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-surface-200);
+    color: var(--color-surface-900);
+  }
+
+  input, textarea {
+    caret-color: var(--color-brand-action);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {

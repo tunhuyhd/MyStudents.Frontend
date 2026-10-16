@@ -1,5 +1,9 @@
 {
   "common": {
+    "navigation": "Navigation",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "skipToContent": "Skip to content",
     "login": "Login",
     "register": "Register",
     "getStarted": "Get Started",

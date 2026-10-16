@@ -15,16 +15,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', isLoading, disabled, children, ...props }, ref) => {
     const variants = {
-      primary: 'bg-brand-primary text-white hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/20',
-      secondary: 'bg-brand-secondary text-white hover:bg-brand-secondary/90 shadow-lg shadow-brand-secondary/20',
-      outline: 'border-2 border-brand-primary text-brand-primary hover:bg-brand-primary/5',
-      ghost: 'text-surface-800 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-800',
+      primary: 'bg-brand-action text-white hover:bg-brand-action-hover',
+      secondary: 'bg-sky-700 text-white hover:bg-sky-800',
+      outline: 'border border-brand-action text-brand-action hover:bg-surface-50',
+      ghost: 'text-surface-800 hover:bg-surface-100',
     };
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
+      sm: 'min-h-10 px-3 py-2 text-sm',
       md: 'px-5 py-2.5',
       lg: 'px-8 py-3.5 text-lg',
     };
@@ -38,11 +38,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           sizes[size],
           className
         )}
-        disabled={isLoading}
         {...props}
+        disabled={disabled || isLoading}
+        aria-busy={isLoading || undefined}
       >
         {isLoading ? (
-          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          <span aria-hidden="true" className="mr-2 h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent" />
         ) : null}
         {children}
       </button>

@@ -1,5 +1,9 @@
 {
   "common": {
+    "navigation": "Điều hướng",
+    "openNavigation": "Mở điều hướng",
+    "closeNavigation": "Đóng điều hướng",
+    "skipToContent": "Đến nội dung chính",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "getStarted": "Bắt đầu ngay",

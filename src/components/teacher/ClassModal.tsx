@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Calendar as CalendarIcon, Clock, Plus, Trash2, 
@@ -28,6 +28,7 @@ interface ClassModalProps {
 
 export default function ClassModal({ isOpen, onClose, onSave, initialData }: ClassModalProps) {
   const { t } = useLanguage();
+  const formId = useId();
   const [step, setStep] = useState(1);
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -243,10 +244,11 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.nameLabel')}</label>
+                      <label htmlFor={`${formId}-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.nameLabel')}</label>
                       <div className="relative group">
                         <Layout className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
+                          id={`${formId}-name`}
                           type="text" 
                           value={formData.name}
                           onChange={e => setFormData({...formData, name: e.target.value})}
@@ -256,10 +258,11 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.codeLabel')}</label>
+                      <label htmlFor={`${formId}-code`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.codeLabel')}</label>
                       <div className="relative group">
                         <Hash className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
+                          id={`${formId}-code`}
                           type="text" 
                           value={formData.code}
                           onChange={e => setFormData({...formData, code: e.target.value})}
@@ -272,12 +275,13 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2 relative">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.subjectLabel')}</label>
+                      <span id={`${formId}-subject-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.subjectLabel')}</span>
                       <button 
+                        aria-labelledby={`${formId}-subject-label ${formId}-subject-value`}
                         onClick={() => setIsSubjectOpen(!isSubjectOpen)}
                         className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
                       >
-                        <span className="font-bold text-surface-900 text-base lg:text-lg">
+                        <span id={`${formId}-subject-value`} className="font-bold text-surface-900 text-base lg:text-lg">
                           {subjects.find(s => s.id === formData.subjectId)?.name || t('teacher.modal.subjectPlaceholder')}
                         </span>
                         <ChevronDown className={`w-5 h-5 text-brand-primary/40 transition-transform duration-300 ${isSubjectOpen ? 'rotate-180' : ''}`} />
@@ -307,8 +311,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       </AnimatePresence>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.categoryLabel')}</label>
-                      <div className="flex p-1.5 bg-surface-50/70 rounded-[1.5rem] h-14 lg:h-16">
+                      <span id={`${formId}-category-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.categoryLabel')}</span>
+                      <div role="group" aria-labelledby={`${formId}-category-label`} className="flex p-1.5 bg-surface-50/70 rounded-[1.5rem] h-14 lg:h-16">
                         <button 
                           onClick={() => setFormData({...formData, category: 0})}
                           className={`flex-1 flex items-center justify-center gap-2 lg:gap-3 rounded-[1rem] font-bold text-xs lg:text-sm whitespace-nowrap px-2 lg:px-4 transition-all duration-500 ${
@@ -338,8 +342,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       className="space-y-2 overflow-hidden"
                     >
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.linkOnlineLabel')}</label>
+                      <label htmlFor={`${formId}-online-link`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.linkOnlineLabel')}</label>
                       <input
+                        id={`${formId}-online-link`}
                         type="text"
                         value={formData.linkOnline || ''}
                         onChange={(e) => setFormData({...formData, linkOnline: e.target.value})}
@@ -351,8 +356,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
 
                   {initialData && (
                     <div className="space-y-2 relative">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.statusLabel')}</label>
+                      <span id={`${formId}-status-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.statusLabel')}</span>
                       <button 
+                        aria-labelledby={`${formId}-status-label ${formId}-status-value`}
                         onClick={() => setIsStatusOpen(!isStatusOpen)}
                         className="w-full h-14 lg:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent hover:border-brand-primary/20 flex items-center justify-between transition-all"
                       >
@@ -363,7 +369,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             formData.status === 3 ? 'bg-brand-primary shadow-lg shadow-brand-primary/30' :
                             'bg-red-500 shadow-lg shadow-red-500/30'
                           }`} />
-                          <span className="font-bold text-surface-900 text-base lg:text-lg">
+                          <span id={`${formId}-status-value`} className="font-bold text-surface-900 text-base lg:text-lg">
                             {formData.status === 1 ? t('teacher.status.active') : 
                              formData.status === 2 ? t('teacher.status.inactive') : 
                              formData.status === 3 ? t('teacher.status.completed') : t('teacher.status.cancelled')}
@@ -408,8 +414,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.startDateLabel')}</label>
-                      <div className="relative group">
+                      <span id={`${formId}-start-date-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.startDateLabel')}</span>
+                      <div role="group" aria-labelledby={`${formId}-start-date-label`} className="relative group">
                         <CustomDatePicker
                           value={formData.startDate}
                           onChange={val => setFormData({...formData, startDate: val})}
@@ -418,8 +424,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.endDateLabel')}</label>
-                      <div className="relative group z-40">
+                      <span id={`${formId}-end-date-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">{t('teacher.modal.endDateLabel')}</span>
+                      <div role="group" aria-labelledby={`${formId}-end-date-label`} className="relative group z-40">
                         <CustomDatePicker
                           value={formData.expectedEndDate}
                           onChange={val => setFormData({...formData, expectedEndDate: val})}
@@ -466,13 +472,14 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             </div>
                             <div className="w-full lg:flex-1 grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                               <div className="relative">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.dayLabel')}</label>
+                                <span id={`${formId}-schedule-${index}-day-label`} className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.dayLabel')}</span>
                                 <button
                                   type="button"
+                                  aria-labelledby={`${formId}-schedule-${index}-day-label ${formId}-schedule-${index}-day-value`}
                                   onClick={() => setActiveDayDropdown(activeDayDropdown === index ? null : index)}
                                   className="w-full h-12 md:h-14 px-5 bg-white rounded-xl md:rounded-2xl border-none text-xs md:text-sm font-bold text-surface-900 shadow-sm focus:ring-2 focus:ring-brand-primary/10 flex items-center justify-between transition-all"
                                 >
-                                  {t(`days.${schedule.dayOfWeek}`)}
+                                  <span id={`${formId}-schedule-${index}-day-value`}>{t(`days.${schedule.dayOfWeek}`)}</span>
                                   <ChevronDown className={`w-4 h-4 text-brand-primary/30 transition-transform duration-300 ${activeDayDropdown === index ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
@@ -505,8 +512,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 </AnimatePresence>
                               </div>
                               <div className="relative">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.timeLabel')}</label>
+                                <label htmlFor={`${formId}-schedule-${index}-time`} className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.timeLabel')}</label>
                                 <input 
+                                  id={`${formId}-schedule-${index}-time`}
                                   type="time" 
                                   value={schedule.startTime}
                                   onChange={e => updateSchedule(index, 'startTime', e.target.value)}
@@ -514,9 +522,10 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 />
                               </div>
                               <div className="relative col-span-2 lg:col-span-1">
-                                <label className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.durationLabel')}</label>
+                                <label htmlFor={`${formId}-schedule-${index}-duration`} className="text-[9px] font-black text-brand-primary uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.durationLabel')}</label>
                                 <div className="flex items-center bg-white rounded-xl md:rounded-2xl px-5 h-12 md:h-14 shadow-sm">
                                   <input 
+                                    id={`${formId}-schedule-${index}-duration`}
                                     type="number" 
                                     step="0.5"
                                     min="0.5"

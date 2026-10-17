@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Check, UserX, Clock, AlertCircle, 
@@ -35,6 +35,7 @@ export default function RecordSessionModal({
   initialData
 }: RecordSessionModalProps) {
   const { t } = useLanguage();
+  const formId = useId();
   const [step, setStep] = useState<'details' | 'attendance'>(initialSessionId ? 'attendance' : 'details');
   const [sessionId, setSessionId] = useState<string | undefined>(initialSessionId);
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,8 @@ export default function RecordSessionModal({
   });
 
   const [attendances, setAttendances] = useState<SessionAttendance[]>([]);
+  const dateValidationError = error === 'Vui lòng chọn ngày học';
+  const validationErrorId = `${formId}-validation-error`;
 
   const loadScheduleDefaults = useCallback(async (dateStr: string) => {
     try {
@@ -272,7 +275,7 @@ export default function RecordSessionModal({
           {error && (
             <div className="mx-8 md:mx-12 mt-6 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600">
               <AlertCircle className="w-6 h-6 shrink-0" />
-              <p className="font-bold text-sm">{error}</p>
+              <p id={validationErrorId} className="font-bold text-sm">{error}</p>
             </div>
           )}
 
@@ -281,23 +284,27 @@ export default function RecordSessionModal({
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ngày học</label>
+                    <label htmlFor={`${formId}-session-date`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ngày học</label>
                     <div className="relative group">
                       <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
+                        id={`${formId}-session-date`}
                         type="date" 
                         value={sessionData.date}
                         onChange={e => handleDateChange(e.target.value)}
+                        aria-invalid={dateValidationError || undefined}
+                        aria-describedby={dateValidationError ? validationErrorId : undefined}
                         className="w-full h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Bắt đầu</label>
+                      <label htmlFor={`${formId}-session-start-time`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Bắt đầu</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
+                          id={`${formId}-session-start-time`}
                           type="time" 
                           value={sessionData.startTime}
                           onChange={e => setSessionData({...sessionData, startTime: e.target.value})}
@@ -306,10 +313,11 @@ export default function RecordSessionModal({
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Kết thúc</label>
+                      <label htmlFor={`${formId}-session-end-time`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Kết thúc</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
+                          id={`${formId}-session-end-time`}
                           type="time" 
                           value={sessionData.endTime}
                           onChange={e => setSessionData({...sessionData, endTime: e.target.value})}
@@ -320,10 +328,11 @@ export default function RecordSessionModal({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Nội dung / Ghi chú</label>
+                  <label htmlFor={`${formId}-session-note`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Nội dung / Ghi chú</label>
                   <div className="relative group">
                     <FileText className="absolute left-6 top-6 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <textarea 
+                      id={`${formId}-session-note`}
                       placeholder="Ví dụ: Kiểm tra 15p, Bài tập về nhà..."
                       value={sessionData.note}
                       onChange={e => setSessionData({...sessionData, note: e.target.value})}

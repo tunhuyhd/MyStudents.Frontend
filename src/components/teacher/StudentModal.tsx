@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,11 +17,13 @@ interface StudentModalProps {
 }
 
 const CustomDatePicker = ({ 
+  id,
   label, 
   value, 
   onChange, 
   t 
 }: { 
+  id: string,
   label: string, 
   value: string, 
   onChange: (val: string) => void,
@@ -103,11 +105,12 @@ const CustomDatePicker = ({
 
   return (
     <div className="space-y-2 relative" ref={dropdownRef}>
-      <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">
+      <label htmlFor={id} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">
         {label}
       </label>
       <div className="relative group">
         <input 
+          id={id}
           type="text"
           placeholder="DD/MM/YYYY"
           value={inputValue}
@@ -211,6 +214,7 @@ const CustomDatePicker = ({
 
 export default function StudentModal({ isOpen, onClose, onSave, initialData }: StudentModalProps) {
   const { t } = useLanguage();
+  const formId = useId();
   const [formData, setFormData] = useState<CreateStudentData>({
     firstName: '',
     lastName: '',
@@ -226,6 +230,12 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const nameValidationMessage = 'Vui lòng nhập đầy đủ Họ và Tên học sinh';
+  const emailValidationMessage = 'Vui lòng nhập địa chỉ Email';
+  const isNameValidationError = error === nameValidationMessage;
+  const isEmailValidationError = error === emailValidationMessage;
+  const validationErrorId = `${formId}-validation-error`;
 
   useEffect(() => {
     if (initialData) {
@@ -268,12 +278,12 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
     // Client-side validation
     if (!formData.lastName?.trim() || !formData.firstName?.trim()) {
-      setError('Vui lòng nhập đầy đủ Họ và Tên học sinh');
+      setError(nameValidationMessage);
       return;
     }
 
     if (!formData.email?.trim()) {
-      setError('Vui lòng nhập địa chỉ Email');
+      setError(emailValidationMessage);
       return;
     }
 
@@ -336,6 +346,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
               <motion.div 
                 initial={{ opacity: 0, y: -10 }} 
                 animate={{ opacity: 1, y: 0 }}
+                id={validationErrorId}
                 className="mb-8 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600"
               >
                 <AlertCircle className="w-6 h-6 shrink-0" />
@@ -355,39 +366,48 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ & Tên đệm <span className="text-red-500">*</span></label>
+                    <label htmlFor={`${formId}-last-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ & Tên đệm <span className="text-red-500">*</span></label>
                     <input 
+                      id={`${formId}-last-name`}
                       type="text" 
                       placeholder="Nguyễn Văn"
                       value={formData.lastName}
                       onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                       className="w-full h-14 md:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      aria-invalid={isNameValidationError && !formData.lastName?.trim() || undefined}
+                      aria-describedby={isNameValidationError && !formData.lastName?.trim() ? validationErrorId : undefined}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên <span className="text-red-500">*</span></label>
+                    <label htmlFor={`${formId}-first-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên <span className="text-red-500">*</span></label>
                     <input 
+                      id={`${formId}-first-name`}
                       type="text" 
                       placeholder="An"
                       value={formData.firstName}
                       onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                       className="w-full h-14 md:h-16 px-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      aria-invalid={isNameValidationError && !formData.firstName?.trim() || undefined}
+                      aria-describedby={isNameValidationError && !formData.firstName?.trim() ? validationErrorId : undefined}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Email <span className="text-red-500">*</span></label>
+                  <label htmlFor={`${formId}-email`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Email <span className="text-red-500">*</span></label>
                   <div className="relative group">
                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
+                      id={`${formId}-email`}
                       type="email" 
                       placeholder="student@example.com"
                       value={formData.email || ''}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full h-14 md:h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.5rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-bold text-surface-900 outline-none transition-all"
+                      aria-invalid={isEmailValidationError || undefined}
+                      aria-describedby={isEmailValidationError ? validationErrorId : undefined}
                       required
                     />
                   </div>
@@ -395,6 +415,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <CustomDatePicker 
+                    id={`${formId}-date-of-birth`}
                     label="Ngày sinh"
                     value={formData.dateOfBirth || ''}
                     onChange={(val) => setFormData({...formData, dateOfBirth: val})}
@@ -402,8 +423,8 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                   />
 
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Giới tính</label>
-                    <div className="flex bg-surface-50/70 p-1.5 rounded-[1.5rem] h-14 md:h-16">
+                    <span id={`${formId}-gender-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Giới tính</span>
+                    <div role="group" aria-labelledby={`${formId}-gender-label`} className="flex bg-surface-50/70 p-1.5 rounded-[1.5rem] h-14 md:h-16">
                       {[
                         { id: 0, label: 'Nam' },
                         { id: 1, label: 'Nữ' }
@@ -426,10 +447,11 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trường học</label>
+                  <label htmlFor={`${formId}-school`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trường học</label>
                   <div className="relative group">
                     <GraduationCap className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
+                      id={`${formId}-school`}
                       type="text" 
                       placeholder="THPT Chuyên Lê Hồng Phong"
                       value={formData.school || ''}
@@ -450,8 +472,9 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ tên phụ huynh</label>
+                  <label htmlFor={`${formId}-parent-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ tên phụ huynh</label>
                   <input 
+                    id={`${formId}-parent-name`}
                     type="text" 
                     placeholder="Nguyễn Văn B"
                     value={formData.parentName || ''}
@@ -462,10 +485,11 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Phụ huynh</label>
+                    <label htmlFor={`${formId}-parent-phone`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Phụ huynh</label>
                     <div className="relative group">
                       <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
+                        id={`${formId}-parent-phone`}
                         type="text" 
                         placeholder="090..."
                         value={formData.parentPhone || ''}
@@ -475,10 +499,11 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Học sinh</label>
+                    <label htmlFor={`${formId}-student-phone`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Học sinh</label>
                     <div className="relative group">
                       <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
+                        id={`${formId}-student-phone`}
                         type="text" 
                         placeholder="091..."
                         value={formData.phone || ''}
@@ -490,10 +515,11 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Địa chỉ</label>
+                  <label htmlFor={`${formId}-address`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Địa chỉ</label>
                   <div className="relative group">
                     <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
+                      id={`${formId}-address`}
                       type="text" 
                       placeholder="123 Đường ABC, Quận X, TP. HCM"
                       value={formData.address || ''}
@@ -504,8 +530,9 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ghi chú</label>
+                  <label htmlFor={`${formId}-note`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ghi chú</label>
                   <textarea 
+                    id={`${formId}-note`}
                     className="w-full p-6 bg-surface-50/70 border-2 border-transparent rounded-[2rem] text-sm font-bold placeholder:text-surface-300 focus:ring-0 focus:border-brand-primary/20 focus:bg-white transition-all min-h-[140px] outline-none scrollbar-hide text-surface-900"
                     placeholder="Ghi chú về học lực, tính cách hoặc lưu ý đặc biệt..."
                     value={formData.note || ''}

@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, UserPlus, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { AvailableStudent, classService } from '@/services/classService';
 import { mutationErrorMessage } from '@/lib/mutationError';
+import { useAccessibleDialog } from '@/hooks/useAccessibleDialog';
 
 interface AddStudentToClassModalProps {
   isOpen: boolean;
@@ -22,6 +23,8 @@ export default function AddStudentToClassModal({
   classId 
 }: AddStudentToClassModalProps) {
   const { t } = useLanguage();
+  const dialogId = useId();
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(isOpen, onClose);
   const [students, setStudents] = useState<AvailableStudent[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,20 +84,28 @@ export default function AddStudentToClassModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`${dialogId}-title`}
+          aria-describedby={`${dialogId}-description`}
+          data-dialog-focus-scope="true"
+          tabIndex={-1}
           className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="p-8 md:p-12 border-b border-surface-50 flex items-center justify-between relative">
             <div>
-              <h2 className="text-3xl font-black text-brand-primary tracking-tighter">
+              <h2 id={`${dialogId}-title`} className="text-3xl font-black text-brand-primary tracking-tighter">
                 {t('teacher.details.addStudent') || 'Thêm học sinh'}
               </h2>
-              <p className="text-surface-500 font-bold text-sm mt-1">
+              <p id={`${dialogId}-description`} className="text-surface-500 font-bold text-sm mt-1">
                 Chọn học sinh từ danh sách hệ thống để thêm vào lớp.
               </p>
             </div>
             <button 
               onClick={onClose}
+              aria-label={t('common.close')}
               className="p-3 hover:bg-surface-50 rounded-[1.25rem] transition-all group"
             >
               <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 transition-colors" />
@@ -106,6 +117,7 @@ export default function AddStudentToClassModal({
             <div className="relative group">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
               <input 
+                data-dialog-initial-focus="true"
                 type="text" 
                 placeholder="Tìm tên hoặc email học sinh..."
                 value={searchQuery}

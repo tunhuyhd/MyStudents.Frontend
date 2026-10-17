@@ -19,6 +19,7 @@
     "sessionExpired": "Your session has expired. Sign in again to continue.",
     "permissionDenied": "You don't have permission to perform this action.",
     "mutationFailed": "The change could not be saved. Please try again.",
+    "discardChanges": "Discard your unsaved changes?",
     "hello": "Hello",
     "back": "Back",
     "details": "Details",
@@ -117,6 +118,8 @@
     "desc": "Track and manage your classes",
     "teacherSpace": "Teacher Space",
     "totalImpact": "Total Impact",
+    "pageEnrollmentCount": "Enrollments on this page",
+    "enrollments": "enrollments",
     "students": {
       "label": "Students",
       "management": "Student Management",

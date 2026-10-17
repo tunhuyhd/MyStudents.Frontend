@@ -19,6 +19,7 @@
     "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",
     "permissionDenied": "Bạn không có quyền thực hiện thao tác này.",
     "mutationFailed": "Không thể lưu thay đổi. Vui lòng thử lại.",
+    "discardChanges": "Bạn có muốn bỏ các thay đổi chưa lưu không?",
     "hello": "Chào",
     "back": "Quay lại",
     "details": "Chi tiết",
@@ -117,6 +118,8 @@
     "desc": "Theo dõi và điều hành các lớp học của bạn",
     "teacherSpace": "Không gian Giáo viên",
     "totalImpact": "Tác động Tổng thể",
+    "pageEnrollmentCount": "Lượt ghi danh trên trang này",
+    "enrollments": "lượt ghi danh",
     "students": {
       "label": "Học sinh",
       "management": "Quản lý học sinh",

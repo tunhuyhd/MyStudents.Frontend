@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import { mutationErrorMessage } from '@/lib/mutationError';
+import { useAccessibleDialog } from '@/hooks/useAccessibleDialog';
+import { canCloseDialog } from '@/lib/dialog';
 
 interface RecordSessionModalProps {
   isOpen: boolean;
@@ -43,6 +45,13 @@ export default function RecordSessionModal({
   const [saving, setSaving] = useState(false);
   const [updatingAttendanceId, setUpdatingAttendanceId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(isOpen, requestClose);
+
+  function requestClose() {
+    if (saving || updatingAttendanceId) return;
+    if (canCloseDialog(hasUnsavedChanges, () => window.confirm(t('common.discardChanges')))) onClose();
+  }
   
   const [sessionData, setSessionData] = useState({
     date: initialData?.date || new Date().toISOString().split('T')[0],
@@ -139,7 +148,16 @@ export default function RecordSessionModal({
     }
   }, [sessionId, isOpen, classId, initialSessionId, initialData, sessionData.date, loadScheduleDefaults, t]);
 
+  useEffect(() => {
+    if (isOpen) {
+      // Reset the dirty flag only when the dialog opens, not when a field change reruns its loader.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setHasUnsavedChanges(false);
+    }
+  }, [isOpen]);
+
   const handleDateChange = (newDate: string) => {
+    setHasUnsavedChanges(true);
     setSessionData(prev => ({ ...prev, date: newDate }));
     loadScheduleDefaults(newDate);
   };
@@ -160,6 +178,7 @@ export default function RecordSessionModal({
           id: sessionId,
           classId
         });
+        setHasUnsavedChanges(false);
         
         // After update, if we were in details step, go to attendance
         const attRes = await classService.getSessionAttendances(sessionId);
@@ -171,6 +190,7 @@ export default function RecordSessionModal({
           ...sessionData,
           classId
         });
+        setHasUnsavedChanges(false);
         const newSessionId = res.data;
         setSessionId(newSessionId);
         
@@ -230,13 +250,20 @@ export default function RecordSessionModal({
         <motion.div 
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
-          onClick={onClose}
+          onClick={requestClose}
         />
         
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`${formId}-dialog-title`}
+          aria-describedby={`${formId}-dialog-description`}
+          data-dialog-focus-scope="true"
+          tabIndex={-1}
           className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
@@ -252,10 +279,10 @@ export default function RecordSessionModal({
                 </button>
               )}
               <div>
-                <h2 className="text-3xl font-black text-brand-primary tracking-tighter">
+                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-primary tracking-tighter">
                   {step === 'details' ? 'Chi tiết buổi học' : 'Điểm danh lớp học'}
                 </h2>
-                <p className="text-surface-500 font-bold text-sm mt-1">
+                <p id={`${formId}-dialog-description`} className="text-surface-500 font-bold text-sm mt-1">
                   {step === 'details' ? 'Cấu hình thời gian và nội dung bài học' : 'Đánh dấu trạng thái chuyên cần'}
                 </p>
               </div>
@@ -271,7 +298,7 @@ export default function RecordSessionModal({
                 </button>
               )}
               <button 
-                onClick={onClose} 
+                onClick={requestClose}
                 className="p-4 hover:bg-surface-50 rounded-2xl transition-all duration-300 group"
               >
                 <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
@@ -315,7 +342,7 @@ export default function RecordSessionModal({
                           id={`${formId}-session-start-time`}
                           type="time" 
                           value={sessionData.startTime}
-                          onChange={e => setSessionData({...sessionData, startTime: e.target.value})}
+                        onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, startTime: e.target.value}); }}
                           className="w-full h-16 pl-12 pr-4 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
                         />
                       </div>
@@ -328,7 +355,7 @@ export default function RecordSessionModal({
                           id={`${formId}-session-end-time`}
                           type="time" 
                           value={sessionData.endTime}
-                          onChange={e => setSessionData({...sessionData, endTime: e.target.value})}
+                        onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, endTime: e.target.value}); }}
                           className="w-full h-16 pl-12 pr-4 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
                         />
                       </div>
@@ -343,7 +370,7 @@ export default function RecordSessionModal({
                       id={`${formId}-session-note`}
                       placeholder="Ví dụ: Kiểm tra 15p, Bài tập về nhà..."
                       value={sessionData.note}
-                      onChange={e => setSessionData({...sessionData, note: e.target.value})}
+                      onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, note: e.target.value}); }}
                       className="w-full min-h-[160px] pl-14 pr-8 py-6 bg-surface-50/70 rounded-[2rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all resize-none scrollbar-hide placeholder:text-surface-300" 
                     />
                   </div>
@@ -395,7 +422,7 @@ export default function RecordSessionModal({
           {/* Footer */}
           <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md flex items-center justify-between sticky bottom-0 z-30">
             <button 
-              onClick={onClose} 
+              onClick={requestClose}
               className="rounded-[1.75rem] px-8 h-16 border-none font-black text-surface-400 hover:text-surface-900 uppercase tracking-widest text-xs transition-all"
             >
               Hủy bỏ

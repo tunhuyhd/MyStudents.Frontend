@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/Button';
 import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
 import { Class, ClassSchedule, CreateClassData as ClassPayload } from '@/services/classService';
 import { mutationErrorMessage } from '@/lib/mutationError';
+import { useAccessibleDialog } from '@/hooks/useAccessibleDialog';
+import { canCloseDialog } from '@/lib/dialog';
 
 interface ClassFormData extends Omit<ClassPayload, 'schedules'> {
   id?: string;
@@ -39,6 +41,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     isOpen: false,
     message: ''
   });
+  const errorDialogRef = useAccessibleDialog<HTMLDivElement>(errorPopup.isOpen, closeErrorPopup);
   
   const [formData, setFormData] = useState<ClassFormData>({
     name: '',
@@ -50,6 +53,18 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
     expectedEndDate: new Date(new Date().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
   });
+  const initialFormSnapshot = useRef('');
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(isOpen, requestClose);
+
+  function requestClose() {
+    if (loading) return;
+    const hasUnsavedChanges = initialFormSnapshot.current !== JSON.stringify(formData);
+    if (canCloseDialog(hasUnsavedChanges, () => window.confirm(t('common.discardChanges')))) onClose();
+  }
+
+  function closeErrorPopup() {
+    setErrorPopup(current => ({ ...current, isOpen: false }));
+  }
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -66,8 +81,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
   useEffect(() => {
     if (initialData) {
       // Keep the form aligned with the selected class when the modal opens.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData({
+      const nextFormData: ClassFormData = {
         name: initialData.name || '',
         code: initialData.code || '',
         status: initialData.status || 1,
@@ -86,9 +100,12 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
               startTime: s.startTime.length > 8 ? s.startTime.substring(0, 8) : s.startTime
             }))
           : [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
-      });
+      };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData(nextFormData);
+      initialFormSnapshot.current = JSON.stringify(nextFormData);
     } else {
-      setFormData({
+      const nextFormData: ClassFormData = {
         name: '',
         code: '',
         status: 1,
@@ -98,7 +115,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         startDate: new Date().toISOString().split('T')[0],
         expectedEndDate: new Date(new Date().getTime() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         schedules: [{ dayOfWeek: 1, startTime: '19:00:00', durationHours: 1.5 }]
-      });
+      };
+      setFormData(nextFormData);
+      initialFormSnapshot.current = JSON.stringify(nextFormData);
     }
     setStep(1);
   }, [initialData, isOpen]);
@@ -157,13 +176,19 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
-        onClick={onClose}
+        onClick={requestClose}
       />
       
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
+        data-dialog-focus-scope="true"
+        tabIndex={-1}
         className="relative w-full h-[100dvh] md:h-[85vh] md:max-h-[800px] md:max-w-5xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
       >
         {/* Sidebar Decor - Desktop */}
@@ -220,7 +245,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                 </div>
              </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-surface-50 rounded-xl">
+          <button onClick={requestClose} aria-label={t('common.close')} className="p-2 hover:bg-surface-50 rounded-xl">
             <X className="w-6 h-6 text-surface-400" />
           </button>
         </div>
@@ -228,7 +253,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
           <div className="hidden md:flex justify-end p-6 lg:p-8 absolute top-0 right-0 z-20">
-            <button onClick={onClose} className="p-3 hover:bg-surface-50 rounded-[1.25rem] transition-all group">
+            <button onClick={requestClose} aria-label={t('common.close')} className="p-3 hover:bg-surface-50 rounded-[1.25rem] transition-all group">
               <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 transition-all duration-300" />
             </button>
           </div>
@@ -569,7 +594,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
             )}
 
             <div className="flex gap-3 md:gap-4 w-full md:w-auto">
-              <Button variant="outline" onClick={onClose} className="flex-1 md:flex-none rounded-[1.5rem] px-6 md:px-10 h-14 md:h-16 border-surface-100 font-black text-surface-600 hover:bg-surface-50 uppercase tracking-widest text-[10px] md:text-xs">
+              <Button variant="outline" onClick={requestClose} className="flex-1 md:flex-none rounded-[1.5rem] px-6 md:px-10 h-14 md:h-16 border-surface-100 font-black text-surface-600 hover:bg-surface-50 uppercase tracking-widest text-[10px] md:text-xs">
                 {t('teacher.modal.cancel')}
               </Button>
               {step === 1 ? (
@@ -607,6 +632,13 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              ref={errorDialogRef}
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby={`${formId}-error-title`}
+              aria-describedby={`${formId}-error-description`}
+              data-dialog-focus-scope="true"
+              tabIndex={-1}
               className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 overflow-hidden"
             >
               {/* Background Decor */}
@@ -620,17 +652,18 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   </div>
                 </div>
                 
-                <h3 className="text-2xl font-black text-surface-900 tracking-tight mb-4 uppercase">{t('teacher.modal.overlapTitle')}</h3>
+                <h3 id={`${formId}-error-title`} className="text-2xl font-black text-surface-900 tracking-tight mb-4 uppercase">{t('teacher.modal.overlapTitle')}</h3>
                 
                 <div className="bg-surface-50 p-6 rounded-2xl border border-surface-100 mb-8 w-full">
-                  <p className="text-surface-600 font-bold leading-relaxed text-sm">
+                  <p id={`${formId}-error-description`} className="text-surface-600 font-bold leading-relaxed text-sm">
                     {errorPopup.message}
                   </p>
                 </div>
 
                 <div className="flex flex-col w-full gap-3">
                   <Button 
-                    onClick={() => setErrorPopup({ ...errorPopup, isOpen: false })}
+                    onClick={closeErrorPopup}
+                    data-dialog-initial-focus="true"
                     className="w-full h-14 rounded-2xl bg-brand-primary text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-brand-primary/20"
                   >
                     {t('teacher.modal.understood')}

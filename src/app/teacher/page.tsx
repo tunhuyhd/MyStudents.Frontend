@@ -36,6 +36,7 @@ import ConfirmModal from '@/components/teacher/ConfirmModal';
 import { Toast } from '@/components/ui/Toast';
 import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
 import { mutationErrorMessage } from '@/lib/mutationError';
+import { getPageEnrollmentCount } from '@/lib/dashboardMetrics';
 
 export default function TeacherDashboard() {
   const { t, language } = useLanguage();
@@ -204,9 +205,9 @@ export default function TeacherDashboard() {
               <TrendingUp className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">{t('teacher.totalImpact')}</p>
+              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">{t('teacher.pageEnrollmentCount')}</p>
               <p className="text-xl font-black text-surface-900">
-                {classes.reduce((acc, curr) => acc + curr.studentCount, 0)} {t('teacher.students.label')}
+                {getPageEnrollmentCount(classes)} {t('teacher.enrollments')}
               </p>
             </div>
           </div>

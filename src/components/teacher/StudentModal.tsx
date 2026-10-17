@@ -8,6 +8,8 @@ import { X, Check, User, Mail, GraduationCap, Phone, MapPin, Calendar, ChevronLe
 import { Student, CreateStudentData } from '@/services/studentService';
 import { useLanguage } from '@/context/LanguageContext';
 import { apiErrorMessage } from '@/lib/apiError';
+import { useAccessibleDialog } from '@/hooks/useAccessibleDialog';
+import { canCloseDialog } from '@/lib/dialog';
 
 interface StudentModalProps {
   isOpen: boolean;
@@ -228,8 +230,16 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
     address: '',
     note: ''
   });
+  const initialFormSnapshot = useRef('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(isOpen, requestClose);
+
+  function requestClose() {
+    if (loading) return;
+    const hasUnsavedChanges = initialFormSnapshot.current !== JSON.stringify(formData);
+    if (canCloseDialog(hasUnsavedChanges, () => window.confirm(t('common.discardChanges')))) onClose();
+  }
 
   const nameValidationMessage = 'Vui lòng nhập đầy đủ Họ và Tên học sinh';
   const emailValidationMessage = 'Vui lòng nhập địa chỉ Email';
@@ -240,8 +250,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
   useEffect(() => {
     if (initialData) {
       // Reset the form when the modal switches between create and edit.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData({
+      const nextFormData: CreateStudentData = {
         firstName: initialData.firstName,
         lastName: initialData.lastName,
         email: initialData.email || '',
@@ -253,9 +262,12 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
         phone: initialData.phone || '',
         address: initialData.address || '',
         note: initialData.note || ''
-      });
+      };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData(nextFormData);
+      initialFormSnapshot.current = JSON.stringify(nextFormData);
     } else {
-      setFormData({
+      const nextFormData: CreateStudentData = {
         firstName: '',
         lastName: '',
         email: '',
@@ -267,7 +279,9 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
         phone: '',
         address: '',
         note: ''
-      });
+      };
+      setFormData(nextFormData);
+      initialFormSnapshot.current = JSON.stringify(nextFormData);
     }
     setError(null);
   }, [initialData, isOpen]);
@@ -307,7 +321,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
+          onClick={requestClose}
           className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
         />
 
@@ -315,6 +329,13 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`${formId}-dialog-title`}
+          aria-describedby={`${formId}-dialog-description`}
+          data-dialog-focus-scope="true"
+          tabIndex={-1}
           className="bg-white w-full h-full md:h-auto md:max-w-4xl md:max-h-[90vh] md:rounded-[3.5rem] shadow-2xl relative z-10 overflow-hidden flex flex-col"
         >
           {/* Header */}
@@ -324,16 +345,17 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 <UserCircle className="w-8 h-8 text-brand-primary" />
               </div>
               <div>
-                <h2 className="text-3xl font-black text-brand-primary tracking-tight">
+                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-primary tracking-tight">
                   {initialData ? 'Cập nhật học sinh' : 'Thêm học sinh mới'}
                 </h2>
-                <p className="text-surface-500 font-bold text-sm mt-1">
+                <p id={`${formId}-dialog-description`} className="text-surface-500 font-bold text-sm mt-1">
                   {initialData ? 'Cập nhật thông tin chi tiết hồ sơ học sinh' : 'Khởi tạo hồ sơ học sinh vào danh sách quản lý'}
                 </p>
               </div>
             </div>
             <button 
-              onClick={onClose}
+              onClick={requestClose}
+              aria-label={t('common.close')}
               className="p-4 hover:bg-surface-50 rounded-2xl transition-all duration-300 group"
             >
               <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
@@ -546,7 +568,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
           {/* Action Buttons */}
           <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md flex items-center justify-between sticky bottom-0 z-30 mt-auto">
             <button 
-              onClick={onClose}
+              onClick={requestClose}
               className="rounded-[1.75rem] px-8 md:px-12 h-16 border-none font-black text-surface-400 hover:text-surface-900 uppercase tracking-widest text-xs transition-all"
             >
               Hủy bỏ

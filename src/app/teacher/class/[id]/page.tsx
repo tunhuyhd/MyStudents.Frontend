@@ -17,6 +17,7 @@ import AddStudentToClassModal from '@/components/teacher/AddStudentToClassModal'
 import StatusDropdown from '@/components/teacher/StatusDropdown';
 import RecordSessionModal from '@/components/teacher/RecordSessionModal';
 import { Toast } from '@/components/ui/Toast';
+import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
 
 interface StudentSummary {
   id: string;
@@ -74,6 +75,7 @@ export default function ClassDetailPage() {
   const { t } = useLanguage();
   const [classData, setClassData] = useState<ClassDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [classLoadFailure, setClassLoadFailure] = useState<LoadFailure | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'sessions'>('overview');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
@@ -88,13 +90,19 @@ export default function ClassDetailPage() {
 
   // Pagination states for students
   const [students, setStudents] = useState<StudentSummary[]>([]);
+  const [studentsClassId, setStudentsClassId] = useState<string | null>(null);
   const [studentsLoading, setStudentsLoading] = useState(false);
+  const [studentsLoadFailure, setStudentsLoadFailure] = useState<LoadFailure | null>(null);
+  const currentStudents = studentsClassId === String(id) ? students : [];
+  const studentsLoadState = getListLoadState(currentStudents, studentsLoading, studentsLoadFailure);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const pageSize = 10;
 
   const fetchClassDetail = async () => {
+    setLoading(true);
+    setClassLoadFailure(null);
     try {
       const response = await api.get(`/classes/${id}`);
       const data = response.data;
@@ -111,6 +119,7 @@ export default function ClassDetailPage() {
       setClassData(normalizedData);
     } catch (error) {
       console.error('Error fetching class detail:', error);
+      setClassLoadFailure(classifyLoadFailure(error));
     } finally {
       setLoading(false);
     }
@@ -118,6 +127,7 @@ export default function ClassDetailPage() {
 
   const fetchClassStudents = async (page: number) => {
     setStudentsLoading(true);
+    setStudentsLoadFailure(null);
     try {
       const response = await api.get<{ items: ClassStudentResponse[]; totalPages: number; totalCount: number }>(`/classes/${id}/students`, {
         params: { pageNumber: page, pageSize }
@@ -134,10 +144,12 @@ export default function ClassDetailPage() {
       }));
 
       setStudents(normalizedStudents);
+      setStudentsClassId(String(id));
       setTotalPages(total);
       setTotalCount(count);
     } catch (error) {
       console.error('Error fetching class students:', error);
+      setStudentsLoadFailure(classifyLoadFailure(error));
     } finally {
       setStudentsLoading(false);
     }
@@ -240,11 +252,39 @@ export default function ClassDetailPage() {
     }
   };
 
-  if (loading) {
+  const hasCurrentClassData = classData?.id === String(id);
+
+  if (loading && !hasCurrentClassData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
       </div>
+    );
+  }
+
+  if (!hasCurrentClassData || (classLoadFailure && !isRetryableLoadFailure(classLoadFailure))) {
+    if (!classLoadFailure) return null;
+
+    return (
+      <main className="min-h-screen px-6 py-12 max-w-7xl mx-auto">
+        <Button variant="ghost" onClick={() => router.back()} className="mb-8">
+          <ChevronLeft className="mr-2 h-4 w-4" />{t('common.back')}
+        </Button>
+        <div role="alert" className="flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-bold">
+            {classLoadFailure === 'unauthorized'
+              ? t('common.sessionExpired')
+              : classLoadFailure === 'forbidden'
+                ? t('teacher.details.classForbidden')
+                : t('teacher.details.classLoadEmptyError')}
+          </p>
+          {isRetryableLoadFailure(classLoadFailure) && (
+            <Button type="button" variant="outline" onClick={() => { void fetchClassDetail(); }}>
+              {t('common.retry')}
+            </Button>
+          )}
+        </div>
+      </main>
     );
   }
 
@@ -264,6 +304,22 @@ export default function ClassDetailPage() {
 
   return (
     <main className="min-h-screen pb-20 px-6 pt-0 lg:pt-4 relative overflow-hidden bg-transparent max-w-7xl mx-auto">
+      {classLoadFailure && (
+        <div role="alert" className="mb-8 flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-bold">
+            {classLoadFailure === 'unauthorized'
+              ? t('common.sessionExpired')
+              : classLoadFailure === 'forbidden'
+                ? t('teacher.details.classForbidden')
+                : t('teacher.details.classLoadError')}
+          </p>
+          {isRetryableLoadFailure(classLoadFailure) && (
+            <Button type="button" variant="outline" onClick={() => { void fetchClassDetail(); }} isLoading={loading}>
+              {t('common.retry')}
+            </Button>
+          )}
+        </div>
+      )}
       <div className="mb-12">
           <button 
             onClick={() => router.back()}
@@ -416,12 +472,32 @@ export default function ClassDetailPage() {
                   </Button>
                 </div>
                 <div className="overflow-x-auto flex-1">
-                  {studentsLoading ? (
+                  {studentsLoadFailure && currentStudents.length > 0 && isRetryableLoadFailure(studentsLoadFailure) && (
+                    <div role="alert" className="m-6 flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="font-bold">
+                        {studentsLoadFailure === 'unauthorized'
+                          ? t('common.sessionExpired')
+                          : studentsLoadFailure === 'forbidden'
+                            ? t('teacher.details.studentsForbidden')
+                            : t('teacher.details.studentsLoadError')}
+                      </p>
+                      {isRetryableLoadFailure(studentsLoadFailure) && (
+                        <Button type="button" variant="outline" onClick={() => { void fetchClassStudents(pageNumber); }} isLoading={studentsLoading}>
+                          {t('common.retry')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  {studentsLoadState === 'loading' ? (
                     <div className="py-20 flex flex-col items-center justify-center">
                       <Loader2 className="w-10 h-10 animate-spin text-brand-primary mb-4" />
                       <p className="text-surface-400 font-bold">{t('common.loading')}</p>
                     </div>
-                  ) : students.length > 0 ? (
+                  ) : studentsLoadFailure && !isRetryableLoadFailure(studentsLoadFailure) ? (
+                    <div role="alert" className="py-20 px-6 text-center font-bold text-red-700">
+                      {t(studentsLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'teacher.details.studentsForbidden')}
+                    </div>
+                  ) : currentStudents.length > 0 ? (
                     <>
                     <table className="w-full text-left border-collapse">
                       <thead>
@@ -433,7 +509,7 @@ export default function ClassDetailPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-50">
-                        {students.map((student) => {
+                        {currentStudents.map((student) => {
                           const statusInfo = getStatusLabel(student.status);
                           return (
                             <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
@@ -516,6 +592,21 @@ export default function ClassDetailPage() {
                       </div>
                     )}
                     </>
+                  ) : studentsLoadFailure ? (
+                    <div role="alert" className="py-20 px-6 flex flex-col items-center justify-center gap-4 text-center text-red-700">
+                      <p className="font-bold">
+                        {studentsLoadFailure === 'unauthorized'
+                          ? t('common.sessionExpired')
+                          : studentsLoadFailure === 'forbidden'
+                            ? t('teacher.details.studentsForbidden')
+                            : t('teacher.details.studentsLoadEmptyError')}
+                      </p>
+                      {isRetryableLoadFailure(studentsLoadFailure) && (
+                        <Button type="button" variant="outline" onClick={() => { void fetchClassStudents(pageNumber); }} isLoading={studentsLoading}>
+                          {t('common.retry')}
+                        </Button>
+                      )}
+                    </div>
                   ) : (
                     <div className="py-32 text-center">
                       <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">

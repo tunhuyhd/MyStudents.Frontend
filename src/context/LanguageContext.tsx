@@ -3,8 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
 import vi from '@/locales/vi.json';
 import en from '@/locales/en.json';
+import { DEFAULT_LANGUAGE, getStoredLanguage, persistLanguage, setDocumentLanguage, type Language } from '@/lib/language';
 
-type Language = 'vi' | 'en';
 type Translations = typeof vi;
 type TranslationParams = Record<string, string | number>;
 type Translate = (path: string, params?: TranslationParams) => string;
@@ -29,11 +29,12 @@ function getTranslation(language: Language, path: string): string {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('vi');
+  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && (savedLang === 'vi' || savedLang === 'en')) {
+    const savedLang = getStoredLanguage(localStorage);
+    setDocumentLanguage(savedLang, document.documentElement);
+    if (savedLang !== DEFAULT_LANGUAGE) {
       // The preference is read from browser storage after hydration.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLanguageState(savedLang);
@@ -42,7 +43,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
+    persistLanguage(lang, localStorage, document.documentElement);
   }, []);
 
   const t = useCallback<Translate>((path, params) => {

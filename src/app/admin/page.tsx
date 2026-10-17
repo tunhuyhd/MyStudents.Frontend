@@ -12,6 +12,7 @@ import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen, Loader2
 import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
+import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
 
 interface UserDto {
   id: string;
@@ -36,23 +37,48 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<UserDto[]>([]);
   const [roles, setRoles] = useState<RoleDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [rolesLoading, setRolesLoading] = useState(true);
+  const [usersLoadFailure, setUsersLoadFailure] = useState<LoadFailure | null>(null);
+  const [rolesLoadFailure, setRolesLoadFailure] = useState<LoadFailure | null>(null);
+  const usersLoadState = getListLoadState(users, usersLoading, usersLoadFailure);
+  const rolesLoadState = getListLoadState(roles, rolesLoading, rolesLoadFailure);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
 
-  const fetchData = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
+    setUsersLoading(true);
+    setUsersLoadFailure(null);
     try {
-      const [usersRes, rolesRes] = await Promise.all([
-        api.get('/admin/users'),
-        api.get('/admin/roles')
-      ]);
-      setUsers(usersRes.data);
-      setRoles(rolesRes.data);
+      const response = await api.get<UserDto[]>('/admin/users');
+      setUsers(response.data);
     } catch (err) {
-      console.error('Failed to fetch admin data', err);
+      console.error('Failed to fetch admin users', err);
+      setUsersLoadFailure(classifyLoadFailure(err));
     } finally {
-      setLoading(false);
+      setUsersLoading(false);
     }
   }, []);
+
+  const fetchRoles = useCallback(async () => {
+    setRolesLoading(true);
+    setRolesLoadFailure(null);
+    try {
+      const response = await api.get<RoleDto[]>('/admin/roles');
+      setRoles(response.data);
+    } catch (err) {
+      console.error('Failed to fetch admin roles', err);
+      setRolesLoadFailure(classifyLoadFailure(err));
+    } finally {
+      setRolesLoading(false);
+    }
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    await Promise.all([fetchUsers(), fetchRoles()]);
+    setLoading(false);
+  }, [fetchUsers, fetchRoles]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -160,6 +186,52 @@ export default function AdminDashboard() {
               exit={{ opacity: 0, x: 20 }}
               className="bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden"
             >
+              {(usersLoadFailure || rolesLoadFailure || rolesLoadState === 'loading' || rolesLoadState === 'empty') && (
+                <div className="space-y-3 p-6 pb-0">
+                  {usersLoadFailure && (users.length > 0 || usersLoadFailure !== 'failed') && (
+                    <div role="alert" className="flex flex-col gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-red-200 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="font-semibold">
+                        {usersLoadFailure === 'unauthorized'
+                          ? t('common.sessionExpired')
+                          : usersLoadFailure === 'forbidden'
+                            ? t('admin.usersForbidden')
+                            : users.length > 0
+                              ? t('admin.usersLoadError')
+                              : t('admin.usersLoadEmptyError')}
+                      </p>
+                      {isRetryableLoadFailure(usersLoadFailure) && (
+                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                          <RefreshCw className={`h-4 w-4 ${usersLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {rolesLoadFailure && (
+                    <div role="alert" className="flex flex-col gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-red-200 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="font-semibold">
+                        {rolesLoadFailure === 'unauthorized'
+                          ? t('common.sessionExpired')
+                          : rolesLoadFailure === 'forbidden'
+                            ? t('admin.rolesForbidden')
+                            : roles.length > 0
+                              ? t('admin.rolesLoadError')
+                              : t('admin.rolesLoadEmptyError')}
+                      </p>
+                      {isRetryableLoadFailure(rolesLoadFailure) && (
+                        <button type="button" onClick={() => { void fetchRoles(); }} disabled={rolesLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                          <RefreshCw className={`h-4 w-4 ${rolesLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {rolesLoadState === 'empty' && (
+                    <p className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 font-semibold text-amber-200">{t('admin.rolesEmpty')}</p>
+                  )}
+                  {rolesLoadState === 'loading' && (
+                    <p className="rounded-2xl border border-white/10 bg-white/5 p-4 font-semibold text-emerald-100/70"><Loader2 className="inline h-4 w-4 animate-spin mr-2" />{t('admin.rolesLoading')}</p>
+                  )}
+                </div>
+              )}
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
               <thead>
@@ -173,7 +245,22 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 <AnimatePresence>
-                  {users.map((u) => (
+                  {usersLoadState === 'loading' ? (
+                    <tr><td colSpan={5} className="px-8 py-12 text-center text-emerald-300/70"><Loader2 className="inline h-5 w-5 animate-spin mr-2" />{t('common.loading')}</td></tr>
+                  ) : usersLoadFailure && usersLoadFailure !== 'failed' ? (
+                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-red-200">{t(usersLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'admin.usersForbidden')}</td></tr>
+                  ) : usersLoadFailure === 'failed' && users.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-8 py-12 text-center text-red-200">
+                        <p className="mb-4 font-semibold">{t('admin.usersLoadEmptyError')}</p>
+                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                          <RefreshCw className={`h-4 w-4 ${usersLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
+                        </button>
+                      </td>
+                    </tr>
+                  ) : usersLoadState === 'empty' ? (
+                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-emerald-100/70">{t('admin.usersEmpty')}</td></tr>
+                  ) : users.map((u) => (
                     <motion.tr 
                       key={u.id}
                       initial={{ opacity: 0 }}
@@ -221,10 +308,10 @@ export default function AdminDashboard() {
                       <td className="px-4 md:px-8 py-6">
                         <div className="flex items-center">
                           <RoleDropdown 
-                            roles={roles}
+                            roles={rolesLoadFailure && rolesLoadFailure !== 'failed' ? [] : roles}
                             currentRoleId={u.roleId}
                             onUpdate={(newRoleId) => handleUpdateRole(u.id, newRoleId)}
-                            disabled={updatingId === u.id}
+                            disabled={updatingId === u.id || Boolean(rolesLoadFailure && rolesLoadFailure !== 'failed')}
                           />
                           {updatingId === u.id && (
                             <motion.div

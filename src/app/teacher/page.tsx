@@ -14,6 +14,7 @@ import {
   Edit, 
   Eye, 
   Trash2,
+  RefreshCw,
   Clock,
   ChevronRight,
   Sparkles,
@@ -33,6 +34,7 @@ import { classService, Class, CreateClassData } from '@/services/classService';
 import ClassModal from '@/components/teacher/ClassModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
 import { Toast } from '@/components/ui/Toast';
+import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
 
 export default function TeacherDashboard() {
   const { t, language } = useLanguage();
@@ -40,6 +42,8 @@ export default function TeacherDashboard() {
   const router = useRouter();
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
+  const [classesLoadFailure, setClassesLoadFailure] = useState<LoadFailure | null>(null);
+  const classesLoadState = getListLoadState(classes, loading, classesLoadFailure);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClass, setEditingClass] = useState<Class | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -83,6 +87,7 @@ export default function TeacherDashboard() {
 
   const fetchClasses = useCallback(async () => {
     setLoading(true);
+    setClassesLoadFailure(null);
     try {
       const res = await classService.getAll({
         searchTerm,
@@ -97,6 +102,7 @@ export default function TeacherDashboard() {
       setTotalCount(res.data.totalCount);
     } catch (err) {
       console.error('Failed to fetch classes', err);
+      setClassesLoadFailure(classifyLoadFailure(err));
     } finally {
       setLoading(false);
     }
@@ -339,13 +345,37 @@ export default function TeacherDashboard() {
 
         {/* Dynamic Class Cards Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-          {loading ? (
+          {classesLoadFailure && (
+            <div role="alert" className="col-span-full flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-bold">
+                {classesLoadFailure === 'unauthorized'
+                  ? t('common.sessionExpired')
+                  : classesLoadFailure === 'forbidden'
+                    ? t('teacher.classesForbidden')
+                    : classes.length > 0
+                      ? t('teacher.classesLoadError')
+                      : t('teacher.classesLoadEmptyError')}
+              </p>
+              {isRetryableLoadFailure(classesLoadFailure) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => { void fetchClasses(); }}
+                  isLoading={loading}
+                  className="shrink-0 border-red-300 text-red-800 hover:bg-red-100"
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />{t('common.retry')}
+                </Button>
+              )}
+            </div>
+          )}
+          {classesLoadState === 'loading' ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-white/50 backdrop-blur-sm h-80 rounded-[3.5rem] animate-pulse border border-white/50" />
             ))
           ) : (
             <AnimatePresence>
-              {classes.length > 0 ? (
+              {classes.length > 0 && !(classesLoadFailure && !isRetryableLoadFailure(classesLoadFailure)) ? (
                 classes.map((c, index) => (
                   <motion.div
                     key={c.id}
@@ -456,7 +486,7 @@ export default function TeacherDashboard() {
                     </div>
                   </motion.div>
                 ))
-              ) : (
+              ) : classesLoadFailure ? null : (
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}

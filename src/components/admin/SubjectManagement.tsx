@@ -130,12 +130,22 @@ export default function SubjectManagement() {
               <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
                 <BookPlus className="w-6 h-6 text-emerald-500" />
               </div>
-              <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => handleEdit(s)} className="p-2 bg-white/5 hover:bg-emerald-500/20 text-emerald-500 rounded-xl transition-colors">
-                  <Edit2 className="w-4 h-4" />
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() => handleEdit(s)}
+                  aria-label={t('admin.editSubject', { name: s.name })}
+                  className="p-2 bg-white/5 hover:bg-emerald-500/20 text-emerald-500 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                >
+                  <Edit2 className="w-4 h-4" aria-hidden="true" />
                 </button>
-                <button onClick={() => handleDelete(s.id)} className="p-2 bg-white/5 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors">
-                  <Trash2 className="w-4 h-4" />
+                <button
+                  type="button"
+                  onClick={() => handleDelete(s.id)}
+                  aria-label={t('admin.deleteSubject', { name: s.name })}
+                  className="p-2 bg-white/5 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+                >
+                  <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>

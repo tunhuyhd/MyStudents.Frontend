@@ -4,6 +4,8 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
+import Script from "next/script";
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from "@/lib/language";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,11 +32,21 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang={DEFAULT_LANGUAGE}
       suppressHydrationWarning
       className={`${inter.variable} ${beVietnamPro.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
+        <Script id="language-bootstrap" strategy="beforeInteractive">
+          {`try {
+            const savedLanguage = window.localStorage.getItem("${LANGUAGE_STORAGE_KEY}");
+            if (savedLanguage === "vi" || savedLanguage === "en") {
+              document.documentElement.lang = savedLanguage;
+            }
+          } catch {
+            // Keep the server-rendered default language when storage is unavailable.
+          }`}
+        </Script>
         <LanguageProvider>
           <AuthProvider>
             <MainLayoutWrapper>

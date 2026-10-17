@@ -3,6 +3,6 @@
     "target": "ES2020", "module": "commonjs", "moduleResolution": "node",
     "outDir": ".test-output", "strict": true, "esModuleInterop": true, "skipLibCheck": true
   },
-  "files": ["src/lib/createApiClient.ts"]
+  "files": ["src/lib/createApiClient.ts", "src/lib/language.ts", "src/lib/toast.ts", "src/lib/loadFailure.ts"]
 }
 

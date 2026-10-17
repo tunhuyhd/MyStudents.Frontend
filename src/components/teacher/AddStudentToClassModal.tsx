@@ -6,6 +6,7 @@ import { X, Search, UserPlus, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { AvailableStudent, classService } from '@/services/classService';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 interface AddStudentToClassModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export default function AddStudentToClassModal({
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [addError, setAddError] = useState<string | null>(null);
 
   const fetchStudents = useCallback(async () => {
     setLoading(true);
@@ -48,12 +50,15 @@ export default function AddStudentToClassModal({
   }, [isOpen, fetchStudents]);
 
   const handleAdd = async (id: string) => {
+    if (addingId) return;
     setAddingId(id);
+    setAddError(null);
     try {
       await onAdd(id);
       setStudents(prev => prev.filter(s => s.id !== id));
     } catch (err) {
       console.error('Failed to add student', err);
+      setAddError(mutationErrorMessage(err, t));
     } finally {
       setAddingId(null);
     }
@@ -112,6 +117,7 @@ export default function AddStudentToClassModal({
 
           {/* List */}
           <div className="flex-1 overflow-y-auto px-8 md:px-12 pb-8 space-y-4 scrollbar-hide">
+            {addError && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{addError}</p>}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 space-y-4">
                 <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
@@ -139,7 +145,7 @@ export default function AddStudentToClassModal({
                   
                   <Button 
                     onClick={() => handleAdd(student.id)}
-                    disabled={addingId === student.id}
+                    disabled={addingId !== null}
                     className={`h-12 px-6 rounded-xl font-black transition-all text-xs uppercase tracking-widest ${
                       addingId === student.id 
                       ? 'bg-surface-100 text-surface-400' 

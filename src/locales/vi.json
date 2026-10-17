@@ -17,6 +17,8 @@
     "loading": "Đang tải...",
     "retry": "Thử lại",
     "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",
+    "permissionDenied": "Bạn không có quyền thực hiện thao tác này.",
+    "mutationFailed": "Không thể lưu thay đổi. Vui lòng thử lại.",
     "hello": "Chào",
     "back": "Quay lại",
     "details": "Chi tiết",
@@ -105,6 +107,10 @@
     "rolesForbidden": "Bạn không có quyền xem danh sách vai trò.",
     "rolesEmpty": "Không có vai trò nào để phân công.",
     "rolesLoading": "Đang tải vai trò..."
+    ,"roleUpdated": "Đã cập nhật vai trò người dùng.",
+    "statusUpdated": "Đã cập nhật trạng thái người dùng.",
+    "subjectSaved": "Đã lưu môn học.",
+    "subjectDeleted": "Đã xóa môn học."
   },
   "teacher": {
     "title": "Quản lý Lớp học",
@@ -171,6 +177,7 @@
     "noClassesDesc": "Bắt đầu hành trình giảng dạy của bạn bằng cách tạo lớp học đầu tiên ngay hôm nay.",
     "classesLoadError": "Không thể tải danh sách lớp. Kết quả đã tải trước đó vẫn được giữ lại.",
     "classesLoadEmptyError": "Không thể tải danh sách lớp. Vui lòng thử lại.",
+    "classDeleted": "Đã xóa lớp học.",
     "classesForbidden": "Bạn không có quyền xem các lớp học này.",
     "sessionsPerWeek": "buổi / tuần",
     "deleteTitle": "Xác nhận xóa lớp học",

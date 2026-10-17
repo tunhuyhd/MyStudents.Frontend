@@ -12,7 +12,7 @@ import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
 import { Class, ClassSchedule, CreateClassData as ClassPayload } from '@/services/classService';
-import { apiErrorMessage } from '@/lib/apiError';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 interface ClassFormData extends Omit<ClassPayload, 'schedules'> {
   id?: string;
@@ -104,6 +104,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
   }, [initialData, isOpen]);
 
   const handleSubmit = async () => {
+    if (loading) return;
     setLoading(true);
     try {
       let sanitizedLink = formData.linkOnline?.trim() || '';
@@ -121,7 +122,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
       });
       onClose();
     } catch (error: unknown) {
-      setErrorPopup({ isOpen: true, message: apiErrorMessage(error, t, 'common.saveError') });
+      setErrorPopup({ isOpen: true, message: mutationErrorMessage(error, t) });
     } finally {
       setLoading(false);
     }

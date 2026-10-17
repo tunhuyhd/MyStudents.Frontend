@@ -7,12 +7,17 @@ import { Input } from '@/components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Plus, Trash2, Edit2, X, Check, BookPlus } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { Toast } from '@/components/ui/Toast';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 export default function SubjectManagement() {
   const { t } = useLanguage();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({ isOpen: false, message: '', type: 'success' });
   
   const [formData, setFormData] = useState({ name: '', description: '' });
 
@@ -33,6 +38,8 @@ export default function SubjectManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (saving) return;
+    setSaving(true);
     try {
       if (editingId) {
         await subjectService.update(editingId, { id: editingId, ...formData });
@@ -43,8 +50,12 @@ export default function SubjectManagement() {
       setIsAdding(false);
       setEditingId(null);
       fetchSubjects();
+      setToast({ isOpen: true, message: t('admin.subjectSaved'), type: 'success' });
     } catch (err) {
       console.error('Failed to save subject', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -55,12 +66,18 @@ export default function SubjectManagement() {
   };
 
   const handleDelete = async (id: string) => {
+    if (deletingId) return;
     if (!confirm('Are you sure you want to delete this subject?')) return;
+    setDeletingId(id);
     try {
       await subjectService.delete(id);
       fetchSubjects();
+      setToast({ isOpen: true, message: t('admin.subjectDeleted'), type: 'success' });
     } catch (err) {
       console.error('Failed to delete subject', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -72,6 +89,7 @@ export default function SubjectManagement() {
           Subjects List
         </h2>
         <Button 
+          disabled={saving}
           onClick={() => { setIsAdding(!isAdding); setEditingId(null); setFormData({name:'', description:''}); }}
           className="rounded-2xl h-12 px-6 shadow-lg shadow-emerald-500/20"
         >
@@ -107,7 +125,7 @@ export default function SubjectManagement() {
                 />
               </div>
               <div className="flex justify-end">
-                <Button type="submit" className="px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30">
+                <Button type="submit" disabled={saving} isLoading={saving} className="px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30">
                   <Check className="w-4 h-4 mr-2" />
                   {editingId ? 'Update Subject' : 'Create Subject'}
                 </Button>
@@ -142,6 +160,7 @@ export default function SubjectManagement() {
                 <button
                   type="button"
                   onClick={() => handleDelete(s.id)}
+                  disabled={deletingId === s.id}
                   aria-label={t('admin.deleteSubject', { name: s.name })}
                   className="p-2 bg-white/5 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
                 >
@@ -154,6 +173,7 @@ export default function SubjectManagement() {
           </motion.div>
         ))}
       </div>
+      <Toast isOpen={toast.isOpen} message={toast.message} type={toast.type} onClose={() => setToast((current) => ({ ...current, isOpen: false }))} />
     </div>
   );
 }

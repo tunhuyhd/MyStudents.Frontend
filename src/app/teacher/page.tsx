@@ -35,6 +35,7 @@ import ClassModal from '@/components/teacher/ClassModal';
 import ConfirmModal from '@/components/teacher/ConfirmModal';
 import { Toast } from '@/components/ui/Toast';
 import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 export default function TeacherDashboard() {
   const { t, language } = useLanguage();
@@ -156,12 +157,14 @@ export default function TeacherDashboard() {
     try {
       await classService.delete(deletingClassId);
       setIsDeleteModalOpen(false);
+      setDeletingClassId(null);
+      setToast({ isOpen: true, message: t('teacher.classDeleted'), type: 'success' });
       fetchClasses();
     } catch (err) {
       console.error('Failed to delete class', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
     } finally {
       setIsDeleting(false);
-      setDeletingClassId(null);
     }
   };
 

@@ -18,6 +18,7 @@ import StatusDropdown from '@/components/teacher/StatusDropdown';
 import RecordSessionModal from '@/components/teacher/RecordSessionModal';
 import { Toast } from '@/components/ui/Toast';
 import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 interface StudentSummary {
   id: string;
@@ -208,6 +209,7 @@ export default function ClassDetailPage() {
       await fetchClassStudents(pageNumber);
     } catch (err) {
       console.error('Failed to update student status', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
     } finally {
       setUpdatingStudentId(null);
     }
@@ -223,6 +225,7 @@ export default function ClassDetailPage() {
       if (classData) setClassData({ ...classData, studentCount: Math.max(0, classData.studentCount - 1) });
     } catch (err) {
       console.error('Failed to remove student from class', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
     } finally {
       setUpdatingStudentId(null);
     }

@@ -11,6 +11,7 @@ import { ClassSchedule, classService, SessionAttendance } from '@/services/class
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
+import { mutationErrorMessage } from '@/lib/mutationError';
 
 interface RecordSessionModalProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ export default function RecordSessionModal({
   const [sessionId, setSessionId] = useState<string | undefined>(initialSessionId);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [updatingAttendanceId, setUpdatingAttendanceId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   const [sessionData, setSessionData] = useState({
@@ -177,14 +179,17 @@ export default function RecordSessionModal({
         setStep('attendance');
       }
     } catch (error: unknown) {
-      setError(apiErrorMessage(error, t, 'common.saveError'));
+      setError(mutationErrorMessage(error, t));
     } finally {
       setSaving(false);
     }
   };
 
   const handleUpdateStatus = async (attendanceId: string, status: number) => {
+    if (updatingAttendanceId) return;
     const oldAttendances = [...attendances];
+    setUpdatingAttendanceId(attendanceId);
+    setError(null);
     setAttendances(attendances.map(a => 
       a.id === attendanceId ? { ...a, status } : a
     ));
@@ -194,6 +199,9 @@ export default function RecordSessionModal({
     } catch (err) {
       console.error('Failed to update attendance', err);
       setAttendances(oldAttendances);
+      setError(mutationErrorMessage(err, t));
+    } finally {
+      setUpdatingAttendanceId(null);
     }
   };
 
@@ -273,7 +281,7 @@ export default function RecordSessionModal({
 
           {/* Error Banner */}
           {error && (
-            <div className="mx-8 md:mx-12 mt-6 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600">
+            <div role="alert" className="mx-8 md:mx-12 mt-6 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600">
               <AlertCircle className="w-6 h-6 shrink-0" />
               <p id={validationErrorId} className="font-bold text-sm">{error}</p>
             </div>
@@ -365,6 +373,7 @@ export default function RecordSessionModal({
                           <button
                             key={status.value}
                             onClick={() => handleUpdateStatus(student.id, status.value)}
+                            disabled={updatingAttendanceId !== null}
                             className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-500 shadow-sm border shrink-0 ${
                               student.status === status.value 
                                 ? `${status.bg} ${status.color} border-current scale-110 shadow-lg z-10` 

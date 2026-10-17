@@ -17,6 +17,8 @@
     "loading": "Loading...",
     "retry": "Try again",
     "sessionExpired": "Your session has expired. Sign in again to continue.",
+    "permissionDenied": "You don't have permission to perform this action.",
+    "mutationFailed": "The change could not be saved. Please try again.",
     "hello": "Hello",
     "back": "Back",
     "details": "Details",
@@ -105,6 +107,10 @@
     "rolesForbidden": "You don't have permission to view roles.",
     "rolesEmpty": "No roles are available to assign.",
     "rolesLoading": "Loading roles..."
+    ,"roleUpdated": "User role updated.",
+    "statusUpdated": "User status updated.",
+    "subjectSaved": "Subject saved.",
+    "subjectDeleted": "Subject deleted."
   },
   "teacher": {
     "title": "Class Management",
@@ -171,6 +177,7 @@
     "noClassesDesc": "Start your teaching journey by creating your first class session today.",
     "classesLoadError": "Unable to load classes. Previously loaded results are still shown.",
     "classesLoadEmptyError": "Unable to load classes. Please try again.",
+    "classDeleted": "Class deleted.",
     "classesForbidden": "You don't have permission to view these classes.",
     "sessionsPerWeek": "sessions / week",
     "deleteTitle": "Confirm Class Deletion",

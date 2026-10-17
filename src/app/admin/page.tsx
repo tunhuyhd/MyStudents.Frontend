@@ -13,6 +13,8 @@ import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
+import { mutationErrorMessage } from '@/lib/mutationError';
+import { Toast } from '@/components/ui/Toast';
 
 interface UserDto {
   id: string;
@@ -45,6 +47,7 @@ export default function AdminDashboard() {
   const rolesLoadState = getListLoadState(roles, rolesLoading, rolesLoadFailure);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
+  const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({ isOpen: false, message: '', type: 'success' });
 
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -92,6 +95,7 @@ export default function AdminDashboard() {
   }, [user, authLoading, router, fetchData]);
 
   const handleUpdateRole = async (userId: string, newRoleId: string) => {
+    if (updatingId) return;
     setUpdatingId(userId);
     try {
       await api.put(`/admin/users/${userId}/role`, newRoleId, {
@@ -99,14 +103,17 @@ export default function AdminDashboard() {
       });
       setLoading(true);
       await fetchData(); // Refresh data
+      setToast({ isOpen: true, message: t('admin.roleUpdated'), type: 'success' });
     } catch (err) {
       console.error('Failed to update role', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
     } finally {
       setUpdatingId(null);
     }
   };
 
   const handleUpdateStatus = async (userId: string, currentStatus: number) => {
+    if (updatingId) return;
     const newStatus = currentStatus === 1 ? 2 : 1;
     setUpdatingId(userId);
     try {
@@ -115,8 +122,10 @@ export default function AdminDashboard() {
         newStatus
       });
       await fetchData();
+      setToast({ isOpen: true, message: t('admin.statusUpdated'), type: 'success' });
     } catch (err) {
       console.error('Failed to update status', err);
+      setToast({ isOpen: true, message: mutationErrorMessage(err, t), type: 'error' });
     } finally {
       setUpdatingId(null);
     }
@@ -343,6 +352,7 @@ export default function AdminDashboard() {
           )}
         </AnimatePresence>
       </div>
+      <Toast isOpen={toast.isOpen} message={toast.message} type={toast.type} onClose={() => setToast((current) => ({ ...current, isOpen: false }))} />
     </main>
   );
 }

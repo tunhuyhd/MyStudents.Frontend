@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-md relative z-10"
       >
-        <Link href="/" className="inline-flex items-center text-sm font-bold text-emerald-500/50 hover:text-emerald-400 mb-8 transition-all group">
+        <Link href="/" className="inline-flex items-center text-sm font-bold text-emerald-300 hover:text-emerald-200 mb-8 transition-all group">
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           {t('common.backToHome')}
         </Link>
@@ -58,14 +58,15 @@ export default function AdminLoginPage() {
               <ShieldAlert className="w-8 h-8 md:w-10 md:h-10 text-emerald-500" />
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">Admin Access</h1>
-            <p className="text-emerald-500/60 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">Secure Terminal System</p>
+            <p className="text-emerald-300 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">Secure Terminal System</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <Input 
               label="ADMIN IDENTIFIER" 
               placeholder="Username"
-              className="bg-black/50 border-emerald-500/10 text-white focus:border-emerald-500/40"
+              labelClassName="text-emerald-300"
+              className="bg-black/50 border-emerald-500/10 text-white placeholder:text-emerald-300/80 focus:border-emerald-500/40"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -74,7 +75,8 @@ export default function AdminLoginPage() {
               label="SECURITY KEY" 
               type="password" 
               placeholder="••••••••"
-              className="bg-black/50 border-emerald-500/10 text-white focus:border-emerald-500/40"
+              labelClassName="text-emerald-300"
+              className="bg-black/50 border-emerald-500/10 text-white placeholder:text-emerald-300/80 focus:border-emerald-500/40"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -101,7 +103,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
         
-        <p className="text-center mt-8 text-[10px] font-black text-emerald-500/20 uppercase tracking-[0.3em]">
+        <p className="text-center mt-8 text-[10px] font-black text-emerald-300 uppercase tracking-[0.3em]">
           Restricted Area - Unauthorized access is prohibited
         </p>
       </motion.div>

@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-10-19T15:19:14.926Z",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "preference": "(prefers-reduced-motion: reduce)",
+  "initialReducedMotion": {
+    "preferenceMatches": true,
+    "start": {
+      "canvasClearCount": 2,
+      "canvasFillCount": 2,
+      "sampledAt": 997.0999999977648
+    },
+    "end": {
+      "canvasClearCount": 2,
+      "canvasFillCount": 2,
+      "sampledAt": 1405.5
+    },
+    "canvasRedrawsDuring400ms": 0,
+    "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-initial-1440.png"
+  },
+  "normalMotion": {
+    "preferenceMatches": false,
+    "start": {
+      "canvasClearCount": 14,
+      "canvasFillCount": 14,
+      "sampledAt": 1920.300000000745
+    },
+    "end": {
+      "canvasClearCount": 24,
+      "canvasFillCount": 24,
+      "sampledAt": 2287.300000000745
+    },
+    "canvasRedrawsDuring350ms": 10,
+    "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-normal-1440.png"
+  },
+  "runtimeReducedMotion": {
+    "preferenceMatches": true,
+    "start": {
+      "canvasClearCount": 27,
+      "canvasFillCount": 27,
+      "sampledAt": 2551.300000000745
+    },
+    "end": {
+      "canvasClearCount": 27,
+      "canvasFillCount": 27,
+      "sampledAt": 2957.39999999851
+    },
+    "canvasRedrawsDuring400ms": 0,
+    "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-runtime-1440.png"
+  },
+  "resumedNormalMotion": {
+    "preferenceMatches": false,
+    "start": {
+      "canvasClearCount": 40,
+      "canvasFillCount": 40,
+      "sampledAt": 3490
+    },
+    "end": {
+      "canvasClearCount": 50,
+      "canvasFillCount": 50,
+      "sampledAt": 3860
+    },
+    "canvasRedrawsDuring350ms": 10
+  },
+  "limitations": [
+    "Canvas redraw counts verify animation activity, not CPU usage, frame time, FPS or battery impact."
+  ]
+}

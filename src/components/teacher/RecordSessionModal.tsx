@@ -236,7 +236,7 @@ export default function RecordSessionModal({
   };
 
   const statusList = [
-    { value: 1, label: 'Có mặt', color: 'text-green-600', bg: 'bg-green-50', hover: 'hover:text-green-600 hover:bg-green-50' },
+    { value: 1, label: 'Có mặt', color: 'text-brand-text', bg: 'bg-green-50', hover: 'hover:text-brand-text hover:bg-green-50' },
     { value: 2, label: 'Vắng mặt', color: 'text-red-600', bg: 'bg-red-50', hover: 'hover:text-red-600 hover:bg-red-50' },
     { value: 3, label: 'Muộn', color: 'text-amber-600', bg: 'bg-amber-50', hover: 'hover:text-amber-600 hover:bg-amber-50' },
     { value: 4, label: 'Có phép', color: 'text-blue-600', bg: 'bg-blue-50', hover: 'hover:text-blue-600 hover:bg-blue-50' },
@@ -279,7 +279,7 @@ export default function RecordSessionModal({
                 </button>
               )}
               <div>
-                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-primary tracking-tighter">
+                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-text tracking-tighter">
                   {step === 'details' ? 'Chi tiết buổi học' : 'Điểm danh lớp học'}
                 </h2>
                 <p id={`${formId}-dialog-description`} className="text-surface-500 font-bold text-sm mt-1">
@@ -291,7 +291,7 @@ export default function RecordSessionModal({
               {step === 'attendance' && (
                 <button 
                   onClick={() => setStep('details')}
-                  className="hidden md:flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-xl hover:bg-brand-primary/10 text-surface-500 hover:text-brand-primary transition-all font-black text-[10px] uppercase tracking-widest"
+                  className="hidden md:flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-xl hover:bg-brand-primary/10 text-surface-500 hover:text-brand-text transition-all font-black text-[10px] uppercase tracking-widest"
                 >
                   <Settings2 className="w-4 h-4" />
                   <span>Sửa thông tin</span>
@@ -319,7 +319,7 @@ export default function RecordSessionModal({
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-session-date`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ngày học</label>
+                    <label htmlFor={`${formId}-session-date`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Ngày học</label>
                     <div className="relative group">
                       <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
@@ -335,7 +335,7 @@ export default function RecordSessionModal({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor={`${formId}-session-start-time`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Bắt đầu</label>
+                      <label htmlFor={`${formId}-session-start-time`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Bắt đầu</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
@@ -348,7 +348,7 @@ export default function RecordSessionModal({
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor={`${formId}-session-end-time`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Kết thúc</label>
+                      <label htmlFor={`${formId}-session-end-time`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Kết thúc</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                         <input 
@@ -363,7 +363,7 @@ export default function RecordSessionModal({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-session-note`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Nội dung / Ghi chú</label>
+                  <label htmlFor={`${formId}-session-note`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Nội dung / Ghi chú</label>
                   <div className="relative group">
                     <FileText className="absolute left-6 top-6 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <textarea 
@@ -387,7 +387,7 @@ export default function RecordSessionModal({
                   attendances.map((student) => (
                     <div key={student.id} className="p-6 bg-surface-50/40 rounded-[2.5rem] border border-surface-50 flex items-center justify-between group hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 overflow-hidden">
                       <div className="flex items-center space-x-6 min-w-0 mr-4">
-                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-brand-primary text-xl font-black shadow-sm group-hover:rotate-6 transition-transform shrink-0">
+                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-brand-text text-xl font-black shadow-sm group-hover:rotate-6 transition-transform shrink-0">
                           {student.studentName.substring(0, 1)}
                         </div>
                         <div className="min-w-0">
@@ -431,7 +431,7 @@ export default function RecordSessionModal({
               <Button 
                 onClick={handleCreateOrUpdateSession} 
                 disabled={saving}
-                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-xs"
+                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-action text-white uppercase tracking-widest text-xs"
               >
                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                   <>
@@ -446,7 +446,7 @@ export default function RecordSessionModal({
                   onSuccess();
                   onClose();
                 }}
-                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-xs"
+                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-action text-white uppercase tracking-widest text-xs"
               >
                 <Check className="w-5 h-5 mr-3" />
                 Hoàn tất buổi học

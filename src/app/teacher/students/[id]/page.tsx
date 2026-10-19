@@ -93,7 +93,7 @@ export default function StudentDetailPage() {
       <div className="flex items-center justify-between relative z-10">
         <button 
           onClick={() => router.push('/teacher/students')}
-          className="flex items-center space-x-3 text-surface-400 hover:text-brand-primary font-black transition-all group"
+          className="flex items-center space-x-3 text-surface-400 hover:text-brand-text font-black transition-all group"
         >
           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:shadow-xl transition-all">
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -103,7 +103,7 @@ export default function StudentDetailPage() {
 
         <Button 
           onClick={() => setIsModalOpen(true)}
-          className="h-14 px-8 rounded-2xl bg-white border border-surface-100 text-surface-800 hover:bg-brand-primary hover:text-white hover:border-brand-primary shadow-sm hover:shadow-xl hover:shadow-brand-primary/20 transition-all duration-300 font-black group"
+          className="h-14 px-8 rounded-2xl bg-white border border-surface-100 text-surface-800 hover:bg-brand-action hover:text-white hover:border-brand-action shadow-sm hover:shadow-xl hover:shadow-brand-primary/20 transition-all duration-300 font-black group"
         >
           <Edit className="w-4 h-4 mr-3 group-hover:rotate-12 transition-transform" />
           {t('common.edit') || 'Chỉnh sửa hồ sơ'}
@@ -121,12 +121,12 @@ export default function StudentDetailPage() {
         </div>
 
         <div className="flex flex-col md:flex-row items-center md:items-start gap-10 relative z-10">
-          <div className="w-32 h-32 md:w-40 md:h-40 bg-brand-primary/5 rounded-[3.5rem] flex items-center justify-center text-4xl md:text-5xl font-black text-brand-primary shadow-inner">
+          <div className="w-32 h-32 md:w-40 md:h-40 bg-brand-primary/5 rounded-[3.5rem] flex items-center justify-center text-4xl md:text-5xl font-black text-brand-text shadow-inner">
             {student.firstName.substring(0, 1)}{student.lastName.substring(0, 1)}
           </div>
           
           <div className="flex-1 text-center md:text-left space-y-4">
-            <div className="inline-flex items-center px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
+            <div className="inline-flex items-center px-4 py-1.5 bg-green-50 text-brand-text rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
               <ShieldCheck className="w-3.5 h-3.5 mr-2" />
               {t('teacher.students.activeStatus') || 'Đang theo học'}
             </div>
@@ -230,7 +230,7 @@ export default function StudentDetailPage() {
                 <Phone className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-[10px] font-black text-brand-primary uppercase tracking-widest opacity-80">Liên hệ ngay</div>
+                <div className="text-[10px] font-black text-brand-text uppercase tracking-widest">Liên hệ ngay</div>
                 <div className="text-sm font-black text-surface-900">Gọi cho phụ huynh</div>
               </div>
             </div>
@@ -288,11 +288,11 @@ function DetailItem({
         {icon}
       </div>
       <div className="flex-1 space-y-1">
-        <div className="text-[10px] font-black text-brand-primary/60 uppercase tracking-widest">{label}</div>
+        <div className="text-[10px] font-black text-brand-text uppercase tracking-widest">{label}</div>
         <div className="flex items-center justify-between">
           <div className="text-base font-bold text-surface-800 tracking-tight">{value}</div>
           {isCopyable && value !== '---' && (
-            <button className="text-[10px] font-black text-brand-primary uppercase tracking-widest opacity-0 group-hover/item:opacity-100 transition-opacity hover:underline">
+            <button className="text-[10px] font-black text-brand-text uppercase tracking-widest opacity-0 group-hover/item:opacity-100 transition-opacity hover:underline">
               Sao chép
             </button>
           )}

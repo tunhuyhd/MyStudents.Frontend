@@ -10,17 +10,18 @@ function cn(...inputs: ClassValue[]) {
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  labelClassName?: string;
   error?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, type, 'aria-describedby': describedBy, ...props }, ref) => {
+  ({ className, label, labelClassName, error, type, 'aria-describedby': describedBy, ...props }, ref) => {
     const generatedId = useId();
     const id = props.id || generatedId;
     return (
       <div className="w-full space-y-2">
         {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-surface-800">
+          <label htmlFor={id} className={cn('block text-sm font-medium text-surface-800', labelClassName)}>
             {label}
           </label>
         )}

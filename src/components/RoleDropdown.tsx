@@ -69,7 +69,7 @@ export default function RoleDropdown({ roles, currentRoleId, onUpdate, disabled 
                     flex items-center justify-between w-full px-4 py-2.5 rounded-xl text-sm font-bold transition-all
                     ${role.id === currentRoleId 
                       ? 'bg-emerald-500 text-black' 
-                      : 'text-emerald-500/70 hover:bg-emerald-500/10 hover:text-emerald-400'}
+                      : 'text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200'}
                   `}
                 >
                   {role.name}

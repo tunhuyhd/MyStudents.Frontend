@@ -151,14 +151,14 @@ export default function AdminDashboard() {
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">{t('admin.title')}</h1>
             </div>
-            <p className="text-emerald-500/40 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
+            <p className="text-emerald-300 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
           </div>
           
           <div className="flex items-center bg-white/5 p-1.5 rounded-2xl border border-white/5">
             <button
               onClick={() => setActiveTab('users')}
               className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                activeTab === 'users' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-500/60 hover:text-emerald-400'
+                activeTab === 'users' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-300 hover:text-emerald-200'
               }`}
             >
               <Users className="w-4 h-4 mr-2" />
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
             <button
               onClick={() => setActiveTab('subjects')}
               className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                activeTab === 'subjects' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-500/60 hover:text-emerald-400'
+                activeTab === 'subjects' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-300 hover:text-emerald-200'
               }`}
             >
               <BookOpen className="w-4 h-4 mr-2" />
@@ -245,11 +245,11 @@ export default function AdminDashboard() {
                 <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5">
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.user')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('auth.email')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.currentRole')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('teacher.modal.statusLabel')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-500/40 uppercase tracking-widest">{t('admin.changeRole')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.user')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('auth.email')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.currentRole')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('teacher.modal.statusLabel')}</th>
+                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.changeRole')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <div className="font-bold text-white truncate max-w-[120px] md:max-w-none">{u.fullName}</div>
-                            <div className="text-sm text-emerald-500/40 truncate max-w-[100px] md:max-w-none">@{u.username}</div>
+                            <div className="text-sm text-emerald-300 truncate max-w-[100px] md:max-w-none">@{u.username}</div>
                           </div>
                         </div>
                       </td>
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                           u.roleName === 'Admin' 
                           ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
-                          : 'bg-white/5 text-white/40 border-white/10'
+                          : 'bg-white/5 text-white/70 border-white/10'
                         }`}>
                           {u.roleName}
                         </span>
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                           className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
                             u.status === 1 
                             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
-                            : 'bg-white/5 text-white/40 border-white/10'
+                            : 'bg-white/5 text-white/70 border-white/10'
                           }`}
                         >
                           <div className="flex items-center gap-2">

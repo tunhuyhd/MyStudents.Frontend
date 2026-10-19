@@ -107,7 +107,7 @@ const CustomDatePicker = ({
 
   return (
     <div className="space-y-2 relative" ref={dropdownRef}>
-      <label htmlFor={id} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">
+      <label htmlFor={id} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">
         {label}
       </label>
       <div className="relative group">
@@ -142,7 +142,7 @@ const CustomDatePicker = ({
                 onClick={() => setShowYearPicker(!showYearPicker)}
                 className="flex items-center space-x-2 px-4 py-2 hover:bg-surface-50 rounded-xl transition-colors group"
               >
-                <h4 className="font-black text-surface-900 group-hover:text-brand-primary transition-colors text-lg">
+                <h4 className="font-black text-surface-900 group-hover:text-brand-text transition-colors text-lg">
                   {viewDate.toLocaleString('vi-VN', { month: 'long', year: 'numeric' })}
                 </h4>
                 <ChevronDown className={`w-4 h-4 text-surface-400 group-hover:text-brand-primary transition-all ${showYearPicker ? 'rotate-180' : ''}`} />
@@ -166,7 +166,7 @@ const CustomDatePicker = ({
                     onClick={() => handleYearSelect(y)}
                     className={`py-3 rounded-xl text-sm font-bold transition-all ${
                       y === viewDate.getFullYear()
-                      ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                      ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
                       : 'hover:bg-brand-primary/5 text-surface-600'
                     }`}
                   >
@@ -196,7 +196,7 @@ const CustomDatePicker = ({
                         onClick={() => handleSelect(d)}
                         className={`h-10 rounded-xl text-sm font-bold transition-all ${
                           isSelected 
-                          ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                          ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
                           : 'hover:bg-brand-primary/5 text-surface-600'
                         }`}
                       >
@@ -345,7 +345,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 <UserCircle className="w-8 h-8 text-brand-primary" />
               </div>
               <div>
-                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-primary tracking-tight">
+                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-text tracking-tight">
                   {initialData ? 'Cập nhật học sinh' : 'Thêm học sinh mới'}
                 </h2>
                 <p id={`${formId}-dialog-description`} className="text-surface-500 font-bold text-sm mt-1">
@@ -388,7 +388,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-last-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ & Tên đệm <span className="text-red-500">*</span></label>
+                    <label htmlFor={`${formId}-last-name`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Họ & Tên đệm <span className="text-red-500">*</span></label>
                     <input 
                       id={`${formId}-last-name`}
                       type="text" 
@@ -402,7 +402,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-first-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Tên <span className="text-red-500">*</span></label>
+                    <label htmlFor={`${formId}-first-name`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Tên <span className="text-red-500">*</span></label>
                     <input 
                       id={`${formId}-first-name`}
                       type="text" 
@@ -418,7 +418,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-email`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Email <span className="text-red-500">*</span></label>
+                  <label htmlFor={`${formId}-email`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Email <span className="text-red-500">*</span></label>
                   <div className="relative group">
                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
@@ -445,7 +445,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                   />
 
                   <div className="space-y-2">
-                    <span id={`${formId}-gender-label`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Giới tính</span>
+                    <span id={`${formId}-gender-label`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Giới tính</span>
                     <div role="group" aria-labelledby={`${formId}-gender-label`} className="flex bg-surface-50/70 p-1.5 rounded-[1.5rem] h-14 md:h-16">
                       {[
                         { id: 0, label: 'Nam' },
@@ -457,7 +457,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                           onClick={() => setFormData({...formData, gender: g.id})}
                           className={`flex-1 rounded-[1rem] text-xs font-black transition-all duration-500 ${
                             formData.gender === g.id 
-                            ? 'bg-white text-brand-primary shadow-lg shadow-brand-primary/10' 
+                            ? 'bg-white text-brand-text shadow-lg shadow-brand-primary/10'
                             : 'text-surface-400 hover:text-surface-600'
                           }`}
                         >
@@ -469,7 +469,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-school`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Trường học</label>
+                  <label htmlFor={`${formId}-school`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Trường học</label>
                   <div className="relative group">
                     <GraduationCap className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
@@ -494,7 +494,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-parent-name`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Họ tên phụ huynh</label>
+                  <label htmlFor={`${formId}-parent-name`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Họ tên phụ huynh</label>
                   <input 
                     id={`${formId}-parent-name`}
                     type="text" 
@@ -507,7 +507,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-parent-phone`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Phụ huynh</label>
+                    <label htmlFor={`${formId}-parent-phone`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">SĐT Phụ huynh</label>
                     <div className="relative group">
                       <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
@@ -521,7 +521,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-student-phone`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">SĐT Học sinh</label>
+                    <label htmlFor={`${formId}-student-phone`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">SĐT Học sinh</label>
                     <div className="relative group">
                       <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                       <input 
@@ -537,7 +537,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-address`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Địa chỉ</label>
+                  <label htmlFor={`${formId}-address`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Địa chỉ</label>
                   <div className="relative group">
                     <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
                     <input 
@@ -552,7 +552,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-note`} className="text-[11px] font-black text-brand-primary uppercase tracking-[0.2em] px-2 block">Ghi chú</label>
+                  <label htmlFor={`${formId}-note`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Ghi chú</label>
                   <textarea 
                     id={`${formId}-note`}
                     className="w-full p-6 bg-surface-50/70 border-2 border-transparent rounded-[2rem] text-sm font-bold placeholder:text-surface-300 focus:ring-0 focus:border-brand-primary/20 focus:bg-white transition-all min-h-[140px] outline-none scrollbar-hide text-surface-900"
@@ -576,7 +576,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
             <Button 
               onClick={() => handleSubmit()} 
               isLoading={loading}
-              className="rounded-[1.75rem] px-10 md:px-14 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-primary text-white uppercase tracking-widest text-xs"
+              className="rounded-[1.75rem] px-10 md:px-14 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-action text-white uppercase tracking-widest text-xs"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>

@@ -182,7 +182,7 @@ export default function TeacherDashboard() {
         >
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-6 border border-brand-primary/10">
             <Sparkles className="w-4 h-4 text-brand-primary animate-pulse" />
-            <span className="text-[10px] font-black text-brand-primary uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
+            <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
           </div>
           
           <h1 className="text-5xl font-black text-surface-900 tracking-tighter leading-none mb-6">
@@ -215,7 +215,7 @@ export default function TeacherDashboard() {
           <Button 
             onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
             size="lg" 
-            className="rounded-3xl h-16 px-10 shadow-xl shadow-brand-primary/20 group bg-brand-primary text-white font-black w-full sm:w-auto"
+            className="rounded-3xl h-16 px-10 shadow-xl shadow-brand-primary/20 group bg-brand-action text-white font-black w-full sm:w-auto"
           >
             <Plus className="w-6 h-6 mr-3 group-hover:rotate-180 transition-transform duration-500" />
             {t('teacher.createClass')}
@@ -263,7 +263,7 @@ export default function TeacherDashboard() {
                 >
                   <button
                     onClick={() => { setYear(''); setPageNumber(1); setIsYearDropdownOpen(false); }}
-                    className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                    className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                   >
                     Tất cả các năm
                     {year === '' && <Check className="w-4 h-4" />}
@@ -274,7 +274,7 @@ export default function TeacherDashboard() {
                       <button
                         key={y}
                         onClick={() => { setYear(y); setPageNumber(1); setIsYearDropdownOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                       >
                         Năm {y}
                         {year === y && <Check className="w-4 h-4" />}
@@ -333,7 +333,7 @@ export default function TeacherDashboard() {
                           setPageNumber(1);
                           setIsSortDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${isActive ? 'text-brand-primary bg-brand-primary/5' : 'text-surface-700'}`}
+                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${isActive ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                       >
                         {option.label}
                         {isActive && <Check className="w-4 h-4" />}
@@ -403,16 +403,16 @@ export default function TeacherDashboard() {
                         <div className={`flex items-center space-x-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
                           c.category === 0 
                           ? 'bg-blue-50 text-blue-500 border border-blue-100' 
-                          : 'bg-brand-primary/5 text-brand-primary border border-brand-primary/10'
+                          : 'bg-brand-primary/5 text-brand-text border border-brand-primary/10'
                         }`}>
                           <Zap className="w-3 h-3" />
                           <span>{c.category === 0 ? t('common.online') : t('common.offline')}</span>
                         </div>
                         {/* Status Badge */}
                         <div className={`mt-2 flex items-center space-x-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${
-                          c.status === 1 ? 'bg-green-50 text-green-600 border-green-100' :
+                          c.status === 1 ? 'bg-green-50 text-brand-text border-green-100' :
                           c.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                          c.status === 3 ? 'bg-brand-primary/10 text-brand-primary border-brand-primary/20' :
+                          c.status === 3 ? 'bg-brand-primary/10 text-brand-text border-brand-primary/20' :
                           'bg-red-50 text-red-600 border-red-100'
                         }`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${
@@ -436,10 +436,10 @@ export default function TeacherDashboard() {
                       </div>
 
                       <div className="mb-8">
-                        <div className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] mb-3 opacity-60">
+                        <div className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em] mb-3">
                           {c.subjectName}
                         </div>
-                        <h3 className="text-3xl font-black text-surface-900 mb-3 group-hover:text-brand-primary transition-colors duration-500 leading-tight">
+                        <h3 className="text-3xl font-black text-surface-900 mb-3 group-hover:text-brand-text transition-colors duration-500 leading-tight">
                           {c.name}
                         </h3>
                         <div className="w-12 h-1 bg-brand-primary/10 rounded-full group-hover:w-24 transition-all duration-500" />
@@ -475,7 +475,7 @@ export default function TeacherDashboard() {
                         <div className="flex gap-1.5 flex-1">
                           <button 
                             onClick={() => handleEdit(c)} 
-                            className="flex-1 h-12 bg-white border border-surface-100 rounded-[1.25rem] flex items-center justify-center text-surface-400 hover:text-brand-primary hover:border-brand-primary/30 transition-all hover:shadow-lg hover:shadow-brand-primary/5"
+                            className="flex-1 h-12 bg-white border border-surface-100 rounded-[1.25rem] flex items-center justify-center text-surface-400 hover:text-brand-text hover:border-brand-primary/30 transition-all hover:shadow-lg hover:shadow-brand-primary/5"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
@@ -537,7 +537,7 @@ export default function TeacherDashboard() {
                     onClick={() => setPageNumber(i + 1)}
                     className={`w-12 h-12 rounded-xl text-sm font-black transition-all ${
                       pageNumber === i + 1 
-                        ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                        ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
                         : 'text-surface-500 hover:bg-surface-50'
                     }`}
                   >

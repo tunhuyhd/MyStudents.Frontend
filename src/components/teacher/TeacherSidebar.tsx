@@ -125,7 +125,7 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
               </div>
               <div>
                 <h2 className="text-xl font-black text-surface-900 tracking-tighter leading-none">Teacher</h2>
-                <p className="text-[10px] font-black text-brand-primary uppercase tracking-widest mt-1">Lounge</p>
+                <p className="text-[10px] font-black text-brand-text uppercase tracking-widest mt-1">Lounge</p>
               </div>
             </Link>
             <button type="button" aria-label={t('common.closeNavigation')} onClick={onClose} className="lg:hidden p-3 text-surface-600 rounded-xl hover:bg-surface-100">

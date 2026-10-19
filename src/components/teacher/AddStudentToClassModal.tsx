@@ -96,7 +96,7 @@ export default function AddStudentToClassModal({
           {/* Header */}
           <div className="p-8 md:p-12 border-b border-surface-50 flex items-center justify-between relative">
             <div>
-              <h2 id={`${dialogId}-title`} className="text-3xl font-black text-brand-primary tracking-tighter">
+              <h2 id={`${dialogId}-title`} className="text-3xl font-black text-brand-text tracking-tighter">
                 {t('teacher.details.addStudent') || 'Thêm học sinh'}
               </h2>
               <p id={`${dialogId}-description`} className="text-surface-500 font-bold text-sm mt-1">
@@ -142,7 +142,7 @@ export default function AddStudentToClassModal({
                   className="p-6 bg-surface-50/40 rounded-[2.5rem] border border-surface-50 hover:border-brand-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 flex items-center justify-between group"
                 >
                   <div className="flex items-center space-x-6">
-                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-xl font-black text-brand-primary shadow-sm group-hover:rotate-6 transition-transform">
+                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-xl font-black text-brand-text shadow-sm group-hover:rotate-6 transition-transform">
                       {student.lastName?.substring(0, 1)}{student.firstName?.substring(0, 1)}
                     </div>
                     <div>
@@ -161,7 +161,7 @@ export default function AddStudentToClassModal({
                     className={`h-12 px-6 rounded-xl font-black transition-all text-xs uppercase tracking-widest ${
                       addingId === student.id 
                       ? 'bg-surface-100 text-surface-400' 
-                      : 'bg-white text-brand-primary hover:bg-brand-primary hover:text-white shadow-lg shadow-brand-primary/5 border border-brand-primary/10'
+                      : 'bg-white text-brand-text hover:bg-brand-action hover:text-white shadow-lg shadow-brand-primary/5 border border-brand-primary/10'
                     }`}
                   >
                     {addingId === student.id ? (
@@ -189,7 +189,7 @@ export default function AddStudentToClassModal({
           <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md sticky bottom-0 z-10 flex justify-end">
             <Button 
               onClick={onClose}
-              className="rounded-[1.75rem] h-16 px-12 bg-brand-primary text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand-primary/20"
+              className="rounded-[1.75rem] h-16 px-12 bg-brand-action text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand-primary/20"
             >
               Hoàn tất
             </Button>

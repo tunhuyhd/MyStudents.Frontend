@@ -162,7 +162,7 @@ export default function StudentsPage() {
           animate={{ opacity: 1, x: 0 }}
           className="space-y-4"
         >
-          <div className="inline-flex items-center px-4 py-1.5 bg-brand-primary/10 rounded-full text-brand-primary text-[10px] font-black uppercase tracking-[0.2em] border border-brand-primary/10">
+          <div className="inline-flex items-center px-4 py-1.5 bg-brand-primary/10 rounded-full text-brand-text text-[10px] font-black uppercase tracking-[0.2em] border border-brand-primary/10">
             <Users className="w-4 h-4 mr-2" />
             {t('teacher.students.management') || 'Quản lý học sinh'}
           </div>
@@ -223,7 +223,7 @@ export default function StudentsPage() {
 
           <Button 
             onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
-            className="h-16 px-8 rounded-[2rem] bg-brand-primary hover:bg-brand-primary/90 shadow-2xl shadow-brand-primary/20 text-white font-black group w-full md:w-auto"
+            className="h-16 px-8 rounded-[2rem] bg-brand-action hover:bg-brand-action-hover shadow-2xl shadow-brand-primary/20 text-white font-black group w-full md:w-auto"
           >
             <UserPlus className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
             {t('teacher.students.addBtn') || 'Thêm học sinh'}
@@ -263,7 +263,7 @@ export default function StudentsPage() {
                   <button 
                     onClick={() => handleEdit(student)}
                     aria-label={t('teacher.students.editStudent', { name: `${student.firstName} ${student.lastName}` })}
-                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-500 hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary transition-all"
+                    className="p-3 bg-white shadow-xl rounded-2xl text-surface-500 hover:text-brand-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-text transition-all"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -278,15 +278,15 @@ export default function StudentsPage() {
 
                 {/* Profile Header */}
                 <div className="flex items-center space-x-6 mb-8">
-                  <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center text-2xl font-black text-brand-primary group-hover:bg-white transition-colors">
+                  <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center text-2xl font-black text-brand-text group-hover:bg-white transition-colors">
                     {student.firstName.substring(0, 1)}{student.lastName.substring(0, 1)}
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-surface-900 tracking-tight group-hover:text-brand-primary transition-colors">
+                    <h3 className="text-xl font-black text-surface-900 tracking-tight group-hover:text-brand-text transition-colors">
                       {student.lastName} {student.firstName}
                     </h3>
                     <div className="flex items-center mt-1 space-x-3">
-                      <span className="text-xs font-black text-brand-primary uppercase tracking-widest opacity-60">
+                      <span className="text-xs font-black text-brand-text uppercase tracking-widest">
                         {student.gender === 0 ? t('teacher.students.male') : student.gender === 1 ? t('teacher.students.female') : t('teacher.students.other')}
                       </span>
                       <button
@@ -296,7 +296,7 @@ export default function StudentsPage() {
                         disabled={updatingStatusId === student.id}
                         className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
                           student.status === 1 
-                          ? 'bg-green-50 text-green-600 border border-green-100' 
+                          ? 'bg-green-50 text-brand-text border border-green-100'
                           : 'bg-surface-100 text-surface-400 border border-surface-200'
                         }`}
                       >
@@ -343,7 +343,7 @@ export default function StudentsPage() {
                   </div>
                   <button 
                     onClick={() => router.push(`/teacher/students/${student.id}`)}
-                    className="flex items-center space-x-2 text-brand-primary font-black text-xs hover:opacity-70 transition-opacity"
+                    className="flex items-center space-x-2 text-brand-text font-black text-xs hover:opacity-70 transition-opacity"
                   >
                     <span>{t('common.details') || 'Chi tiết'}</span>
                     <ChevronRight className="w-4 h-4" />
@@ -370,7 +370,7 @@ export default function StudentsPage() {
                 {t('teacher.students.clearFilters')}
               </Button>
             ) : (
-              <Button onClick={() => { setEditingStudent(null); setIsModalOpen(true); }} className="h-14 px-10 rounded-2xl bg-brand-primary shadow-xl shadow-brand-primary/10 text-white font-black">
+              <Button onClick={() => { setEditingStudent(null); setIsModalOpen(true); }} className="h-14 px-10 rounded-2xl bg-brand-action shadow-xl shadow-brand-primary/10 text-white font-black">
                 <Plus className="w-5 h-5 mr-3" />{t('teacher.students.addNowBtn')}
               </Button>
             )}

@@ -169,7 +169,7 @@ export default function SubjectManagement() {
               </div>
             </div>
             <h3 className="text-xl font-bold text-white mb-2">{s.name}</h3>
-            <p className="text-emerald-500/40 text-sm line-clamp-2">{s.description || 'No description available.'}</p>
+            <p className="text-emerald-300 text-sm line-clamp-2">{s.description || 'No description available.'}</p>
           </motion.div>
         ))}
       </div>

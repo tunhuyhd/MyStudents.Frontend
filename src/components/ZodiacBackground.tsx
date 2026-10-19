@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+
 export default function ZodiacBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -11,14 +13,13 @@ export default function ZodiacBackground() {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    const drawingContext = ctx;
 
+    const motionPreference = window.matchMedia(REDUCED_MOTION_QUERY);
     let particles: Particle[] = [];
-    let animationFrameId: number;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+    let animationFrameId: number | null = null;
+    let isAnimating = false;
+    let animationGeneration = 0;
 
     class Particle {
       x: number;
@@ -31,10 +32,10 @@ export default function ZodiacBackground() {
       constructor() {
         this.x = Math.random() * canvas!.width;
         this.y = Math.random() * canvas!.height;
-        this.size = Math.random() * 2.5 + 1.0; // Larger stars
+        this.size = Math.random() * 2.5 + 1.0;
         this.speedX = Math.random() * 0.15 - 0.075;
         this.speedY = Math.random() * 0.15 - 0.075;
-        this.opacity = Math.random() * 0.8 + 0.3; // Brighter
+        this.opacity = Math.random() * 0.8 + 0.3;
       }
 
       update() {
@@ -48,27 +49,44 @@ export default function ZodiacBackground() {
       }
 
       draw() {
-        if (!ctx) return;
-        ctx.fillStyle = `rgba(16, 185, 129, ${this.opacity})`; // Emerald stars
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#10b981';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        drawingContext.fillStyle = `rgba(16, 185, 129, ${this.opacity})`;
+        drawingContext.shadowBlur = 10;
+        drawingContext.shadowColor = '#10b981';
+        drawingContext.beginPath();
+        drawingContext.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        drawingContext.fill();
+        drawingContext.shadowBlur = 0;
       }
     }
 
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
     const init = () => {
       particles = [];
-      const numberOfParticles = (canvas!.width * canvas!.height) / 7000; // More stars
+      const numberOfParticles = (canvas.width * canvas.height) / 7000;
       for (let i = 0; i < numberOfParticles; i++) {
         particles.push(new Particle());
       }
     };
 
+    const drawBackground = () => {
+      drawingContext.clearRect(0, 0, canvas!.width, canvas!.height);
+
+      const gradient = drawingContext.createRadialGradient(
+        canvas!.width / 2, canvas!.height / 2, 0,
+        canvas!.width / 2, canvas!.height / 2, canvas!.width,
+      );
+      gradient.addColorStop(0, '#060a08');
+      gradient.addColorStop(1, '#020403');
+      drawingContext.fillStyle = gradient;
+      drawingContext.fillRect(0, 0, canvas!.width, canvas!.height);
+    };
+
     const connect = () => {
-      const maxDistance = 200; // Longer connections
+      const maxDistance = 200;
       for (let a = 0; a < particles.length; a++) {
         for (let b = a; b < particles.length; b++) {
           const dx = particles[a].x - particles[b].x;
@@ -77,46 +95,83 @@ export default function ZodiacBackground() {
 
           if (distance < maxDistance) {
             const opacity = 1 - distance / maxDistance;
-            ctx.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.25})`; // Brighter lines
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particles[a].x, particles[a].y);
-            ctx.lineTo(particles[b].x, particles[b].y);
-            ctx.stroke();
+            drawingContext.strokeStyle = `rgba(16, 185, 129, ${opacity * 0.25})`;
+            drawingContext.lineWidth = 0.5;
+            drawingContext.beginPath();
+            drawingContext.moveTo(particles[a].x, particles[a].y);
+            drawingContext.lineTo(particles[b].x, particles[b].y);
+            drawingContext.stroke();
           }
         }
       }
     };
 
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas!.width, canvas!.height);
-      
-      // Deep space gradient
-      const gradient = ctx.createRadialGradient(
-        canvas!.width / 2, canvas!.height / 2, 0,
-        canvas!.width / 2, canvas!.height / 2, canvas!.width
-      );
-      gradient.addColorStop(0, '#060a08'); // Darkest center
-      gradient.addColorStop(1, '#020403'); // Total black outer
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas!.width, canvas!.height);
-
-      particles.forEach(p => {
-        p.update();
-        p.draw();
+    const drawScene = (updateParticles: boolean) => {
+      drawBackground();
+      particles.forEach((particle) => {
+        if (updateParticles) particle.update();
+        particle.draw();
       });
       connect();
-      animationFrameId = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('resize', resize);
+    const stopAnimation = () => {
+      isAnimating = false;
+      animationGeneration += 1;
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    };
+
+    const animate = (generation: number) => {
+      animationFrameId = null;
+      if (!isAnimating || generation !== animationGeneration || motionPreference.matches) return;
+      drawScene(true);
+      animationFrameId = requestAnimationFrame(() => animate(generation));
+    };
+
+    const startAnimation = () => {
+      if (motionPreference.matches || animationFrameId !== null) return;
+      isAnimating = true;
+      animationGeneration += 1;
+      const generation = animationGeneration;
+      drawScene(true);
+      animationFrameId = requestAnimationFrame(() => animate(generation));
+    };
+
+    const drawStaticScene = () => {
+      drawScene(false);
+    };
+
+    const onMotionPreferenceChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        stopAnimation();
+        drawStaticScene();
+      } else {
+        startAnimation();
+      }
+    };
+
+    const onResize = () => {
+      resize();
+      if (motionPreference.matches) {
+        drawStaticScene();
+      }
+    };
+
     resize();
     init();
-    animate();
+    if (motionPreference.matches) drawStaticScene();
+    else startAnimation();
+
+    window.addEventListener('resize', onResize);
+    motionPreference.addEventListener('change', onMotionPreferenceChange);
 
     return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationFrameId);
+      stopAnimation();
+      window.removeEventListener('resize', onResize);
+      motionPreference.removeEventListener('change', onMotionPreferenceChange);
     };
   }, []);
 

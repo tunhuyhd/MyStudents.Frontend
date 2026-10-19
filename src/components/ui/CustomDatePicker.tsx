@@ -89,7 +89,7 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
               <button 
                 onClick={handlePrevMonth}
                 type="button"
-                className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-text transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -99,7 +99,7 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
               <button 
                 onClick={handleNextMonth}
                 type="button"
-                className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-text transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -133,9 +133,9 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
                     onClick={() => handleSelectDate(day)}
                     className={`h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all ${
                       isSelected 
-                        ? 'bg-brand-primary text-white shadow-md shadow-brand-primary/30' 
+                        ? 'bg-brand-action text-white shadow-md shadow-brand-primary/30'
                         : isToday
-                        ? 'text-brand-primary bg-brand-primary/10'
+                        ? 'text-brand-text bg-brand-primary/10'
                         : 'text-surface-700 hover:bg-surface-100'
                     }`}
                   >

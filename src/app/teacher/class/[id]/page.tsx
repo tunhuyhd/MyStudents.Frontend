@@ -247,9 +247,9 @@ export default function ClassDetailPage() {
 
   const getStatusLabel = (status: number) => {
     switch (status) {
-      case 1: return { label: 'Đang học', color: 'bg-green-100 text-green-600' };
+      case 1: return { label: 'Đang học', color: 'bg-green-100 text-brand-text' };
       case 2: return { label: 'Bảo lưu', color: 'bg-surface-100 text-surface-500' };
-      case 3: return { label: 'Hoàn thành', color: 'bg-brand-primary/10 text-brand-primary' };
+      case 3: return { label: 'Hoàn thành', color: 'bg-brand-primary/10 text-brand-text' };
       case 4: return { label: 'Nghỉ học', color: 'bg-red-100 text-red-500' };
       default: return { label: 'Không rõ', color: 'bg-surface-50 text-surface-400' };
     }
@@ -326,7 +326,7 @@ export default function ClassDetailPage() {
       <div className="mb-12">
           <button 
             onClick={() => router.back()}
-            className="group flex items-center text-surface-400 hover:text-brand-primary transition-colors mb-6 font-bold text-sm uppercase tracking-widest"
+            className="group flex items-center text-surface-400 hover:text-brand-text transition-colors mb-6 font-bold text-sm uppercase tracking-widest"
           >
             <ChevronLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             {t('common.back')}
@@ -336,7 +336,7 @@ export default function ClassDetailPage() {
             <div className="space-y-4">
               <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-primary/10 rounded-full border border-brand-primary/20">
                 <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse" />
-                <span className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em]">
+                <span className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em]">
                   {classData.subjectName}
                 </span>
               </div>
@@ -349,9 +349,9 @@ export default function ClassDetailPage() {
                   <span>{classData.code}</span>
                 </div>
                 <div className={`flex items-center space-x-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${
-                  classData.status === 1 ? 'bg-green-50 text-green-600 border-green-100' :
+                  classData.status === 1 ? 'bg-green-50 text-brand-text border-green-100' :
                   classData.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                  classData.status === 3 ? 'bg-brand-primary/10 text-brand-primary border-brand-primary/20' :
+                  classData.status === 3 ? 'bg-brand-primary/10 text-brand-text border-brand-primary/20' :
                   'bg-red-50 text-red-600 border-red-100'
                 }`}>
                   <div className={`w-1.5 h-1.5 rounded-full ${
@@ -375,7 +375,7 @@ export default function ClassDetailPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <Button variant="outline" onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5">
+              <Button variant="outline" onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-text hover:bg-brand-primary/5">
                 {t('common.edit')}
               </Button>
             </div>
@@ -429,7 +429,7 @@ export default function ClassDetailPage() {
                           href={classData.linkOnline} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center h-12 px-6 bg-brand-primary hover:bg-brand-primary/95 text-white rounded-[1.25rem] font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-primary/10 shrink-0"
+                          className="inline-flex items-center justify-center h-12 px-6 bg-brand-action hover:bg-brand-action-hover text-white rounded-[1.25rem] font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-primary/10 shrink-0"
                         >
                           {t('teacher.details.joinMeeting')}
                           <ArrowRight className="w-4 h-4 ml-2" />
@@ -518,7 +518,7 @@ export default function ClassDetailPage() {
                             <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
                               <td className="px-8 py-6">
                                 <div className="flex items-center space-x-4">
-                                  <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-primary font-black text-xs group-hover:scale-110 transition-transform">
+                                  <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-text font-black text-xs group-hover:scale-110 transition-transform">
                                     {student.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
                                   </div>
                                   <span className="font-black text-surface-900">{student.fullName}</span>
@@ -574,7 +574,7 @@ export default function ClassDetailPage() {
                                 onClick={() => setPageNumber(i + 1)}
                                 className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${
                                   pageNumber === i + 1 
-                                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                                    ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
                                     : 'text-surface-400 hover:bg-surface-50'
                                 }`}
                               >
@@ -653,7 +653,7 @@ export default function ClassDetailPage() {
                 {/* Today's Special Session Card */}
                 {todaySession && (
                   <div className="relative group">
-                    <div className="absolute -top-4 left-8 px-4 py-1 bg-brand-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full z-30 shadow-lg flex items-center">
+                    <div className="absolute -top-4 left-8 px-4 py-1 bg-brand-action text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full z-30 shadow-lg flex items-center">
                       <Sparkles className="w-3 h-3 mr-2 animate-spin-slow" />
                       Hôm nay
                     </div>
@@ -666,11 +666,11 @@ export default function ClassDetailPage() {
                     >
                       <div className="flex items-center gap-10">
                         <div className="w-24 h-24 bg-brand-primary/10 rounded-[2.5rem] flex flex-col items-center justify-center border border-brand-primary/20">
-                          <span className="text-3xl font-black text-brand-primary">{todaySession.date.split('-')[2]}</span>
-                          <span className="text-[10px] font-black text-brand-primary/60 uppercase tracking-widest">{todaySession.date.split('-')[1]}</span>
+                          <span className="text-3xl font-black text-brand-text">{todaySession.date.split('-')[2]}</span>
+                          <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{todaySession.date.split('-')[1]}</span>
                         </div>
                         <div className="space-y-2">
-                          <div className="flex items-center text-sm font-black text-brand-primary uppercase tracking-[0.2em]">
+                          <div className="flex items-center text-sm font-black text-brand-text uppercase tracking-[0.2em]">
                             <Clock className="w-4 h-4 mr-2" />
                             {formatTime(todaySession.startTime)} - {formatTime(todaySession.endTime)}
                           </div>
@@ -685,7 +685,7 @@ export default function ClassDetailPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-6">
-                        <div className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest flex items-center ${todaySession.status === 2 ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                        <div className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest flex items-center ${todaySession.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
                           {todaySession.status === 2 ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <AlertCircle className="w-4 h-4 mr-2" />}
                           {todaySession.status === 2 ? t('teacher.details.completed') : 'Đang diễn ra'}
                         </div>
@@ -716,7 +716,7 @@ export default function ClassDetailPage() {
                             <span className="text-[10px] font-black text-surface-400 uppercase tracking-widest">{session.date.split('-')[1]}</span>
                           </div>
                           <div className="space-y-1">
-                            <div className="flex items-center text-xs font-black text-brand-primary uppercase tracking-[0.2em] mb-1">
+                            <div className="flex items-center text-xs font-black text-brand-text uppercase tracking-[0.2em] mb-1">
                               <Clock className="w-3 h-3 mr-2" />
                               {formatTime(session.startTime)} - {formatTime(session.endTime)}
                             </div>
@@ -731,7 +731,7 @@ export default function ClassDetailPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${session.status === 2 ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                          <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${session.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
                             {session.status === 2 ? <CheckCircle2 className="w-3 h-3 mr-2" /> : <AlertCircle className="w-3 h-3 mr-2" />}
                             {session.status === 2 ? t('teacher.details.completed') : t('teacher.details.scheduled')}
                           </div>

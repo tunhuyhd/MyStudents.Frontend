@@ -17,9 +17,9 @@ interface StatusDropdownProps {
 }
 
 const statusOptions: StatusOption[] = [
-  { value: 1, label: 'Đang học', color: 'bg-green-100 text-green-600' },
+  { value: 1, label: 'Đang học', color: 'bg-green-100 text-brand-text' },
   { value: 2, label: 'Bảo lưu', color: 'bg-surface-100 text-surface-500' },
-  { value: 3, label: 'Hoàn thành', color: 'bg-brand-primary/10 text-brand-primary' },
+  { value: 3, label: 'Hoàn thành', color: 'bg-brand-primary/10 text-brand-text' },
   { value: 4, label: 'Nghỉ học', color: 'bg-red-100 text-red-500' },
 ];
 

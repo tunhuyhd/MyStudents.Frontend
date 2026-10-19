@@ -218,7 +218,7 @@ export default function ProfilePage() {
                 )}
 
                 <h2 className="text-xl font-black text-surface-900 text-center truncate max-w-full">{user.fullName}</h2>
-                <span className="text-xs font-bold text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full mt-2 uppercase tracking-widest">
+                <span className="text-xs font-bold text-brand-text bg-brand-primary/10 px-3 py-1 rounded-full mt-2 uppercase tracking-widest">
                   {user.role}
                 </span>
               </div>
@@ -227,7 +227,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => setActiveTab('profile')}
                   className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-bold transition-all ${
-                    activeTab === 'profile' ? 'bg-white text-brand-primary shadow-md' : 'text-surface-500 hover:text-surface-900'
+                    activeTab === 'profile' ? 'bg-white text-brand-text shadow-md' : 'text-surface-500 hover:text-surface-900'
                   }`}
                 >
                   <User className="w-5 h-5" />
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => setActiveTab('security')}
                   className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-bold transition-all ${
-                    activeTab === 'security' ? 'bg-white text-brand-primary shadow-md' : 'text-surface-500 hover:text-surface-900'
+                    activeTab === 'security' ? 'bg-white text-brand-text shadow-md' : 'text-surface-500 hover:text-surface-900'
                   }`}
                 >
                   <ShieldCheck className="w-5 h-5" />
@@ -282,7 +282,7 @@ export default function ProfilePage() {
                       />
                       
                       {message.text && (
-                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
                           {message.text}
                         </div>
                       )}
@@ -329,7 +329,7 @@ export default function ProfilePage() {
                       />
 
                       {message.text && (
-                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
                           {message.text}
                         </div>
                       )}
@@ -382,7 +382,7 @@ export default function ProfilePage() {
                     setShowOptionsModal(false);
                     fileInputRef.current?.click();
                   }}
-                  className="w-full py-3 px-4 bg-brand-primary/10 hover:bg-brand-primary/20 active:scale-98 text-brand-primary font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-brand-primary/10 hover:bg-brand-primary/20 active:scale-98 text-brand-text font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
                 >
                   <Camera className="w-4 h-4 text-brand-primary" />
                   {t('profile.chooseNewPhoto')}

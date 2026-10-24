@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T15:19:10.841Z",
+  "generatedAt": "2026-10-19T15:46:31.027Z",
   "captureMode": "after",
   "viewports": [
     {
@@ -145,7 +145,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -228,130 +228,8 @@
         },
         {
           "label": "username",
-          "found": true,
-          "text": "@nguyen.minh.anh.student.student.student.student.student.student.student.student.",
-          "color": "rgba(94, 233, 181, 1)",
-          "backgroundColor": "rgba(0, 0, 0, 0)",
-          "fontSize": "14px",
-          "fontWeight": "400",
-          "ancestors": [
-            {
-              "tag": "div",
-              "className": "text-sm text-emerald-300 truncate max-w-[100px] md:max-w-none",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "flex items-center space-x-4",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "td",
-              "className": "px-4 md:px-8 py-6",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "tr",
-              "className": "border-b border-white/[0.02] hover:bg-emerald-500/[0.03] transition-colors group",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "tbody",
-              "className": "",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "table",
-              "className": "w-full text-left",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "overflow-x-auto",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden",
-              "backgroundColor": "rgba(17, 25, 20, 0.4)",
-              "opacity": "1",
-              "backdropFilter": "blur(64px)"
-            },
-            {
-              "tag": "div",
-              "className": "max-w-7xl mx-auto px-6 py-12",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "main",
-              "className": "min-h-screen relative overflow-hidden",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "flex-1 flex flex-col",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            }
-          ],
-          "effectiveOpacity": 1,
-          "contrastEstimates": [
-            {
-              "backgroundName": "canvas-edge-#020403",
-              "compositedBackgroundRgb": [
-                8,
-                12,
-                10
-              ],
-              "compositedForegroundRgb": [
-                94,
-                233,
-                181
-              ],
-              "ratio": 12.93
-            },
-            {
-              "backgroundName": "canvas-center-#060a08",
-              "compositedBackgroundRgb": [
-                10,
-                16,
-                13
-              ],
-              "compositedForegroundRgb": [
-                94,
-                233,
-                181
-              ],
-              "ratio": 12.63
-            }
-          ],
-          "measurementNote": "Foreground and ancestor CSS backgrounds are browser-computed and alpha-composited from the canvas gradient endpoints. Canvas CSS filter, backdrop blur, moving particles, antialiasing and screenshot pixels may alter local rendered colors."
+          "found": false,
+          "contrastEstimates": null
         },
         {
           "label": "table-email",
@@ -364,7 +242,7 @@
           "ancestors": [
             {
               "tag": "td",
-              "className": "px-4 md:px-8 py-6 text-white/70 font-medium truncate max-w-[150px] md:max-w-none",
+              "className": "px-4 md:px-8 py-6 text-white/70 font-medium max-w-[150px] md:max-w-[260px]",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -392,7 +270,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -717,7 +595,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -844,7 +722,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -971,7 +849,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -1197,7 +1075,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -1280,130 +1158,8 @@
         },
         {
           "label": "username",
-          "found": true,
-          "text": "@nguyen.minh.anh.student.student.student.student.student.student.student.student.",
-          "color": "rgba(94, 233, 181, 1)",
-          "backgroundColor": "rgba(0, 0, 0, 0)",
-          "fontSize": "14px",
-          "fontWeight": "400",
-          "ancestors": [
-            {
-              "tag": "div",
-              "className": "text-sm text-emerald-300 truncate max-w-[100px] md:max-w-none",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "flex items-center space-x-4",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "td",
-              "className": "px-4 md:px-8 py-6",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "tr",
-              "className": "border-b border-white/[0.02] hover:bg-emerald-500/[0.03] transition-colors group",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "tbody",
-              "className": "",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "table",
-              "className": "w-full text-left",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "overflow-x-auto",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden",
-              "backgroundColor": "rgba(17, 25, 20, 0.4)",
-              "opacity": "1",
-              "backdropFilter": "blur(64px)"
-            },
-            {
-              "tag": "div",
-              "className": "max-w-7xl mx-auto px-6 py-12",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "main",
-              "className": "min-h-screen relative overflow-hidden",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            },
-            {
-              "tag": "div",
-              "className": "flex-1 flex flex-col",
-              "backgroundColor": "rgba(0, 0, 0, 0)",
-              "opacity": "1",
-              "backdropFilter": "none"
-            }
-          ],
-          "effectiveOpacity": 1,
-          "contrastEstimates": [
-            {
-              "backgroundName": "canvas-edge-#020403",
-              "compositedBackgroundRgb": [
-                8,
-                12,
-                10
-              ],
-              "compositedForegroundRgb": [
-                94,
-                233,
-                181
-              ],
-              "ratio": 12.93
-            },
-            {
-              "backgroundName": "canvas-center-#060a08",
-              "compositedBackgroundRgb": [
-                10,
-                16,
-                13
-              ],
-              "compositedForegroundRgb": [
-                94,
-                233,
-                181
-              ],
-              "ratio": 12.63
-            }
-          ],
-          "measurementNote": "Foreground and ancestor CSS backgrounds are browser-computed and alpha-composited from the canvas gradient endpoints. Canvas CSS filter, backdrop blur, moving particles, antialiasing and screenshot pixels may alter local rendered colors."
+          "found": false,
+          "contrastEstimates": null
         },
         {
           "label": "table-email",
@@ -1416,7 +1172,7 @@
           "ancestors": [
             {
               "tag": "td",
-              "className": "px-4 md:px-8 py-6 text-white/70 font-medium truncate max-w-[150px] md:max-w-none",
+              "className": "px-4 md:px-8 py-6 text-white/70 font-medium max-w-[150px] md:max-w-[260px]",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -1444,7 +1200,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -1769,7 +1525,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -1896,7 +1652,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -2023,7 +1779,7 @@
             },
             {
               "tag": "div",
-              "className": "overflow-x-auto",
+              "className": "overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300",
               "backgroundColor": "rgba(0, 0, 0, 0)",
               "opacity": "1",
               "backdropFilter": "none"
@@ -2668,7 +2424,7 @@
           "effectiveOpacity": 1,
           "backgroundLayers": [
             "rgba(255, 255, 255, 0.102)",
-            "rgba(0, 255, 255, 0.0039)",
+            "rgba(0, 191, 128, 0.0157)",
             "rgba(17, 25, 20, 0.4)"
           ],
           "synthetic": true,
@@ -3324,9 +3080,9 @@
   ],
   "loginScreenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-login-1440-after.png",
   "normalMotionFrameSample": {
-    "frames": 15,
-    "elapsedMs": 250,
-    "approximateFps": 60
+    "frames": 17,
+    "elapsedMs": 266.5999999999999,
+    "approximateFps": 64
   },
   "reducedMotionFrameSample": {
     "frames": 16,

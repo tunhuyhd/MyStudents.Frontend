@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import ZodiacBackground from '@/components/ZodiacBackground';
@@ -8,7 +8,7 @@ import RoleDropdown from '@/components/RoleDropdown';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen, Loader2 } from 'lucide-react';
+import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen, Loader2, ArrowRight } from 'lucide-react';
 import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -31,6 +31,36 @@ interface RoleDto {
   name: string;
 }
 
+function ExpandableTableValue({
+  value,
+  valueType,
+  className,
+}: {
+  value: string;
+  valueType: 'name' | 'username' | 'email';
+  className: string;
+}) {
+  const { t } = useLanguage();
+  const [expanded, setExpanded] = useState(false);
+  const valueLabels = {
+    name: { show: 'admin.showFullName', hide: 'admin.hideFullName' },
+    username: { show: 'admin.showFullUsername', hide: 'admin.hideFullUsername' },
+    email: { show: 'admin.showFullEmail', hide: 'admin.hideFullEmail' },
+  }[valueType];
+
+  return (
+    <button
+      type="button"
+      aria-expanded={expanded}
+      aria-label={expanded ? t(valueLabels.hide) : t(valueLabels.show, { value })}
+      onClick={() => setExpanded((current) => !current)}
+      className={`block w-full min-w-0 rounded-sm text-left decoration-dotted underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${className}`}
+    >
+      <span className={expanded ? 'block whitespace-normal [overflow-wrap:anywhere]' : 'block truncate'}>{value}</span>
+    </button>
+  );
+}
+
 export default function AdminDashboard() {
   const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
@@ -48,6 +78,27 @@ export default function AdminDashboard() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
   const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({ isOpen: false, message: '', type: 'success' });
+  const userTableRegionRef = useRef<HTMLDivElement>(null);
+  const [tableHasHorizontalOverflow, setTableHasHorizontalOverflow] = useState(false);
+
+  useEffect(() => {
+    const region = userTableRegionRef.current;
+    if (!region || activeTab !== 'users') return;
+
+    const measureOverflow = () => {
+      setTableHasHorizontalOverflow(region.scrollWidth > region.clientWidth + 1);
+    };
+    const observer = new ResizeObserver(measureOverflow);
+    observer.observe(region);
+    if (region.firstElementChild) observer.observe(region.firstElementChild);
+    window.addEventListener('resize', measureOverflow);
+    measureOverflow();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measureOverflow);
+    };
+  }, [activeTab, users.length]);
 
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -241,7 +292,20 @@ export default function AdminDashboard() {
                   )}
                 </div>
               )}
-              <div className="overflow-x-auto">
+              {tableHasHorizontalOverflow && (
+                <p id="admin-user-table-scroll-hint" className="flex items-center gap-2 px-5 pt-4 text-xs font-medium text-emerald-200/80 md:px-8">
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  <span>{t('admin.scrollToViewAllColumns')}</span>
+                </p>
+              )}
+              <div
+                ref={userTableRegionRef}
+                role="region"
+                aria-label={t('admin.userTableRegion')}
+                aria-describedby={tableHasHorizontalOverflow ? 'admin-user-table-scroll-hint' : undefined}
+                tabIndex={tableHasHorizontalOverflow ? 0 : undefined}
+                className="overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-emerald-300"
+              >
                 <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5">
@@ -283,12 +347,14 @@ export default function AdminDashboard() {
                             <Users className="w-5 h-5 text-emerald-500 group-hover:text-black" />
                           </div>
                           <div>
-                            <div className="font-bold text-white truncate max-w-[120px] md:max-w-none">{u.fullName}</div>
-                            <div className="text-sm text-emerald-300 truncate max-w-[100px] md:max-w-none">@{u.username}</div>
+                            <ExpandableTableValue value={u.fullName} valueType="name" className="font-bold text-white max-w-[120px] md:max-w-[220px]" />
+                            <ExpandableTableValue value={`@${u.username}`} valueType="username" className="mt-1 text-sm text-emerald-300 max-w-[100px] md:max-w-[180px]" />
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 md:px-8 py-6 text-white/70 font-medium truncate max-w-[150px] md:max-w-none">{u.email}</td>
+                      <td className="px-4 md:px-8 py-6 text-white/70 font-medium max-w-[150px] md:max-w-[260px]">
+                        <ExpandableTableValue value={u.email} valueType="email" className="text-white/70 font-medium max-w-[150px] md:max-w-[260px]" />
+                      </td>
                       <td className="px-4 md:px-8 py-6">
                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                           u.roleName === 'Admin' 

@@ -1,0 +1,59 @@
+{
+  "width": 1440,
+  "language": "en",
+  "longContentMetrics": [
+    {
+      "field": "fullName",
+      "found": true,
+      "text": "Nguyễn Thị Minh Anh Trần Gia Bảo Phạm Hoàng Yến Đặng Quốc Khánh",
+      "clientWidth": 220,
+      "scrollWidth": 544,
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "visuallyTruncated": true,
+      "hasTitle": false
+    },
+    {
+      "field": "username",
+      "found": true,
+      "text": "@nguyen.minh.anh.student.student.student.student.student.student.student.student.",
+      "clientWidth": 180,
+      "scrollWidth": 549,
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "visuallyTruncated": true,
+      "hasTitle": false
+    },
+    {
+      "field": "email",
+      "found": true,
+      "text": "minhanh.very-long-contact-address.very-long-contact-address.very-long-contact-address.very-long-contact-address.very-long-contact-address.very-long-contact-address.very-long-contact-address.@example.test",
+      "clientWidth": 220,
+      "scrollWidth": 1639,
+      "textOverflow": "ellipsis",
+      "whiteSpace": "nowrap",
+      "visuallyTruncated": true,
+      "hasTitle": false
+    }
+  ],
+  "scrollGeometry": {
+    "clientWidth": 1230,
+    "scrollWidth": 1230,
+    "scrollLeft": 0,
+    "overflowX": "auto"
+  },
+  "hasOverflow": false,
+  "keyboardScrollLeft": 0,
+  "scrollRegionHasVisibleFocus": false,
+  "revealedValuesHaveFocusStyle": true,
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-responsive\\admin-v2-1440px.png",
+  "toastLayout": {
+    "left": 518.039794921875,
+    "right": 921.9602661132812,
+    "width": 403.92047119140625,
+    "height": 261.4664001464844,
+    "messageHeight": 220.89401245117188,
+    "messageScrollHeight": 245,
+    "closeVisible": true
+  }
+}

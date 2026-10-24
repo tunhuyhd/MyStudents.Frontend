@@ -1,0 +1,70 @@
+{
+  "stage": "before",
+  "generatedAt": "2026-10-24T14:55:54.560Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\before\\teacher-loading-en-1440px.png",
+  "focusedControls": [
+    {
+      "name": "create-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 1440,
+    "innerWidth": 1440,
+    "documentWidth": 1440,
+    "bodyWidth": 1440,
+    "scrollHeight": 980
+  },
+  "language": "en",
+  "state": "loading",
+  "heading": {
+    "top": 94,
+    "left": 328,
+    "width": 476,
+    "height": 48,
+    "padding": "0px",
+    "marginBottom": "24px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 120,
+    "left": 836,
+    "width": 283,
+    "height": 74,
+    "padding": "12px 32px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 125,
+    "left": 1135,
+    "width": 265,
+    "height": 64,
+    "padding": "14px 40px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 242,
+    "left": 328,
+    "width": 1072,
+    "height": 90,
+    "padding": "16px",
+    "marginBottom": "48px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "cardCount": 0,
+  "firstCardHeading": null,
+  "visibleCardActions": 1,
+  "emptyState": null,
+  "error": null,
+  "loadingSkeletons": 3,
+  "focusVisible": true
+}

@@ -1,0 +1,152 @@
+{
+  "stage": "after",
+  "generatedAt": "2026-10-24T15:02:31.924Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\after\\teacher-populated-en-1440px.png",
+  "focusedControls": [
+    {
+      "name": "create-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    },
+    {
+      "name": "view-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    },
+    {
+      "name": "edit-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(82, 117, 104)"
+    },
+    {
+      "name": "delete-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(82, 117, 104)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 1440,
+    "innerWidth": 1440,
+    "documentWidth": 1440,
+    "bodyWidth": 1440,
+    "scrollHeight": 1356,
+    "horizontalOverflow": false
+  },
+  "language": "en",
+  "state": "populated",
+  "heading": {
+    "top": 86,
+    "left": 328,
+    "width": 524,
+    "height": 48,
+    "padding": "0px",
+    "marginBottom": "16px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 105,
+    "left": 876,
+    "width": 259,
+    "height": 73,
+    "padding": "12px 20px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 114,
+    "left": 1151,
+    "width": 249,
+    "height": 56,
+    "padding": "14px 32px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 210,
+    "left": 328,
+    "width": 1072,
+    "height": 82,
+    "padding": "12px",
+    "marginBottom": "32px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "cardCount": 6,
+  "cardGeometry": [
+    {
+      "title": "Algebra foundations",
+      "titleTop": 425,
+      "titleHeight": 30,
+      "badgeBottom": 386,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Luyện thi Toán nâng cao dành cho học sinh cuối cấp",
+      "titleTop": 425,
+      "titleHeight": 90,
+      "badgeBottom": 386,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "English conversation practice for advanced learners",
+      "titleTop": 425,
+      "titleHeight": 90,
+      "badgeBottom": 386,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Chemistry",
+      "titleTop": 931,
+      "titleHeight": 30,
+      "badgeBottom": 892,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Physics lab",
+      "titleTop": 931,
+      "titleHeight": 30,
+      "badgeBottom": 892,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Lớp phụ đạo cuối tuần",
+      "titleTop": 930,
+      "titleHeight": 30,
+      "badgeBottom": 891,
+      "titleBadgeOverlap": false
+    }
+  ],
+  "firstCardHeading": {
+    "top": 425,
+    "left": 361,
+    "width": 275,
+    "height": 30,
+    "text": "Algebra foundations"
+  },
+  "visibleCardActions": 19,
+  "emptyState": {
+    "top": 425,
+    "left": 361,
+    "width": 275,
+    "height": 30,
+    "padding": "0px",
+    "marginBottom": "8px",
+    "borderRadius": "0px",
+    "fontSize": "24px"
+  },
+  "emptyPanel": null,
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

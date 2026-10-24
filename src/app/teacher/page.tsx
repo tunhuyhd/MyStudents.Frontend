@@ -172,20 +172,20 @@ export default function TeacherDashboard() {
   if (authLoading || !user || user.role !== UserRoles.User) return null;
 
   return (
-    <main className="min-h-screen pb-20 space-y-12 relative overflow-hidden">
+    <main className="min-h-screen pb-16 space-y-8 relative overflow-hidden">
       {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex-1"
         >
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-6 border border-brand-primary/10">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-4 border border-brand-primary/10">
             <Sparkles className="w-4 h-4 text-brand-primary animate-pulse" />
             <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
           </div>
           
-          <h1 className="text-5xl font-black text-surface-900 tracking-tighter leading-none mb-6">
+          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 tracking-tighter leading-none mb-4">
             {t('teacher.title')}
           </h1>
           <p className="text-surface-500 text-lg font-medium max-w-xl">
@@ -200,8 +200,8 @@ export default function TeacherDashboard() {
           className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto"
         >
           {/* Quick Stats */}
-          <div className="flex bg-white border border-surface-100 rounded-3xl p-3 pr-8 items-center shadow-sm w-full sm:w-auto">
-            <div className="w-12 h-12 bg-brand-primary/10 text-brand-primary rounded-2xl flex items-center justify-center mr-4">
+          <div className="flex bg-white border border-surface-100 rounded-2xl p-3 pr-5 items-center shadow-sm w-full sm:w-auto">
+            <div className="w-10 h-10 bg-brand-primary/10 text-brand-primary rounded-xl flex items-center justify-center mr-3">
               <TrendingUp className="w-6 h-6" />
             </div>
             <div>
@@ -215,7 +215,7 @@ export default function TeacherDashboard() {
           <Button 
             onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
             size="lg" 
-            className="rounded-3xl h-16 px-10 shadow-xl shadow-brand-primary/20 group bg-brand-action text-white font-black w-full sm:w-auto"
+            className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20 group bg-brand-action text-white font-black w-full sm:w-auto"
           >
             <Plus className="w-6 h-6 mr-3 group-hover:rotate-180 transition-transform duration-500" />
             {t('teacher.createClass')}
@@ -224,7 +224,7 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Filters and Controls */}
-      <div className="flex flex-col md:flex-row gap-4 bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-white relative z-50">
+      <div className="flex flex-col md:flex-row gap-3 bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white relative z-50">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
           <input 
@@ -237,7 +237,7 @@ export default function TeacherDashboard() {
           />
         </div>
         
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-3">
           {/* Year Filter Dropdown */}
           <div className="relative" ref={yearDropdownRef}>
             <button
@@ -349,7 +349,7 @@ export default function TeacherDashboard() {
       </div>
 
         {/* Dynamic Class Cards Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {classesLoadFailure && (
             <div role="alert" className="col-span-full flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-bold">
@@ -376,7 +376,7 @@ export default function TeacherDashboard() {
           )}
           {classesLoadState === 'loading' ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-white/50 backdrop-blur-sm h-80 rounded-[3.5rem] animate-pulse border border-white/50" />
+              <div key={i} className="bg-white/50 backdrop-blur-sm h-72 rounded-3xl animate-pulse border border-white/50" />
             ))
           ) : (
             <AnimatePresence>
@@ -392,16 +392,13 @@ export default function TeacherDashboard() {
                       damping: 15, 
                       delay: index * 0.1 
                     }}
-                    whileHover={{ y: -15, scale: 1.02 }}
+                    whileHover={{ y: -4, scale: 1.005 }}
                     className="relative"
                   >
-                    {/* Shadow Layer for Depth */}
-                    <div className="absolute inset-x-6 -bottom-6 h-20 bg-brand-primary/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                    <div className="bg-white/80 backdrop-blur-xl p-10 rounded-[3.5rem] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.08)] border border-white/80 relative group overflow-hidden h-full flex flex-col">
+                    <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.08)] border border-white/80 relative group overflow-hidden h-full flex flex-col">
                       {/* Floating Category Tag */}
-                      <div className="absolute top-6 right-6 z-20">
-                        <div className={`flex items-center space-x-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
                           c.category === 0 
                           ? 'bg-blue-50 text-blue-500 border border-blue-100' 
                           : 'bg-brand-primary/5 text-brand-text border border-brand-primary/10'
@@ -410,7 +407,7 @@ export default function TeacherDashboard() {
                           <span>{c.category === 0 ? t('common.online') : t('common.offline')}</span>
                         </div>
                         {/* Status Badge */}
-                        <div className={`mt-2 flex items-center space-x-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${
+                        <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${
                           c.status === 1 ? 'bg-green-50 text-brand-text border-green-100' :
                           c.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
                           c.status === 3 ? 'bg-brand-primary/10 text-brand-text border-brand-primary/20' :
@@ -436,28 +433,28 @@ export default function TeacherDashboard() {
                         <BookOpen className="w-48 h-48 text-brand-primary" />
                       </div>
 
-                      <div className="mb-8">
-                        <div className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em] mb-3">
+                      <div className="mb-6">
+                        <div className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em] mb-2">
                           {c.subjectName}
                         </div>
-                        <h3 className="text-3xl font-black text-surface-900 mb-3 group-hover:text-brand-text transition-colors duration-500 leading-tight">
+                        <h3 className="text-2xl font-black text-surface-900 mb-2 group-hover:text-brand-text transition-colors duration-500 leading-tight">
                           {c.name}
                         </h3>
                         <div className="w-12 h-1 bg-brand-primary/10 rounded-full group-hover:w-24 transition-all duration-500" />
                       </div>
 
-                      <div className="space-y-5 mb-10 flex-1">
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
+                      <div className="space-y-3 mb-6 flex-1">
+                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
                           <Users className="w-5 h-5 mr-3 text-brand-primary/40" />
                           <span>{c.studentCount} <span className="text-surface-400 font-medium">{t('teacher.studentCount')}</span></span>
                         </div>
                         
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
+                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
                           <Calendar className="w-5 h-5 mr-3 text-brand-primary/40" />
                           <span>{c.startDate ? new Date(c.startDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US') : t('teacher.toBeAnnounced')}</span>
                         </div>
 
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
+                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
                           <Clock className="w-5 h-5 mr-3 text-brand-primary/40" />
                           <span>{c.schedules?.length || 0} <span className="text-surface-400 font-medium">{t('teacher.sessionsPerWeek')}</span></span>
                         </div>
@@ -495,17 +492,17 @@ export default function TeacherDashboard() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="col-span-full py-32 text-center bg-white/50 backdrop-blur-md rounded-[4rem] border-2 border-dashed border-surface-200"
+                  className="col-span-full py-12 sm:py-14 text-center bg-white/50 backdrop-blur-md rounded-3xl border-2 border-dashed border-surface-200"
                 >
-                  <div className="w-24 h-24 bg-brand-primary/5 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 animate-float">
-                    <BookOpen className="w-12 h-12 text-brand-primary/40" />
+                  <div className="w-20 h-20 bg-brand-primary/5 rounded-3xl flex items-center justify-center mx-auto mb-5 animate-float">
+                    <BookOpen className="w-10 h-10 text-brand-primary/40" />
                   </div>
-                  <h3 className="text-2xl font-black text-surface-900 mb-4">{t('teacher.noClasses')}</h3>
-                  <p className="text-surface-500 font-medium mb-10 max-w-md mx-auto">{t('teacher.noClassesDesc')}</p>
+                  <h3 className="text-2xl font-black text-surface-900 mb-3">{t('teacher.noClasses')}</h3>
+                  <p className="text-surface-500 font-medium mb-6 max-w-md mx-auto">{t('teacher.noClassesDesc')}</p>
                   <Button 
                     onClick={() => { setEditingClass(null); setIsModalOpen(true); }} 
                     size="lg"
-                    className="rounded-full px-12 h-16 shadow-2xl shadow-brand-primary/20"
+                    className="rounded-2xl px-8 h-14 shadow-2xl shadow-brand-primary/20"
                   >
                     <Plus className="w-5 h-5 mr-3" />
                     {t('teacher.createClass')}

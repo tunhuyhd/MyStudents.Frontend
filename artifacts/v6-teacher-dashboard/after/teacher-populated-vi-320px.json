@@ -1,0 +1,131 @@
+{
+  "stage": "after",
+  "generatedAt": "2026-10-24T15:02:38.604Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\after\\teacher-populated-vi-320px.png",
+  "focusedControls": [
+    {
+      "name": "create-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 320,
+    "innerWidth": 320,
+    "documentWidth": 320,
+    "bodyWidth": 320,
+    "scrollHeight": 3597,
+    "horizontalOverflow": false
+  },
+  "language": "vi",
+  "state": "populated",
+  "heading": {
+    "top": 126,
+    "left": 16,
+    "width": 288,
+    "height": 36,
+    "padding": "0px",
+    "marginBottom": "16px",
+    "borderRadius": "0px",
+    "fontSize": "36px"
+  },
+  "summary": {
+    "top": 258,
+    "left": 16,
+    "width": 288,
+    "height": 88,
+    "padding": "12px 20px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 362,
+    "left": 16,
+    "width": 288,
+    "height": 56,
+    "padding": "14px 32px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 450,
+    "left": 16,
+    "width": 288,
+    "height": 218,
+    "padding": "12px",
+    "marginBottom": "32px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "cardCount": 6,
+  "cardGeometry": [
+    {
+      "title": "Algebra foundations",
+      "titleTop": 830,
+      "titleHeight": 30,
+      "badgeBottom": 791,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Luyện thi Toán nâng cao dành cho học sinh cuối cấp",
+      "titleTop": 1260,
+      "titleHeight": 90,
+      "badgeBottom": 1221,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "English conversation practice for advanced learners",
+      "titleTop": 1750,
+      "titleHeight": 90,
+      "badgeBottom": 1711,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Chemistry",
+      "titleTop": 2276,
+      "titleHeight": 30,
+      "badgeBottom": 2237,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Physics lab",
+      "titleTop": 2706,
+      "titleHeight": 30,
+      "badgeBottom": 2667,
+      "titleBadgeOverlap": false
+    },
+    {
+      "title": "Lớp phụ đạo cuối tuần",
+      "titleTop": 3175,
+      "titleHeight": 60,
+      "badgeBottom": 3136,
+      "titleBadgeOverlap": false
+    }
+  ],
+  "firstCardHeading": {
+    "top": 830,
+    "left": 41,
+    "width": 238,
+    "height": 30,
+    "text": "Algebra foundations"
+  },
+  "visibleCardActions": 19,
+  "emptyState": {
+    "top": 830,
+    "left": 41,
+    "width": 238,
+    "height": 30,
+    "padding": "0px",
+    "marginBottom": "8px",
+    "borderRadius": "0px",
+    "fontSize": "24px"
+  },
+  "emptyPanel": null,
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

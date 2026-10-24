@@ -1,0 +1,106 @@
+{
+  "stage": "before",
+  "generatedAt": "2026-10-24T14:55:44.624Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\before\\teacher-populated-vi-1440px.png",
+  "focusedControls": [
+    {
+      "name": "create-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    },
+    {
+      "name": "view-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    },
+    {
+      "name": "edit-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(82, 117, 104)"
+    },
+    {
+      "name": "delete-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "3px",
+      "outlineColor": "rgb(82, 117, 104)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 1440,
+    "innerWidth": 1440,
+    "documentWidth": 1440,
+    "bodyWidth": 1440,
+    "scrollHeight": 1611
+  },
+  "language": "vi",
+  "state": "populated",
+  "heading": {
+    "top": 79,
+    "left": 328,
+    "width": 454,
+    "height": 48,
+    "padding": "0px",
+    "marginBottom": "24px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 105,
+    "left": 814,
+    "width": 314,
+    "height": 74,
+    "padding": "12px 32px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 110,
+    "left": 1144,
+    "width": 256,
+    "height": 64,
+    "padding": "14px 40px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 227,
+    "left": 328,
+    "width": 1072,
+    "height": 90,
+    "padding": "16px",
+    "marginBottom": "48px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "cardCount": 6,
+  "firstCardHeading": {
+    "top": 433,
+    "left": 369,
+    "width": 249,
+    "height": 75,
+    "text": "Algebra foundations"
+  },
+  "visibleCardActions": 19,
+  "emptyState": {
+    "top": 433,
+    "left": 369,
+    "width": 249,
+    "height": 75,
+    "padding": "0px",
+    "marginBottom": "12px",
+    "borderRadius": "0px",
+    "fontSize": "30px"
+  },
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

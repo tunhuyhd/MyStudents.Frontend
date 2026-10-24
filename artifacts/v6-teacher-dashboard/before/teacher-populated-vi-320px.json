@@ -1,0 +1,77 @@
+{
+  "stage": "before",
+  "generatedAt": "2026-10-24T14:55:57.560Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\before\\teacher-populated-vi-320px.png",
+  "focusedControls": [],
+  "viewport": {
+    "requestedCssWidth": 320,
+    "innerWidth": 320,
+    "documentWidth": 320,
+    "bodyWidth": 320,
+    "scrollHeight": 4237
+  },
+  "language": "vi",
+  "state": "populated",
+  "heading": {
+    "top": 134,
+    "left": 16,
+    "width": 288,
+    "height": 96,
+    "padding": "0px",
+    "marginBottom": "24px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 342,
+    "left": 16,
+    "width": 288,
+    "height": 88,
+    "padding": "12px 32px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 446,
+    "left": 16,
+    "width": 288,
+    "height": 64,
+    "padding": "14px 40px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 558,
+    "left": 16,
+    "width": 288,
+    "height": 234,
+    "padding": "16px",
+    "marginBottom": "48px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "cardCount": 6,
+  "firstCardHeading": {
+    "top": 908,
+    "left": 57,
+    "width": 206,
+    "height": 75,
+    "text": "Algebra foundations"
+  },
+  "visibleCardActions": 19,
+  "emptyState": {
+    "top": 908,
+    "left": 57,
+    "width": 206,
+    "height": 75,
+    "padding": "0px",
+    "marginBottom": "12px",
+    "borderRadius": "0px",
+    "fontSize": "30px"
+  },
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": false
+}

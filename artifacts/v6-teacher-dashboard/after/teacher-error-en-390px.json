@@ -1,0 +1,76 @@
+{
+  "stage": "after",
+  "generatedAt": "2026-10-24T15:02:23.059Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\after\\teacher-error-en-390px.png",
+  "focusedControls": [
+    {
+      "name": "retry-load",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 390,
+    "innerWidth": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "scrollHeight": 996,
+    "horizontalOverflow": false
+  },
+  "language": "en",
+  "state": "error",
+  "heading": {
+    "top": 126,
+    "left": 16,
+    "width": 358,
+    "height": 36,
+    "padding": "0px",
+    "marginBottom": "16px",
+    "borderRadius": "0px",
+    "fontSize": "36px"
+  },
+  "summary": {
+    "top": 230,
+    "left": 16,
+    "width": 358,
+    "height": 73,
+    "padding": "12px 20px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 319,
+    "left": 16,
+    "width": 358,
+    "height": 56,
+    "padding": "14px 32px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 407,
+    "left": 16,
+    "width": 358,
+    "height": 218,
+    "padding": "12px",
+    "marginBottom": "32px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "cardCount": 0,
+  "cardGeometry": [],
+  "firstCardHeading": null,
+  "visibleCardActions": 1,
+  "emptyState": null,
+  "emptyPanel": null,
+  "error": {
+    "visible": true,
+    "height": 136
+  },
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

@@ -1,0 +1,77 @@
+{
+  "stage": "before",
+  "generatedAt": "2026-10-24T14:56:01.619Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\before\\teacher-empty-en-768px.png",
+  "focusedControls": [],
+  "viewport": {
+    "requestedCssWidth": 768,
+    "innerWidth": 768,
+    "documentWidth": 768,
+    "bodyWidth": 768,
+    "scrollHeight": 1226
+  },
+  "language": "en",
+  "state": "empty",
+  "heading": {
+    "top": 142,
+    "left": 24,
+    "width": 720,
+    "height": 48,
+    "padding": "0px",
+    "marginBottom": "24px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 274,
+    "left": 24,
+    "width": 283,
+    "height": 74,
+    "padding": "12px 32px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 279,
+    "left": 323,
+    "width": 265,
+    "height": 64,
+    "padding": "14px 40px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 396,
+    "left": 24,
+    "width": 720,
+    "height": 90,
+    "padding": "16px",
+    "marginBottom": "48px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "cardCount": 1,
+  "firstCardHeading": {
+    "top": 792,
+    "left": 26,
+    "width": 716,
+    "height": 32,
+    "text": "You don't have any classes yet. Create your first one!"
+  },
+  "visibleCardActions": 1,
+  "emptyState": {
+    "top": 792,
+    "left": 26,
+    "width": 716,
+    "height": 32,
+    "padding": "0px",
+    "marginBottom": "16px",
+    "borderRadius": "0px",
+    "fontSize": "24px"
+  },
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": false
+}

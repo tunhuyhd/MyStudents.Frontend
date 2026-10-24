@@ -1,0 +1,94 @@
+{
+  "stage": "after",
+  "generatedAt": "2026-10-24T15:02:20.038Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\after\\teacher-empty-en-390px.png",
+  "focusedControls": [
+    {
+      "name": "create-class",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 390,
+    "innerWidth": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "scrollHeight": 1141,
+    "horizontalOverflow": false
+  },
+  "language": "en",
+  "state": "empty",
+  "heading": {
+    "top": 126,
+    "left": 16,
+    "width": 358,
+    "height": 36,
+    "padding": "0px",
+    "marginBottom": "16px",
+    "borderRadius": "0px",
+    "fontSize": "36px"
+  },
+  "summary": {
+    "top": 230,
+    "left": 16,
+    "width": 358,
+    "height": 73,
+    "padding": "12px 20px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 319,
+    "left": 16,
+    "width": 358,
+    "height": 56,
+    "padding": "14px 32px",
+    "marginBottom": "0px",
+    "borderRadius": "16px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 407,
+    "left": 16,
+    "width": 358,
+    "height": 218,
+    "padding": "12px",
+    "marginBottom": "32px",
+    "borderRadius": "16px",
+    "fontSize": "16px"
+  },
+  "cardCount": 1,
+  "cardGeometry": [],
+  "firstCardHeading": {
+    "top": 807,
+    "left": 18,
+    "width": 354,
+    "height": 64,
+    "text": "You don't have any classes yet. Create your first one!"
+  },
+  "visibleCardActions": 1,
+  "emptyState": {
+    "top": 807,
+    "left": 18,
+    "width": 354,
+    "height": 64,
+    "padding": "0px",
+    "marginBottom": "12px",
+    "borderRadius": "0px",
+    "fontSize": "24px"
+  },
+  "emptyPanel": {
+    "top": 657,
+    "width": 358,
+    "height": 404,
+    "padding": "48px 0px",
+    "borderRadius": "24px"
+  },
+  "error": null,
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

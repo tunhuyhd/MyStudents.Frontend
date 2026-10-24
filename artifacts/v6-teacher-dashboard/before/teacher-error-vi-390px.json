@@ -1,0 +1,73 @@
+{
+  "stage": "before",
+  "generatedAt": "2026-10-24T14:55:37.022Z",
+  "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\v6-teacher-dashboard\\before\\teacher-error-vi-390px.png",
+  "focusedControls": [
+    {
+      "name": "retry-load",
+      "focusVisible": true,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(4, 120, 87)"
+    }
+  ],
+  "viewport": {
+    "requestedCssWidth": 390,
+    "innerWidth": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "scrollHeight": 1006
+  },
+  "language": "vi",
+  "state": "error",
+  "heading": {
+    "top": 134,
+    "left": 16,
+    "width": 358,
+    "height": 48,
+    "padding": "0px",
+    "marginBottom": "24px",
+    "borderRadius": "0px",
+    "fontSize": "48px"
+  },
+  "summary": {
+    "top": 266,
+    "left": 16,
+    "width": 358,
+    "height": 74,
+    "padding": "12px 32px 12px 12px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "primaryAction": {
+    "top": 356,
+    "left": 16,
+    "width": 358,
+    "height": 64,
+    "padding": "14px 40px",
+    "marginBottom": "0px",
+    "borderRadius": "24px",
+    "fontSize": "18px"
+  },
+  "filters": {
+    "top": 468,
+    "left": 16,
+    "width": 358,
+    "height": 234,
+    "padding": "16px",
+    "marginBottom": "48px",
+    "borderRadius": "24px",
+    "fontSize": "16px"
+  },
+  "cardCount": 0,
+  "firstCardHeading": null,
+  "visibleCardActions": 1,
+  "emptyState": null,
+  "error": {
+    "visible": true,
+    "height": 160
+  },
+  "loadingSkeletons": 0,
+  "focusVisible": true
+}

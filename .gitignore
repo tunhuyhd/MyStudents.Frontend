@@ -16,6 +16,9 @@
 /test-results/
 /playwright/.cache/
 
+# Generated browser-test screenshots
+/artifacts/**/*.png
+
 # next.js
 /.next/
 /out/

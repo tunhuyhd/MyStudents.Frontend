@@ -43,16 +43,16 @@
     "overflowX": "auto"
   },
   "hasOverflow": true,
-  "keyboardScrollLeft": 425,
+  "keyboardScrollLeft": 426,
   "scrollRegionHasVisibleFocus": true,
   "revealedValuesHaveFocusStyle": true,
   "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-responsive\\admin-v2-390px.png",
   "toastLayout": {
-    "left": 33.851531982421875,
-    "right": 356.1484680175781,
-    "width": 322.29693603515625,
-    "height": 339.8522033691406,
-    "messageHeight": 299.34002685546875,
+    "left": 31.339309692382812,
+    "right": 358.6607208251953,
+    "width": 327.3214111328125,
+    "height": 345.15032958984375,
+    "messageHeight": 304.006591796875,
     "messageScrollHeight": 333,
     "closeVisible": true
   }

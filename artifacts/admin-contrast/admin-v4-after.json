@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T14:40:24.288Z",
+  "generatedAt": "2026-10-24T15:14:06.916Z",
   "captureMode": "after",
   "viewports": [
     {
@@ -1950,7 +1950,7 @@
         },
         "tabFocus": {
           "focused": true,
-          "color": "oklab(0.904573 -0.0898093 0.0255009)",
+          "color": "lab(90.2247 -31.039 9.47084)",
           "outlineColor": "rgb(164, 244, 207)",
           "outlineWidth": "3px",
           "contrast": {
@@ -2134,7 +2134,7 @@
             {
               "tag": "div",
               "backgroundColor": "rgba(17, 24, 20, 0.902)",
-              "opacity": "0.99998"
+              "opacity": "0.980241"
             },
             {
               "tag": "div",
@@ -2182,7 +2182,7 @@
               "opacity": "1"
             }
           ],
-          "effectiveOpacity": 0.99998,
+          "effectiveOpacity": 0.980241,
           "contrastEstimates": [
             {
               "backgroundName": "canvas-edge-#020403",
@@ -2192,11 +2192,11 @@
                 19
               ],
               "compositedForegroundRgb": [
-                94,
-                233,
-                181
+                92,
+                229,
+                178
               ],
-              "ratio": 11.96
+              "ratio": 11.53
             },
             {
               "backgroundName": "canvas-center-#060a08",
@@ -2206,11 +2206,11 @@
                 19
               ],
               "compositedForegroundRgb": [
-                94,
-                233,
-                181
+                92,
+                229,
+                178
               ],
-              "ratio": 11.96
+              "ratio": 11.53
             }
           ],
           "measurementNote": "Foreground and ancestor CSS backgrounds are browser-computed and alpha-composited from the canvas gradient endpoints. Canvas CSS filter, backdrop blur, moving particles, antialiasing and screenshot pixels may alter local rendered colors."
@@ -3079,14 +3079,14 @@
   ],
   "loginScreenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-login-1440-after.png",
   "normalMotionFrameSample": {
-    "frames": 15,
-    "elapsedMs": 266.5999999999999,
-    "approximateFps": 56
+    "frames": 10,
+    "elapsedMs": 250,
+    "approximateFps": 40
   },
   "reducedMotionFrameSample": {
-    "frames": 16,
-    "elapsedMs": 250,
-    "approximateFps": 64
+    "frames": 15,
+    "elapsedMs": 266.6999999999998,
+    "approximateFps": 56
   },
   "reducedMotionState": {
     "matches": true,

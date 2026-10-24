@@ -48,11 +48,11 @@
   "revealedValuesHaveFocusStyle": true,
   "screenshotPath": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-responsive\\admin-v2-320px.png",
   "toastLayout": {
-    "left": 29.038543701171875,
-    "right": 290.9614562988281,
-    "width": 261.92291259765625,
-    "height": 422.8963928222656,
-    "messageHeight": 381.970947265625,
+    "left": 28.750946044921875,
+    "right": 291.2490539550781,
+    "width": 262.49810791015625,
+    "height": 423.82513427734375,
+    "messageHeight": 382.80975341796875,
     "messageScrollHeight": 421,
     "closeVisible": true
   }

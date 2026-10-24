@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T14:40:52.944Z",
+  "generatedAt": "2026-10-24T15:14:29.468Z",
   "theme": "dark",
   "viewport": 1440,
   "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\shared-controls-v3\\admin-dark-1440px.png",
@@ -724,7 +724,7 @@
         ]
       },
       "transform": "none",
-      "scale": "0.95",
+      "scale": "0.951562",
       "placeholder": null,
       "outline": {
         "color": {

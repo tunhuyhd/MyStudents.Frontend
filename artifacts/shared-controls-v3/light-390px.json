@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T14:40:32.090Z",
+  "generatedAt": "2026-10-24T15:14:14.838Z",
   "theme": "light",
   "viewport": 390,
   "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\shared-controls-v3\\teacher-light-390px.png",
@@ -123,7 +123,7 @@
               0.0000200868
             ]
           },
-          "opacity": "0.98666"
+          "opacity": "0.988485"
         },
         {
           "tag": "div",
@@ -301,7 +301,7 @@
               0.0000200868
             ]
           },
-          "opacity": "0.980031"
+          "opacity": "0.974745"
         },
         {
           "tag": "div",
@@ -479,7 +479,7 @@
               0.0000200868
             ]
           },
-          "opacity": "0.98666"
+          "opacity": "0.988485"
         },
         {
           "tag": "div",
@@ -638,7 +638,7 @@
               0.0000200868
             ]
           },
-          "opacity": "0.98666"
+          "opacity": "0.993493"
         },
         {
           "tag": "div",
@@ -1755,11 +1755,11 @@
         ]
       },
       "background": {
-        "css": "rgb(5, 110, 80)",
+        "css": "rgb(5, 105, 77)",
         "rgb": [
           5,
-          110,
-          80
+          105,
+          77
         ]
       },
       "border": {
@@ -1919,7 +1919,7 @@
     "placeholderOnFill": 6.1,
     "inputBorderAgainstFill": 3.63,
     "buttonTextOnHover": 7.68,
-    "inputFocusAgainstControlFill": 14.8,
+    "inputFocusAgainstControlFill": 15.15,
     "buttonFocusAgainstWhiteSurface": 5.48,
     "labelAgainstWhiteSurface": 9.72,
     "errorTextAgainstWhiteSurface": 6.47,

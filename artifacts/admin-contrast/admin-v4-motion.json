@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T14:40:28.779Z",
+  "generatedAt": "2026-10-24T15:14:11.365Z",
   "viewport": {
     "width": 1440,
     "height": 1000
@@ -10,12 +10,12 @@
     "start": {
       "canvasClearCount": 2,
       "canvasFillCount": 2,
-      "sampledAt": 888.2999999970198
+      "sampledAt": 1060.5
     },
     "end": {
       "canvasClearCount": 2,
       "canvasFillCount": 2,
-      "sampledAt": 1299.6000000014901
+      "sampledAt": 1471.3000000044703
     },
     "canvasRedrawsDuring400ms": 0,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-initial-1440.png"
@@ -25,12 +25,12 @@
     "start": {
       "canvasClearCount": 10,
       "canvasFillCount": 10,
-      "sampledAt": 1957.2000000029802
+      "sampledAt": 2101.2000000029802
     },
     "end": {
       "canvasClearCount": 15,
       "canvasFillCount": 15,
-      "sampledAt": 2325.7999999970198
+      "sampledAt": 2468.7000000029802
     },
     "canvasRedrawsDuring350ms": 5,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-normal-1440.png"
@@ -38,14 +38,14 @@
   "runtimeReducedMotion": {
     "preferenceMatches": true,
     "start": {
-      "canvasClearCount": 19,
-      "canvasFillCount": 19,
-      "sampledAt": 2775.39999999851
+      "canvasClearCount": 18,
+      "canvasFillCount": 18,
+      "sampledAt": 2808
     },
     "end": {
-      "canvasClearCount": 19,
-      "canvasFillCount": 19,
-      "sampledAt": 3185.10000000149
+      "canvasClearCount": 18,
+      "canvasFillCount": 18,
+      "sampledAt": 3219.4000000059605
     },
     "canvasRedrawsDuring400ms": 0,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-runtime-1440.png"
@@ -53,14 +53,14 @@
   "resumedNormalMotion": {
     "preferenceMatches": false,
     "start": {
-      "canvasClearCount": 27,
-      "canvasFillCount": 27,
-      "sampledAt": 3812.7999999970198
+      "canvasClearCount": 25,
+      "canvasFillCount": 25,
+      "sampledAt": 3787
     },
     "end": {
-      "canvasClearCount": 33,
-      "canvasFillCount": 33,
-      "sampledAt": 4183.29999999702
+      "canvasClearCount": 31,
+      "canvasFillCount": 31,
+      "sampledAt": 4153.10000000149
     },
     "canvasRedrawsDuring350ms": 6
   },

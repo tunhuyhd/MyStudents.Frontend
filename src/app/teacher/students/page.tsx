@@ -294,7 +294,7 @@ export default function StudentsPage() {
                         aria-label={t('teacher.students.changeStatus', { name: `${student.firstName} ${student.lastName}` })}
                         aria-busy={updatingStatusId === student.id}
                         disabled={updatingStatusId === student.id}
-                        className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
+                        className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 ${
                           student.status === 1 
                           ? 'bg-green-50 text-brand-text border border-green-100'
                           : 'bg-surface-100 text-surface-400 border border-surface-200'

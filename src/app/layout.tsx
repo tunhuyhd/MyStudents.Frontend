@@ -1,24 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";
 import Script from "next/script";
 import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from "@/lib/language";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const beVietnamPro = Be_Vietnam_Pro({
-  subsets: ["vietnamese", "latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-be-vietnam",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "MyStudents - Modern Education Platform",
@@ -34,7 +20,7 @@ export default function RootLayout({
     <html
       lang={DEFAULT_LANGUAGE}
       suppressHydrationWarning
-      className={`${inter.variable} ${beVietnamPro.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col bg-white">
         <Script id="language-bootstrap" strategy="beforeInteractive">

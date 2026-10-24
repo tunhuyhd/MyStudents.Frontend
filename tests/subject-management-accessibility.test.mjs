@@ -25,8 +25,10 @@ test('edit and delete actions have localized accessible names that include the s
   assert.equal(english.admin.deleteSubject, 'Delete subject {name}');
 });
 
-test('action handlers and native delete confirmation remain unchanged', () => {
+test('action handlers and native delete confirmation remain localized', () => {
   assert.match(source, /onClick=\{\(\) => handleEdit\(s\)\}/);
   assert.match(source, /onClick=\{\(\) => handleDelete\(s\.id\)\}/);
-  assert.match(source, /if \(!confirm\('Are you sure you want to delete this subject\?'\)\) return;/);
+  assert.match(source, /if \(!confirm\(t\('admin\.deleteSubjectConfirm'\)\)\) return;/);
+  assert.equal(vietnamese.admin.deleteSubjectConfirm, 'Bạn có chắc chắn muốn xóa môn học này không?');
+  assert.equal(english.admin.deleteSubjectConfirm, 'Are you sure you want to delete this subject?');
 });

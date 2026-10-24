@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T15:46:35.053Z",
+  "generatedAt": "2026-10-24T14:40:28.779Z",
   "viewport": {
     "width": 1440,
     "height": 1000
@@ -10,12 +10,12 @@
     "start": {
       "canvasClearCount": 2,
       "canvasFillCount": 2,
-      "sampledAt": 948.8999999985099
+      "sampledAt": 888.2999999970198
     },
     "end": {
       "canvasClearCount": 2,
       "canvasFillCount": 2,
-      "sampledAt": 1367.8999999985099
+      "sampledAt": 1299.6000000014901
     },
     "canvasRedrawsDuring400ms": 0,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-initial-1440.png"
@@ -23,29 +23,29 @@
   "normalMotion": {
     "preferenceMatches": false,
     "start": {
-      "canvasClearCount": 14,
-      "canvasFillCount": 14,
-      "sampledAt": 1898.1000000014901
+      "canvasClearCount": 10,
+      "canvasFillCount": 10,
+      "sampledAt": 1957.2000000029802
     },
     "end": {
-      "canvasClearCount": 24,
-      "canvasFillCount": 24,
-      "sampledAt": 2265.800000000745
+      "canvasClearCount": 15,
+      "canvasFillCount": 15,
+      "sampledAt": 2325.7999999970198
     },
-    "canvasRedrawsDuring350ms": 10,
+    "canvasRedrawsDuring350ms": 5,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-normal-1440.png"
   },
   "runtimeReducedMotion": {
     "preferenceMatches": true,
     "start": {
-      "canvasClearCount": 27,
-      "canvasFillCount": 27,
-      "sampledAt": 2531.5
+      "canvasClearCount": 19,
+      "canvasFillCount": 19,
+      "sampledAt": 2775.39999999851
     },
     "end": {
-      "canvasClearCount": 27,
-      "canvasFillCount": 27,
-      "sampledAt": 2935.89999999851
+      "canvasClearCount": 19,
+      "canvasFillCount": 19,
+      "sampledAt": 3185.10000000149
     },
     "canvasRedrawsDuring400ms": 0,
     "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\admin-contrast\\admin-motion-reduced-runtime-1440.png"
@@ -53,16 +53,16 @@
   "resumedNormalMotion": {
     "preferenceMatches": false,
     "start": {
-      "canvasClearCount": 39,
-      "canvasFillCount": 39,
-      "sampledAt": 3449.199999999255
+      "canvasClearCount": 27,
+      "canvasFillCount": 27,
+      "sampledAt": 3812.7999999970198
     },
     "end": {
-      "canvasClearCount": 48,
-      "canvasFillCount": 48,
-      "sampledAt": 3816.89999999851
+      "canvasClearCount": 33,
+      "canvasFillCount": 33,
+      "sampledAt": 4183.29999999702
     },
-    "canvasRedrawsDuring350ms": 9
+    "canvasRedrawsDuring350ms": 6
   },
   "limitations": [
     "Canvas redraw counts verify animation activity, not CPU usage, frame time, FPS or battery impact."

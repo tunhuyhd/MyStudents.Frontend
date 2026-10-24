@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Role {
   id: string;
@@ -17,6 +18,7 @@ interface RoleDropdownProps {
 }
 
 export default function RoleDropdown({ roles, currentRoleId, onUpdate, disabled }: RoleDropdownProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ export default function RoleDropdown({ roles, currentRoleId, onUpdate, disabled 
         `}
         disabled={disabled}
       >
-        <span className="truncate">{currentRole?.name || 'Select Role'}</span>
+        <span className="truncate">{currentRole?.name || t('admin.selectRole')}</span>
         <ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 

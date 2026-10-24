@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "build/**",
     ".test-output/**",
     "next-env.d.ts",
+    // Generated Playwright artifacts and externally managed Impeccable skill files.
+    "playwright-report/**",
+    "test-results/**",
+    "artifacts/**",
+    ".github/skills/**",
   ]),
 ]);
 

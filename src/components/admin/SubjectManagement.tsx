@@ -67,7 +67,7 @@ export default function SubjectManagement() {
 
   const handleDelete = async (id: string) => {
     if (deletingId) return;
-    if (!confirm('Are you sure you want to delete this subject?')) return;
+    if (!confirm(t('admin.deleteSubjectConfirm'))) return;
     setDeletingId(id);
     try {
       await subjectService.delete(id);
@@ -86,15 +86,16 @@ export default function SubjectManagement() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-black text-white flex items-center">
           <BookOpen className="w-6 h-6 mr-3 text-emerald-500" />
-          Subjects List
+          {t('admin.subjectsTitle')}
         </h2>
         <Button 
+          theme="dark"
           disabled={saving}
           onClick={() => { setIsAdding(!isAdding); setEditingId(null); setFormData({name:'', description:''}); }}
           className="rounded-2xl h-12 px-6 shadow-lg shadow-emerald-500/20"
         >
           {isAdding ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-          {isAdding ? 'Cancel' : 'Add New Subject'}
+          {isAdding ? t('admin.cancel') : t('admin.addSubject')}
         </Button>
       </div>
 
@@ -109,25 +110,25 @@ export default function SubjectManagement() {
             <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input 
-                  label="Subject Name" 
-                  placeholder="e.g. Mathematics" 
+                  theme="dark"
+                  label={t('admin.subjectName')}
+                  placeholder={t('admin.subjectNamePlaceholder')}
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="bg-white/5 border-white/10 text-white focus:bg-white/10"
                   required
                 />
                 <Input 
-                  label="Description" 
-                  placeholder="Short description" 
+                  theme="dark"
+                  label={t('admin.subjectDescription')}
+                  placeholder={t('admin.subjectDescriptionPlaceholder')}
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="bg-white/5 border-white/10 text-white focus:bg-white/10"
                 />
               </div>
               <div className="flex justify-end">
-                <Button type="submit" disabled={saving} isLoading={saving} className="px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30">
+                <Button type="submit" theme="dark" disabled={saving} isLoading={saving} className="px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30">
                   <Check className="w-4 h-4 mr-2" />
-                  {editingId ? 'Update Subject' : 'Create Subject'}
+                  {editingId ? t('admin.updateSubject') : t('admin.createSubject')}
                 </Button>
               </div>
             </form>
@@ -169,7 +170,7 @@ export default function SubjectManagement() {
               </div>
             </div>
             <h3 className="text-xl font-bold text-white mb-2">{s.name}</h3>
-            <p className="text-emerald-300 text-sm line-clamp-2">{s.description || 'No description available.'}</p>
+            <p className="text-emerald-300 text-sm line-clamp-2">{s.description || t('admin.noDescription')}</p>
           </motion.div>
         ))}
       </div>

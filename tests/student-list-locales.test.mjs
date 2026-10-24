@@ -85,3 +85,21 @@ test('student list translations are readable and keep both locales aligned', () 
     assert.deepEqual(viPlaceholders, enPlaceholders, `placeholder mismatch for ${key}`);
   }
 });
+
+test('V5 Teacher dashboard and Admin management copy is translated in both locales', () => {
+  const sharedKeys = {
+    admin: ['usersTab', 'subjectsTab', 'selectRole', 'subjectsTitle', 'cancel', 'addSubject', 'subjectName', 'subjectDescription', 'subjectNamePlaceholder', 'subjectDescriptionPlaceholder', 'createSubject', 'updateSubject', 'noDescription', 'deleteSubjectConfirm', 'loginTitle', 'loginSubtitle', 'loginIdentifier', 'securityKey', 'authorize', 'restrictedArea', 'loginFailed'],
+    teacher: ['searchClasses', 'allYears', 'yearLabel', 'sortNewest', 'sortOldest', 'sortNameAscending', 'sortNameDescending', 'sortMostStudents', 'sortFewestStudents', 'classCreated', 'classUpdated', 'classesShowing', 'previousPage', 'nextPage', 'toBeAnnounced'],
+  };
+
+  for (const [section, keys] of Object.entries(sharedKeys)) {
+    for (const key of keys) {
+      const viValue = vietnamese[section][key];
+      const enValue = english[section][key];
+      assert.equal(typeof viValue, 'string', `missing Vietnamese ${section}.${key}`);
+      assert.equal(typeof enValue, 'string', `missing English ${section}.${key}`);
+      assert.notEqual(viValue, enValue, `${section}.${key} should be localized`);
+      assert.deepEqual(viValue.match(/\{[^}]+\}/g) ?? [], enValue.match(/\{[^}]+\}/g) ?? [], `placeholder mismatch for ${section}.${key}`);
+    }
+  }
+});

@@ -129,7 +129,8 @@ for (const { width, language } of viewportCases) {
           const parent = element.closest('[role="region"]')!;
           const header = element.getBoundingClientRect();
           const region = parent.getBoundingClientRect();
-          return header.left >= region.left && header.right <= region.right;
+          // Allow 1 CSS px for fractional layout rounding at the maximum scroll position.
+          return header.left >= region.left - 1 && header.right <= region.right + 1;
         });
         if (finalActionIsVisible) break;
         await page.keyboard.press('ArrowRight');
@@ -140,7 +141,7 @@ for (const { width, language } of viewportCases) {
         const parent = element.closest('[role="region"]')!;
         const header = element.getBoundingClientRect();
         const region = parent.getBoundingClientRect();
-        return header.left >= region.left && header.right <= region.right;
+        return header.left >= region.left - 1 && header.right <= region.right + 1;
       });
       expect(keyboardVisibleAction).toBe(true);
 
@@ -170,7 +171,7 @@ for (const { width, language } of viewportCases) {
     await page.keyboard.press('Enter');
     await expect(page.getByRole('button', { name: 'Student', exact: true }).last()).toBeVisible();
 
-    await page.getByRole('button', { name: 'Users', exact: true }).click();
+    await page.getByRole('button', { name: language === 'vi' ? 'Người dùng' : 'Users', exact: true }).click();
     const activeStatus = row.locator('td:nth-child(4) button');
     await page.locator('body').click({ position: { x: width - 2, y: 880 } });
     for (let tab = 0; tab < 80; tab += 1) {

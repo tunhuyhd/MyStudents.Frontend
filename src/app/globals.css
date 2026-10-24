@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Be Vietnam Pro", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   
   /* Bảng màu Mệnh Mộc - Dương Liễu Mộc */
   --color-brand-primary: #10b981;    /* Emerald Green */
@@ -30,6 +30,25 @@
   :root {
     --background: #ffffff;
     --foreground: #022c22;
+    --control-light-background: #ffffff;
+    --control-light-foreground: #022c22;
+    --control-light-placeholder: #47695c;
+    --control-light-border: #6f8d7e;
+    --control-light-focus: #047857;
+    --control-light-error: #b91c1c;
+    --control-light-error-border: #ef4444;
+    --control-light-success: #047857;
+    --control-light-success-border: #047857;
+    --control-dark-background: #0b100d;
+    --control-dark-foreground: #f0fdf4;
+    --control-dark-label: #a7f3d0;
+    --control-dark-placeholder: #a7f3d0;
+    --control-dark-border: #527568;
+    --control-dark-focus: #a7f3d0;
+    --control-dark-error: #fca5a5;
+    --control-dark-error-border: #f87171;
+    --control-dark-success: #6ee7b7;
+    --control-dark-success-border: #34d399;
   }
 
   body {
@@ -82,6 +101,197 @@
     pointer-events: none;
     filter: blur(2px);
   }
+}
+
+@layer components {
+  .ui-button {
+    cursor: pointer;
+  }
+
+  .ui-button[data-theme="light"][data-variant="primary"] {
+    background-color: #047857;
+    color: #ffffff;
+  }
+
+  .ui-button[data-theme="light"][data-variant="primary"]:hover:not(:disabled) {
+    background-color: #065f46;
+  }
+
+  .ui-button[data-theme="light"][data-variant="secondary"] {
+    background-color: #0369a1;
+    color: #ffffff;
+  }
+
+  .ui-button[data-theme="light"][data-variant="secondary"]:hover:not(:disabled) {
+    background-color: #075985;
+  }
+
+  .ui-button[data-theme="light"][data-variant="outline"] {
+    border: 1px solid #047857;
+    background-color: transparent;
+    color: #047857;
+  }
+
+  .ui-button[data-theme="light"][data-variant="outline"]:hover:not(:disabled) {
+    background-color: #f0fdf4;
+  }
+
+  .ui-button[data-theme="light"][data-variant="ghost"] {
+    background-color: transparent;
+    color: #064e3b;
+  }
+
+  .ui-button[data-theme="light"][data-variant="ghost"]:hover:not(:disabled) {
+    background-color: #ecfdf5;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="primary"] {
+    background-color: #10b981;
+    color: #011c16;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="primary"]:hover:not(:disabled) {
+    background-color: #34d399;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="secondary"] {
+    background-color: #0369a1;
+    color: #ffffff;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="secondary"]:hover:not(:disabled) {
+    background-color: #075985;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="outline"] {
+    border: 1px solid #6ee7b7;
+    background-color: transparent;
+    color: #a7f3d0;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="outline"]:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 8%);
+  }
+
+  .ui-button[data-theme="dark"][data-variant="ghost"] {
+    background-color: transparent;
+    color: #a7f3d0;
+  }
+
+  .ui-button[data-theme="dark"][data-variant="ghost"]:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 8%);
+  }
+
+  .ui-button[data-theme="light"]:focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+  }
+
+  .ui-button[data-theme="dark"]:focus-visible {
+    outline: 2px solid #a7f3d0;
+    outline-offset: 3px;
+  }
+
+  .ui-button:disabled {
+    cursor: not-allowed;
+  }
+
+  .ui-input {
+    border: 1px solid var(--control-light-border);
+    background-color: var(--control-light-background);
+    color: var(--control-light-foreground);
+  }
+
+  .ui-input::placeholder {
+    color: var(--control-light-placeholder);
+    opacity: 1;
+  }
+
+  .ui-input:focus-visible {
+    outline: 2px solid var(--control-light-focus);
+    outline-offset: 2px;
+  }
+
+  .ui-input[data-theme="dark"] {
+    border-color: var(--control-dark-border);
+    background-color: var(--control-dark-background);
+    color: var(--control-dark-foreground);
+  }
+
+  .ui-input[data-theme="dark"]::placeholder {
+    color: var(--control-dark-placeholder);
+  }
+
+  .ui-input[data-theme="dark"]:focus-visible {
+    outline-color: var(--control-dark-focus);
+    outline-offset: 2px;
+  }
+
+  .ui-input[data-state="error"] {
+    border-color: var(--control-light-error-border);
+  }
+
+  .ui-input[data-state="error"]:focus-visible {
+    outline-color: var(--control-light-error-border);
+  }
+
+  [data-control-theme="light"] .ui-input-label {
+    color: #064e3b;
+  }
+
+  [data-control-theme="dark"] .ui-input-label {
+    color: var(--control-dark-label);
+  }
+
+  [data-control-theme="light"] .ui-input-error {
+    color: var(--control-light-error);
+  }
+
+  [data-control-theme="dark"] .ui-input[data-state="error"] {
+    border-color: var(--control-dark-error-border);
+  }
+
+  [data-control-theme="dark"] .ui-input[data-state="error"]:focus-visible {
+    outline-color: var(--control-dark-error-border);
+  }
+
+  [data-control-theme="dark"] .ui-input-error {
+    color: var(--control-dark-error);
+  }
+
+  .ui-input[data-state="success"] {
+    border-color: var(--control-light-success-border);
+  }
+
+  .ui-input[data-state="success"]:focus-visible {
+    outline-color: var(--control-light-success);
+  }
+
+  [data-control-theme="dark"] .ui-input[data-state="success"] {
+    border-color: var(--control-dark-success-border);
+  }
+
+  [data-control-theme="dark"] .ui-input[data-state="success"]:focus-visible {
+    outline-color: var(--control-dark-success);
+  }
+
+  .ui-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+/* Keep shared-button focus rings above Tailwind utilities in both themes. */
+.ui-button[data-theme="light"]:focus-visible {
+  outline: 2px solid var(--control-light-focus);
+  outline-offset: 3px;
+  transition: none;
+}
+
+.ui-button[data-theme="dark"]:focus-visible {
+  outline: 2px solid var(--control-dark-focus);
+  outline-offset: 3px;
+  transition: none;
 }
 
 @layer utilities {

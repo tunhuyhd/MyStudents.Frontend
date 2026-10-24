@@ -218,7 +218,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   {step > s ? <Check className="w-6 h-6" /> : s}
                 </div>
                 <div className="flex flex-col">
-                  <span className={`text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${step === s ? 'text-brand-text' : 'text-surface-300'}`}>{t('teacher.modal.stepLabel')} {s}</span>
+                  <span className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${step === s ? 'text-brand-text' : 'text-surface-300'}`}>{t('teacher.modal.stepLabel')} {s}</span>
                   <span className={`text-sm lg:text-base font-black ${step === s ? 'text-surface-900' : 'text-surface-400'}`}>
                     {s === 1 ? t('teacher.modal.step1') : t('teacher.modal.step2')}
                   </span>
@@ -498,7 +498,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             </div>
                             <div className="w-full lg:flex-1 grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                               <div className="relative">
-                                <span id={`${formId}-schedule-${index}-day-label`} className="text-[9px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.dayLabel')}</span>
+                                <span id={`${formId}-schedule-${index}-day-label`} className="text-[10px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.dayLabel')}</span>
                                 <button
                                   type="button"
                                   aria-labelledby={`${formId}-schedule-${index}-day-label ${formId}-schedule-${index}-day-value`}
@@ -538,7 +538,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 </AnimatePresence>
                               </div>
                               <div className="relative">
-                                <label htmlFor={`${formId}-schedule-${index}-time`} className="text-[9px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.timeLabel')}</label>
+                                <label htmlFor={`${formId}-schedule-${index}-time`} className="text-[10px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.timeLabel')}</label>
                                 <input 
                                   id={`${formId}-schedule-${index}-time`}
                                   type="time" 
@@ -548,7 +548,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                 />
                               </div>
                               <div className="relative col-span-2 lg:col-span-1">
-                                <label htmlFor={`${formId}-schedule-${index}-duration`} className="text-[9px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.durationLabel')}</label>
+                                <label htmlFor={`${formId}-schedule-${index}-duration`} className="text-[10px] font-black text-brand-text uppercase tracking-[0.15em] mb-1 px-1 block">{t('teacher.modal.durationLabel')}</label>
                                 <div className="flex items-center bg-white rounded-xl md:rounded-2xl px-5 h-12 md:h-14 shadow-sm">
                                   <input 
                                     id={`${formId}-schedule-${index}-duration`}
@@ -559,7 +559,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                                     onChange={e => updateSchedule(index, 'durationHours', parseFloat(e.target.value))}
                                     className="w-full bg-transparent border-none text-xs md:text-sm font-bold text-surface-900 outline-none"
                                   />
-                                  <span className="text-[9px] font-black text-brand-text uppercase tracking-widest ml-2 whitespace-nowrap">{t('teacher.modal.hoursAbbr')}</span>
+                                  <span className="text-[10px] font-black text-brand-text uppercase tracking-widest ml-2 whitespace-nowrap">{t('teacher.modal.hoursAbbr')}</span>
                                 </div>
                               </div>
                             </div>

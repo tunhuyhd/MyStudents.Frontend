@@ -58,7 +58,7 @@ test('subject mutations keep failed form values, preserve confirmation flow and 
   assert.match(subjects, /setToast\(\{ isOpen: true, message: mutationErrorMessage\(err, t/);
   assert.match(subjects, /catch \(err\) \{\s*console\.error\('Failed to save subject', err\);\s*setToast/);
   assert.match(subjects, /if \(deletingId\) return/);
-  assert.match(subjects, /if \(!confirm\('Are you sure you want to delete this subject\?'\)\) return/);
+  assert.match(subjects, /if \(!confirm\(t\('admin\.deleteSubjectConfirm'\)\)\) return/);
   assert.match(subjects, /await subjectService\.delete\(id\)/);
   assert.match(classModal, /if \(loading\) return/);
   assert.match(classModal, /mutationErrorMessage\(error, t\)/);

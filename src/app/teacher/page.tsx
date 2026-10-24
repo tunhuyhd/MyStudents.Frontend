@@ -132,7 +132,7 @@ export default function TeacherDashboard() {
       setEditingClass(null);
       setToast({
         isOpen: true,
-        message: isEdit ? 'Cập nhật lớp học thành công!' : 'Tạo lớp học mới thành công!',
+        message: isEdit ? t('teacher.classUpdated') : t('teacher.classCreated'),
         type: 'success'
       });
       fetchClasses();
@@ -229,7 +229,8 @@ export default function TeacherDashboard() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
           <input 
             type="text" 
-            placeholder={t('common.search') || "Tìm kiếm lớp học, mã lớp..."}
+            aria-label={t('teacher.searchClasses')}
+            placeholder={t('teacher.searchClasses')}
             value={searchTerm}
             onChange={(e) => { setSearchTerm(e.target.value); setPageNumber(1); }}
             className="w-full h-14 pl-12 pr-4 bg-white rounded-2xl border-none focus:ring-2 focus:ring-brand-primary/20 text-sm font-bold shadow-sm"
@@ -246,7 +247,7 @@ export default function TeacherDashboard() {
               <div className="flex items-center text-surface-400">
                 <Filter className="w-5 h-5 mr-3" />
                 <span className="text-sm font-bold text-surface-900">
-                  {year === '' ? 'Tất cả các năm' : `Năm ${year}`}
+                  {year === '' ? t('teacher.allYears') : t('teacher.yearLabel', { year })}
                 </span>
               </div>
               <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform ${isYearDropdownOpen ? 'rotate-180' : ''}`} />
@@ -265,7 +266,7 @@ export default function TeacherDashboard() {
                     onClick={() => { setYear(''); setPageNumber(1); setIsYearDropdownOpen(false); }}
                     className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                   >
-                    Tất cả các năm
+                    {t('teacher.allYears')}
                     {year === '' && <Check className="w-4 h-4" />}
                   </button>
                   {[...Array(5)].map((_, i) => {
@@ -276,7 +277,7 @@ export default function TeacherDashboard() {
                         onClick={() => { setYear(y); setPageNumber(1); setIsYearDropdownOpen(false); }}
                         className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                       >
-                        Năm {y}
+                        {t('teacher.yearLabel', { year: y })}
                         {year === y && <Check className="w-4 h-4" />}
                       </button>
                     );
@@ -295,12 +296,12 @@ export default function TeacherDashboard() {
               <div className="flex items-center text-surface-400">
                 <ArrowUpDown className="w-5 h-5 mr-3" />
                 <span className="text-sm font-bold text-surface-900">
-                  {sortBy === 'startDate' && sortDescending === true ? 'Mới nhất' :
-                   sortBy === 'startDate' && sortDescending === false ? 'Cũ nhất' :
-                   sortBy === 'name' && sortDescending === false ? 'Tên (A-Z)' :
-                   sortBy === 'name' && sortDescending === true ? 'Tên (Z-A)' :
-                   sortBy === 'studentCount' && sortDescending === true ? 'Học sinh (Nhiều nhất)' :
-                   'Học sinh (Ít nhất)'}
+                  {sortBy === 'startDate' && sortDescending === true ? t('teacher.sortNewest') :
+                   sortBy === 'startDate' && sortDescending === false ? t('teacher.sortOldest') :
+                   sortBy === 'name' && sortDescending === false ? t('teacher.sortNameAscending') :
+                   sortBy === 'name' && sortDescending === true ? t('teacher.sortNameDescending') :
+                   sortBy === 'studentCount' && sortDescending === true ? t('teacher.sortMostStudents') :
+                   t('teacher.sortFewestStudents')}
                 </span>
               </div>
               <ChevronDown className={`w-4 h-4 text-surface-400 transition-transform ${isSortDropdownOpen ? 'rotate-180' : ''}`} />
@@ -316,12 +317,12 @@ export default function TeacherDashboard() {
                   className="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-100 py-2 z-50 overflow-hidden"
                 >
                   {[
-                    { label: 'Mới nhất', valSortBy: 'startDate', valDesc: true },
-                    { label: 'Cũ nhất', valSortBy: 'startDate', valDesc: false },
-                    { label: 'Tên (A-Z)', valSortBy: 'name', valDesc: false },
-                    { label: 'Tên (Z-A)', valSortBy: 'name', valDesc: true },
-                    { label: 'Học sinh (Nhiều nhất)', valSortBy: 'studentCount', valDesc: true },
-                    { label: 'Học sinh (Ít nhất)', valSortBy: 'studentCount', valDesc: false },
+                    { label: t('teacher.sortNewest'), valSortBy: 'startDate', valDesc: true },
+                    { label: t('teacher.sortOldest'), valSortBy: 'startDate', valDesc: false },
+                    { label: t('teacher.sortNameAscending'), valSortBy: 'name', valDesc: false },
+                    { label: t('teacher.sortNameDescending'), valSortBy: 'name', valDesc: true },
+                    { label: t('teacher.sortMostStudents'), valSortBy: 'studentCount', valDesc: true },
+                    { label: t('teacher.sortFewestStudents'), valSortBy: 'studentCount', valDesc: false },
                   ].map((option) => {
                     const isActive = sortBy === option.valSortBy && sortDescending === option.valDesc;
                     return (
@@ -453,7 +454,7 @@ export default function TeacherDashboard() {
                         
                         <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
                           <Calendar className="w-5 h-5 mr-3 text-brand-primary/40" />
-                          <span>{c.startDate ? new Date(c.startDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US') : 'TBA'}</span>
+                          <span>{c.startDate ? new Date(c.startDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US') : t('teacher.toBeAnnounced')}</span>
                         </div>
 
                         <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 p-3 rounded-2xl border border-surface-100/50">
@@ -499,8 +500,8 @@ export default function TeacherDashboard() {
                   <div className="w-24 h-24 bg-brand-primary/5 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 animate-float">
                     <BookOpen className="w-12 h-12 text-brand-primary/40" />
                   </div>
-                  <h3 className="text-2xl font-black text-surface-900 mb-4">{t('teacher.noClasses') || 'Bạn chưa có lớp học nào'}</h3>
-                  <p className="text-surface-500 font-medium mb-10 max-w-md mx-auto">{t('teacher.noClassesDesc') || 'Bắt đầu hành trình giảng dạy của bạn bằng cách tạo lớp học đầu tiên ngay hôm nay.'}</p>
+                  <h3 className="text-2xl font-black text-surface-900 mb-4">{t('teacher.noClasses')}</h3>
+                  <p className="text-surface-500 font-medium mb-10 max-w-md mx-auto">{t('teacher.noClassesDesc')}</p>
                   <Button 
                     onClick={() => { setEditingClass(null); setIsModalOpen(true); }} 
                     size="lg"
@@ -519,7 +520,7 @@ export default function TeacherDashboard() {
         {totalPages > 1 && (
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/60 backdrop-blur-md p-6 rounded-3xl border border-white mt-8">
             <div className="text-sm font-bold text-surface-500">
-              Hiển thị <span className="text-surface-900">{(pageNumber - 1) * pageSize + 1}</span> - <span className="text-surface-900">{Math.min(pageNumber * pageSize, totalCount)}</span> trên <span className="text-surface-900">{totalCount}</span> lớp học
+              {t('teacher.classesShowing', { start: (pageNumber - 1) * pageSize + 1, end: Math.min(pageNumber * pageSize, totalCount), total: totalCount })}
             </div>
             <div className="flex items-center gap-2">
               <Button 
@@ -528,7 +529,7 @@ export default function TeacherDashboard() {
                 onClick={() => setPageNumber(prev => prev - 1)}
                 className="rounded-xl h-12 px-4 border-surface-100"
               >
-                Trước
+                {t('teacher.previousPage')}
               </Button>
               <div className="flex items-center gap-1 hidden sm:flex">
                 {[...Array(totalPages)].map((_, i) => (
@@ -551,7 +552,7 @@ export default function TeacherDashboard() {
                 onClick={() => setPageNumber(prev => prev + 1)}
                 className="rounded-xl h-12 px-4 border-surface-100"
               >
-                Sau
+                {t('teacher.nextPage')}
               </Button>
             </div>
           </div>
@@ -569,8 +570,8 @@ export default function TeacherDashboard() {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
-        title={t('teacher.deleteTitle') || "Xóa lớp học"}
-        message={t('teacher.deleteMessage') || "Bạn có chắc chắn muốn xóa lớp học này? Hành động này không thể hoàn tác."}
+        title={t('teacher.deleteTitle')}
+        message={t('teacher.deleteMessage')}
       />
 
       <Toast 

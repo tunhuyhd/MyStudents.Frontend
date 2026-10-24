@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
       window.location.href = '/admin';
     } catch (error: unknown) {
       const message = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message : undefined;
-      setError(message || 'Access Denied: Invalid admin credentials.');
+      setError(message || t('admin.loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -57,26 +57,24 @@ export default function AdminLoginPage() {
             <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mb-6 border border-emerald-500/20 shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]">
               <ShieldAlert className="w-8 h-8 md:w-10 md:h-10 text-emerald-500" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">Admin Access</h1>
-            <p className="text-emerald-300 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">Secure Terminal System</p>
+            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">{t('admin.loginTitle')}</h1>
+            <p className="text-emerald-300 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">{t('admin.loginSubtitle')}</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <Input 
-              label="ADMIN IDENTIFIER" 
-              placeholder="Username"
-              labelClassName="text-emerald-300"
-              className="bg-black/50 border-emerald-500/10 text-white placeholder:text-emerald-300/80 focus:border-emerald-500/40"
+              theme="dark"
+              label={t('admin.loginIdentifier')}
+              placeholder={t('auth.username')}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
             <Input 
-              label="SECURITY KEY" 
+              theme="dark"
+              label={t('admin.securityKey')}
               type="password" 
               placeholder="••••••••"
-              labelClassName="text-emerald-300"
-              className="bg-black/50 border-emerald-500/10 text-white placeholder:text-emerald-300/80 focus:border-emerald-500/40"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -94,17 +92,18 @@ export default function AdminLoginPage() {
 
             <Button 
               type="submit" 
+              theme="dark"
               className="w-full h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-widest shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]" 
               isLoading={loading}
             >
               <Lock className="w-4 h-4 mr-2" />
-              Authorize Entry
+              {t('admin.authorize')}
             </Button>
           </form>
         </div>
         
         <p className="text-center mt-8 text-[10px] font-black text-emerald-300 uppercase tracking-[0.3em]">
-          Restricted Area - Unauthorized access is prohibited
+          {t('admin.restrictedArea')}
         </p>
       </motion.div>
     </div>

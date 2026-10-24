@@ -11,18 +11,12 @@ function cn(...inputs: ClassValue[]) {
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
+  theme?: 'light' | 'dark';
   isLoading?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading, disabled, children, ...props }, ref) => {
-    const variants = {
-      primary: 'bg-brand-action text-white hover:bg-brand-action-hover',
-      secondary: 'bg-sky-700 text-white hover:bg-sky-800',
-      outline: 'border border-brand-action text-brand-action hover:bg-surface-50',
-      ghost: 'text-surface-800 hover:bg-surface-100',
-    };
-
+  ({ className, variant = 'primary', size = 'md', theme = 'light', isLoading, disabled, children, ...props }, ref) => {
     const sizes = {
       sm: 'min-h-10 px-3 py-2 text-sm',
       md: 'px-5 py-2.5',
@@ -33,11 +27,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-xl font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none',
-          variants[variant],
+          'ui-button inline-flex items-center justify-center rounded-xl font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none',
           sizes[size],
           className
         )}
+        data-theme={theme}
+        data-variant={variant}
         {...props}
         disabled={disabled || isLoading}
         aria-busy={isLoading || undefined}

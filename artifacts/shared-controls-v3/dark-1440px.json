@@ -1,0 +1,2181 @@
+{
+  "generatedAt": "2026-10-24T14:40:52.944Z",
+  "theme": "dark",
+  "viewport": 1440,
+  "screenshot": "G:\\Project-2026\\MyStudents\\MyStudents.Frontend\\artifacts\\shared-controls-v3\\admin-dark-1440px.png",
+  "controls": {
+    "subjectNameLabel": {
+      "tag": "label",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "background": {
+        "css": "rgba(0, 0, 0, 0)",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "border": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(167, 243, 208)",
+          "rgb": [
+            167,
+            243,
+            208
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-input-label block text-sm font-medium",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "defaultInput": {
+      "tag": "input",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(240, 253, 244)",
+        "rgb": [
+          240,
+          253,
+          244
+        ]
+      },
+      "background": {
+        "css": "rgb(11, 16, 13)",
+        "rgb": [
+          11,
+          16,
+          13
+        ]
+      },
+      "border": {
+        "css": "rgb(82, 117, 104)",
+        "rgb": [
+          82,
+          117,
+          104
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "outline": {
+        "color": {
+          "css": "rgb(240, 253, 244)",
+          "rgb": [
+            240,
+            253,
+            244
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-input flex w-full rounded-xl px-4 py-3 text-base sm:text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium transition-colors",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "defaultPrimaryButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "background": {
+        "css": "rgb(16, 185, 129)",
+        "rgb": [
+          16,
+          185,
+          129
+        ]
+      },
+      "border": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(1, 28, 22)",
+          "rgb": [
+            1,
+            28,
+            22
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2.5 px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "hoverPrimaryButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "background": {
+        "css": "rgb(52, 211, 153)",
+        "rgb": [
+          52,
+          211,
+          153
+        ]
+      },
+      "border": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(1, 28, 22)",
+          "rgb": [
+            1,
+            28,
+            22
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2.5 px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "activePrimaryButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "background": {
+        "css": "rgb(52, 211, 153)",
+        "rgb": [
+          52,
+          211,
+          153
+        ]
+      },
+      "border": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "transform": "none",
+      "scale": "0.95",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(1, 28, 22)",
+          "rgb": [
+            1,
+            28,
+            22
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2.5 px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "focusPrimaryButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "background": {
+        "css": "rgb(52, 211, 153)",
+        "rgb": [
+          52,
+          211,
+          153
+        ]
+      },
+      "border": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(167, 243, 208)",
+          "rgb": [
+            167,
+            243,
+            208
+          ]
+        },
+        "width": "2px",
+        "offset": "3px",
+        "style": "solid"
+      },
+      "focusVisible": true,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2.5 px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "hoverButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "background": {
+        "css": "rgba(255, 255, 255, 0.08)",
+        "rgb": [
+          255,
+          255,
+          255
+        ]
+      },
+      "border": {
+        "css": "rgb(110, 231, 183)",
+        "rgb": [
+          110,
+          231,
+          183
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(167, 243, 208)",
+          "rgb": [
+            167,
+            243,
+            208
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none px-5 py-2.5 rounded-2xl h-12",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "focusButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "background": {
+        "css": "rgba(0, 0, 0, 0)",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "border": {
+        "css": "rgb(110, 231, 183)",
+        "rgb": [
+          110,
+          231,
+          183
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(167, 243, 208)",
+          "rgb": [
+            167,
+            243,
+            208
+          ]
+        },
+        "width": "2px",
+        "offset": "3px",
+        "style": "solid"
+      },
+      "focusVisible": true,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none px-5 py-2.5 rounded-2xl h-12",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "errorInput": {
+      "tag": "input",
+      "theme": "dark",
+      "state": "error",
+      "foreground": {
+        "css": "rgb(240, 253, 244)",
+        "rgb": [
+          240,
+          253,
+          244
+        ]
+      },
+      "background": {
+        "css": "rgb(11, 16, 13)",
+        "rgb": [
+          11,
+          16,
+          13
+        ]
+      },
+      "border": {
+        "css": "rgb(248, 113, 113)",
+        "rgb": [
+          248,
+          113,
+          113
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "outline": {
+        "color": {
+          "css": "rgb(248, 113, 113)",
+          "rgb": [
+            248,
+            113,
+            113
+          ]
+        },
+        "width": "2px",
+        "offset": "2px",
+        "style": "solid"
+      },
+      "focusVisible": true,
+      "className": "ui-input flex w-full rounded-xl px-4 py-3 text-base sm:text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium transition-colors",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "errorMessage": {
+      "tag": "p",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(252, 165, 165)",
+        "rgb": [
+          252,
+          165,
+          165
+        ]
+      },
+      "background": {
+        "css": "rgba(0, 0, 0, 0)",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      "border": {
+        "css": "rgb(252, 165, 165)",
+        "rgb": [
+          252,
+          165,
+          165
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(252, 165, 165)",
+          "rgb": [
+            252,
+            165,
+            165
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-input-error text-sm font-medium",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "successInput": {
+      "tag": "input",
+      "theme": "dark",
+      "state": "success",
+      "foreground": {
+        "css": "rgb(240, 253, 244)",
+        "rgb": [
+          240,
+          253,
+          244
+        ]
+      },
+      "background": {
+        "css": "rgb(11, 16, 13)",
+        "rgb": [
+          11,
+          16,
+          13
+        ]
+      },
+      "border": {
+        "css": "rgb(52, 211, 153)",
+        "rgb": [
+          52,
+          211,
+          153
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "outline": {
+        "color": {
+          "css": "rgb(110, 231, 183)",
+          "rgb": [
+            110,
+            231,
+            183
+          ]
+        },
+        "width": "2px",
+        "offset": "2px",
+        "style": "solid"
+      },
+      "focusVisible": true,
+      "className": "ui-input flex w-full rounded-xl px-4 py-3 text-base sm:text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium transition-colors",
+      "disabled": false,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "disabledInput": {
+      "tag": "input",
+      "theme": "dark",
+      "state": "default",
+      "foreground": {
+        "css": "rgb(240, 253, 244)",
+        "rgb": [
+          240,
+          253,
+          244
+        ]
+      },
+      "background": {
+        "css": "rgb(11, 16, 13)",
+        "rgb": [
+          11,
+          16,
+          13
+        ]
+      },
+      "border": {
+        "css": "rgb(82, 117, 104)",
+        "rgb": [
+          82,
+          117,
+          104
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": {
+        "css": "rgb(167, 243, 208)",
+        "rgb": [
+          167,
+          243,
+          208
+        ]
+      },
+      "outline": {
+        "color": {
+          "css": "rgb(240, 253, 244)",
+          "rgb": [
+            240,
+            253,
+            244
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-input flex w-full rounded-xl px-4 py-3 text-base sm:text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium transition-colors",
+      "disabled": true,
+      "ariaBusy": null,
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    },
+    "loadingButton": {
+      "tag": "button",
+      "theme": "dark",
+      "state": "disabled",
+      "foreground": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "background": {
+        "css": "rgb(16, 185, 129)",
+        "rgb": [
+          16,
+          185,
+          129
+        ]
+      },
+      "border": {
+        "css": "rgb(1, 28, 22)",
+        "rgb": [
+          1,
+          28,
+          22
+        ]
+      },
+      "transform": "none",
+      "scale": "none",
+      "placeholder": null,
+      "outline": {
+        "color": {
+          "css": "rgb(1, 28, 22)",
+          "rgb": [
+            1,
+            28,
+            22
+          ]
+        },
+        "width": "3px",
+        "offset": "0px",
+        "style": "none"
+      },
+      "focusVisible": false,
+      "className": "ui-button inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none py-2.5 px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30",
+      "disabled": true,
+      "ariaBusy": "true",
+      "parentLayers": [
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "form",
+          "color": {
+            "css": "oklab(0.999994 0.0000455678 0.0000200868 / 0.05)",
+            "rgb": [
+              0.999994,
+              0.0000455678,
+              0.0000200868
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "main",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "div",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "body",
+          "color": {
+            "css": "rgb(255, 255, 255)",
+            "rgb": [
+              255,
+              255,
+              255
+            ]
+          },
+          "opacity": "1"
+        },
+        {
+          "tag": "html",
+          "color": {
+            "css": "rgba(0, 0, 0, 0)",
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "opacity": "1"
+        }
+      ]
+    }
+  },
+  "contrastRatios": {
+    "inputTextOnFill": 18.34,
+    "labelOnTranslucentFormSurface": 12.35,
+    "errorTextOnTranslucentFormSurface": 8.35,
+    "placeholderOnFill": 14.97,
+    "inputBorderAgainstFill": 3.75,
+    "buttonTextOnHoverAgainstDarkPanel": 14.06,
+    "buttonFocusAgainstDarkPanel": 14.06,
+    "primaryButtonTextOnHover": 9.27,
+    "primaryButtonFocusAgainstDarkPanel": 14.06,
+    "errorBorderAgainstFill": 6.94,
+    "successBorderAgainstFill": 9.98
+  },
+  "notes": [
+    "Control fills are opaque and directly measured; label and error text are compared against the form 5% white overlay composited over #111814 as a conservative dark-surface proxy.",
+    "Disabled controls are recorded but excluded from WCAG text contrast thresholds.",
+    "Error and success input visuals were previewed using the component data-state attribute and the component error-message class; current Admin subject form has no field-level validation state."
+  ]
+}

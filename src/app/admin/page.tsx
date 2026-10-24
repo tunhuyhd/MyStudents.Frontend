@@ -213,7 +213,7 @@ export default function AdminDashboard() {
               }`}
             >
               <Users className="w-4 h-4 mr-2" />
-              Users
+              {t('admin.usersTab')}
             </button>
             <button
               onClick={() => setActiveTab('subjects')}
@@ -222,14 +222,15 @@ export default function AdminDashboard() {
               }`}
             >
               <BookOpen className="w-4 h-4 mr-2" />
-              Subjects
+              {t('admin.subjectsTab')}
             </button>
           </div>
 
           <Button 
             onClick={fetchData} 
             variant="outline" 
-            className="rounded-2xl border-brand-primary/20 text-brand-primary h-12"
+            theme="dark"
+            className="rounded-2xl h-12"
             isLoading={loading}
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />

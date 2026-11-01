@@ -1,10 +1,12 @@
 'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Users, LayoutDashboard, X, LogOut } from 'lucide-react';
+import { BookOpen, Users, X, LogOut } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageSwitcher } from '../LanguageSwitcher';
@@ -120,13 +122,7 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
           {/* Logo Section */}
           <div className="flex items-center justify-between mb-8">
             <Link href="/" className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-brand-primary rounded-2xl flex items-center justify-center shadow-lg shadow-brand-primary/20 text-white">
-                <LayoutDashboard className="w-6 h-6" />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-surface-900 tracking-tighter leading-none">Teacher</h2>
-                <p className="text-[10px] font-black text-brand-text uppercase tracking-widest mt-1">Lounge</p>
-              </div>
+              <BrandLogo />
             </Link>
             <button type="button" aria-label={t('common.closeNavigation')} onClick={onClose} className="lg:hidden p-3 text-surface-600 rounded-xl hover:bg-surface-100">
               <X className="w-6 h-6" />

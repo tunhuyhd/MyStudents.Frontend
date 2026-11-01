@@ -1,5 +1,7 @@
 'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
@@ -120,8 +122,7 @@ export default function Home() {
 
       <footer className="relative z-10 py-20 text-center border-t border-brand-primary/5">
         <div className="flex items-center justify-center space-x-3 mb-4 opacity-50">
-          <BookOpen className="w-6 h-6 text-brand-primary" />
-          <span className="font-black text-surface-900 tracking-tighter">MyStudents 2026</span>
+          <BrandLogo size="sm" />
         </div>
         <p className="text-surface-400 text-xs font-bold uppercase tracking-widest">
           {t('home.footerSlogan')}

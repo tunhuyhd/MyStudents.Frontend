@@ -1,11 +1,13 @@
 'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { GraduationCap, LogOut, User as UserIcon, Menu, X, ShieldCheck } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu, X, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAvatarUrl } from '@/lib/api';
 
@@ -115,12 +117,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
             </button>
           )}
           <Link href="/" className="flex items-center space-x-3 group transition-transform active:scale-95">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20 group-hover:rotate-6 transition-transform">
-              <GraduationCap className="text-white w-6 h-6" />
-            </div>
-            <span className="text-2xl font-black tracking-tighter text-surface-900 group-hover:text-brand-primary transition-colors">
-              My<span className="text-brand-primary">Students</span>
-            </span>
+            <BrandLogo className="[&>span]:hidden sm:[&>span]:inline" />
           </Link>
         </div>
 

@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +25,7 @@ export default function ForgotPasswordPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <section className="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-xl border border-surface-100">
+        <BrandLogo className="mb-6" />
         <h1 className="text-3xl font-black text-surface-900">{t('auth.forgotPassword')}</h1>
         <p className="text-surface-500 mt-3 mb-8">{t('auth.forgotPasswordDesc')}</p>
         {sent ? <p role="status" className="text-brand-primary mb-8">{t('auth.forgotPasswordSuccess')}</p> : (

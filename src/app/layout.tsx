@@ -7,7 +7,7 @@ import Script from "next/script";
 import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from "@/lib/language";
 
 export const metadata: Metadata = {
-  title: "MyStudents - Modern Education Platform",
+  title: "My Student - Modern Education Platform",
   description: "Next-generation student management system",
 };
 

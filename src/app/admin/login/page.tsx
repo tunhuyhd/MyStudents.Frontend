@@ -1,12 +1,14 @@
 'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
 import { motion } from 'framer-motion';
-import { ShieldAlert, ArrowLeft, Lock } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import ZodiacBackground from '@/components/ZodiacBackground';
@@ -52,9 +54,7 @@ export default function AdminLoginPage() {
 
         <div className="bg-[#111814]/80 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] shadow-[0_0_80px_-20px_rgba(16,185,129,0.3)] border border-emerald-500/20">
           <div className="flex flex-col items-center mb-10 text-center">
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-500/10 rounded-3xl flex items-center justify-center mb-6 border border-emerald-500/20 shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]">
-              <ShieldAlert className="w-8 h-8 md:w-10 md:h-10 text-emerald-500" />
-            </div>
+            <BrandLogo size="lg" className="mb-6" theme="dark" />
             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">{t('admin.loginTitle')}</h1>
             <p className="text-emerald-300 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">{t('admin.loginSubtitle')}</p>
           </div>

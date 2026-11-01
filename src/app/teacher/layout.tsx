@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { useCallback, useState } from 'react';
 import { TeacherSidebar } from '@/components/teacher/TeacherSidebar';
 import { Menu } from 'lucide-react';
@@ -28,7 +30,7 @@ export default function TeacherLayout({ children }: { children: React.ReactNode 
           >
             <Menu className="w-5 h-5" aria-hidden="true" />
           </button>
-          <span className="font-bold text-lg text-surface-900">MyStudents</span>
+          <BrandLogo size="sm" />
         </header>
         <div id="teacher-content" tabIndex={-1} className="w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 xl:p-10">
           {children}

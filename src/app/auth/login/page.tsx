@@ -1,5 +1,7 @@
 'use client';
 
+import { BrandLogo } from '@/components/BrandLogo';
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -7,7 +9,7 @@ import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, LogIn } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -61,9 +63,7 @@ export default function UserLoginPage() {
 
         <div className="bg-white/80 backdrop-blur-xl p-10 rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(16,185,129,0.1)] border border-white">
           <div className="flex flex-col items-center mb-10 text-center">
-            <div className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center mb-6">
-              <LogIn className="w-8 h-8 text-brand-primary" />
-            </div>
+            <BrandLogo size="lg" className="mb-6" />
             <h1 className="text-3xl font-black text-surface-900 tracking-tight">{t('common.login')}</h1>
             <p className="text-surface-500 font-medium mt-2">{t('auth.loginDesc')}</p>
           </div>

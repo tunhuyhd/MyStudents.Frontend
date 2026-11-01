@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
-const { getPageEnrollmentCount } = require('../.test-output/dashboardMetrics.js');
+const { getPageEnrollmentCount } = require('../.test-output/lib/dashboardMetrics.js');
 const dashboard = readFileSync(new URL('../src/app/teacher/page.tsx', import.meta.url), 'utf8');
 const service = readFileSync(new URL('../src/services/classService.ts', import.meta.url), 'utf8');
 const en = JSON.parse(readFileSync(new URL('../src/locales/en.json', import.meta.url), 'utf8'));

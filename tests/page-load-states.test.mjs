@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
-const { classifyLoadFailure, getListLoadState, isRetryableLoadFailure } = require('../.test-output/loadFailure.js');
+const { classifyLoadFailure, getListLoadState, isRetryableLoadFailure } = require('../.test-output/lib/loadFailure.js');
 const teacher = readFileSync(new URL('../src/app/teacher/page.tsx', import.meta.url), 'utf8');
 const admin = readFileSync(new URL('../src/app/admin/page.tsx', import.meta.url), 'utf8');
 const detail = readFileSync(new URL('../src/app/teacher/class/[id]/page.tsx', import.meta.url), 'utf8');

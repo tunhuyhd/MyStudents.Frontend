@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -20,15 +19,14 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const res = await api.post('/admin/login', { username, password });
-      authLogin(res.data.token, res.data.refreshToken);
+      await api.post('/admin/login', { username, password });
+      await authLogin();
       window.location.href = '/admin';
     } catch (error: unknown) {
       const message = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message : undefined;

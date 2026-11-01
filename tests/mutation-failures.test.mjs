@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
-const { mutationErrorMessage } = require('../.test-output/mutationError.js');
+const { mutationErrorMessage } = require('../.test-output/lib/mutationError.js');
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const teacher = read('../src/app/teacher/page.tsx');
 const classDetail = read('../src/app/teacher/class/[id]/page.tsx');

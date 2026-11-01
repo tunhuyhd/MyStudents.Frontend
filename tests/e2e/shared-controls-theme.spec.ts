@@ -78,13 +78,11 @@ async function persistCapture(theme: 'light' | 'dark', width: number, screenshot
 
 async function openTeacherProfile(page: Page) {
   await page.addInitScript(() => {
-    localStorage.setItem('accessToken', 'playwright-teacher-token');
-    localStorage.setItem('refreshToken', 'playwright-teacher-refresh-token');
     localStorage.setItem('language', 'en');
   });
-  await page.route('**/api/v1/**', async (route) => {
+  await page.route('**/api/bff/**', async (route) => {
     const url = new URL(route.request().url());
-    const requestPath = url.pathname.replace(/\/api\/v1\/?/, '/');
+    const requestPath = url.pathname.replace(/\/api\/bff\/?/, '/');
     if (requestPath === '/auth/me' && route.request().method() === 'GET') {
       await route.fulfill({ json: { id: 'teacher-fixture', username: 'teacher-fixture', email: 'teacher@example.test', fullName: 'Test Teacher', role: 'User', imageUrl: null } });
       return;
@@ -293,7 +291,7 @@ for (const width of [390, 1440]) {
     expect(contrastRatio(parseRgb(hoverButton.foreground.css), darkPanel)).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(parseRgb(focusButton.outline.color.css), darkPanel)).toBeGreaterThanOrEqual(3);
 
-    await page.route('**/api/v1/subjects', async (route) => {
+    await page.route('**/api/bff/subjects', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 400));
       await route.fulfill({ status: 500, json: { message: 'Subject fixture error' } });
     });

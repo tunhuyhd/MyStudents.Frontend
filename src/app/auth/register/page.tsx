@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
@@ -24,15 +23,14 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const res = await api.post('/auth/register', formData);
-      authLogin(res.data.token, res.data.refreshToken);
+      await api.post('/auth/register', formData);
+      await authLogin();
       window.location.href = '/teacher';
     } catch (err: unknown) {
       setError(apiErrorMessage(err, t, 'auth.registrationFailed'));

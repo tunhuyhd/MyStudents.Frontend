@@ -65,15 +65,13 @@ export const adminSubjects = [
 
 export async function installAdminFixtures(page: Page, language: 'vi' | 'en' = 'en') {
   await page.addInitScript((selectedLanguage) => {
-    localStorage.setItem('accessToken', 'playwright-only-token');
-    localStorage.setItem('refreshToken', 'playwright-only-refresh-token');
     localStorage.setItem('language', selectedLanguage);
   }, language);
 
-  await page.route('**/api/v1/**', async (route: Route) => {
+  await page.route('**/api/bff/**', async (route: Route) => {
     const request = route.request();
     const url = new URL(request.url());
-    const path = url.pathname.replace(/\/api\/v1\/?/, '/');
+    const path = url.pathname.replace(/\/api\/bff\/?/, '/');
     const method = request.method();
 
     if (path === '/auth/me' && method === 'GET') {

@@ -8,13 +8,11 @@ const viewportWidths = [320, 390, 1440];
 
 async function openTeacherDashboard(page: Page, language: 'vi' | 'en') {
   await page.addInitScript((selectedLanguage) => {
-    localStorage.setItem('accessToken', 'playwright-teacher-only-token');
-    localStorage.setItem('refreshToken', 'playwright-teacher-only-refresh-token');
     localStorage.setItem('language', selectedLanguage);
   }, language);
-  await page.route('**/api/v1/**', async (route) => {
+  await page.route('**/api/bff/**', async (route) => {
     const url = new URL(route.request().url());
-    const requestPath = url.pathname.replace(/\/api\/v1\/?/, '/');
+    const requestPath = url.pathname.replace(/\/api\/bff\/?/, '/');
     if (requestPath === '/auth/me' && route.request().method() === 'GET') {
       await route.fulfill({ json: { id: 'teacher-v5-fixture', username: 'teacher-v5', email: 'teacher@example.test', fullName: 'Test Teacher', role: 'User', imageUrl: null } });
       return;

@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { GraduationCap, ArrowLeft, LogIn } from 'lucide-react';
+import { ArrowLeft, LogIn } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -21,7 +20,6 @@ export default function UserLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +27,7 @@ export default function UserLoginPage() {
     setError('');
     try {
       const res = await api.post('/auth/login', { username, password });
-      authLogin(res.data.token, res.data.refreshToken);
+      await authLogin();
       
       // Navigate based on role
       if (res.data.userRole === UserRoles.Admin) {

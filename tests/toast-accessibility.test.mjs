@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
-const { getToastDismissalDelay } = require('../.test-output/toast.js');
+const { getToastDismissalDelay } = require('../.test-output/lib/toast.js');
 const source = readFileSync(new URL('../src/components/ui/Toast.tsx', import.meta.url), 'utf8');
 const vietnamese = JSON.parse(readFileSync(new URL('../src/locales/vi.json', import.meta.url), 'utf8'));
 const english = JSON.parse(readFileSync(new URL('../src/locales/en.json', import.meta.url), 'utf8'));

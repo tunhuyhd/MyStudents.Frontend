@@ -38,7 +38,6 @@ export default function ResetPasswordPage() {
     setSaving(true);
     try {
       await api.post('/auth/reset-password', { token: token.current, newPassword: password });
-      localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken');
       await refreshUser(); setStatus('success'); token.current = null;
     } catch (error: unknown) { setError(apiErrorMessage(error, t)); }
     finally { setSaving(false); }

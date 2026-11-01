@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { test } from 'node:test';
 
 const require = createRequire(import.meta.url);
-const { DEFAULT_LANGUAGE, getStoredLanguage, LANGUAGE_STORAGE_KEY, persistLanguage } = require('../.test-output/language.js');
+const { DEFAULT_LANGUAGE, getStoredLanguage, LANGUAGE_STORAGE_KEY, persistLanguage } = require('../.test-output/lib/language.js');
 
 function storageWith(value = null) {
   const values = new Map(value === null ? [] : [[LANGUAGE_STORAGE_KEY, value]]);

@@ -18,7 +18,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token: string, refreshToken: string) => void;
+  login: () => Promise<void>;
   logout: () => Promise<void>;
   clearSession: () => void;
   refreshUser: () => Promise<void>;
@@ -27,9 +27,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function fetchCurrentUser(): Promise<User | null> {
-  if (!localStorage.getItem('accessToken')) return null;
-  const response = await api.get<User>('/auth/me');
-  return response.data;
+  try {
+    const response = await api.get<User>('/auth/me');
+    return response.data;
+  } catch (error) {
+    if ((error as { response?: { status?: number } }).response?.status === 401) return null;
+    throw error;
+  }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -52,6 +56,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // Remove credentials left by the pre-BFF version; never reuse them.
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     let active = true;
     fetchCurrentUser()
       .then((currentUser) => {
@@ -66,11 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { active = false; };
   }, []);
 
-  const login = (token: string, refreshToken: string) => {
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('refreshToken', refreshToken);
-    refreshUser();
-  };
+  const login = async () => { await refreshUser(); };
 
   const clearSession = () => {
     localStorage.removeItem('accessToken');

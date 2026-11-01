@@ -44,14 +44,12 @@ async function setupDashboard(page: Page, language: Language, state: DashboardSt
   const classResponseGate = new Promise<void>((resolve) => { releaseClassResponse = resolve; });
 
   await page.addInitScript((selectedLanguage) => {
-    localStorage.setItem('accessToken', 'playwright-v6-teacher-token');
-    localStorage.setItem('refreshToken', 'playwright-v6-teacher-refresh-token');
     localStorage.setItem('language', selectedLanguage);
   }, language);
-  await page.route('**/api/v1/**', async (route: Route) => {
+  await page.route('**/api/bff/**', async (route: Route) => {
     const request = route.request();
     const url = new URL(request.url());
-    const requestPath = url.pathname.replace(/\/api\/v1\/?/, '/');
+    const requestPath = url.pathname.replace(/\/api\/bff\/?/, '/');
     if (requestPath === '/auth/me' && request.method() === 'GET') {
       await route.fulfill({ json: { id: 'teacher-v6-fixture', username: 'teacher-v6', email: 'teacher@example.test', fullName: 'Test Teacher', role: 'User', imageUrl: null } });
       return;

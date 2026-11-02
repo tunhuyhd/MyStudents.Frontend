@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Navbar } from '@/components/Navbar';
+
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api, { getAvatarUrl } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, ShieldCheck, Save, KeyRound, Camera, Loader2, Eye, X } from 'lucide-react';
+import { IdentificationCard, Fingerprint, Save, KeyRound, Camera, Loader2, Eye, X } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import { apiErrorMessage } from '@/lib/apiError';
 
@@ -22,15 +22,7 @@ const getInitials = (name: string) => {
   return (first[0] + last[0]).toUpperCase();
 };
 
-const getInitialsBg = (name: string) => {
-  if (!name) return 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const h = Math.abs(hash) % 360;
-  return `linear-gradient(135deg, hsl(${h}, 80%, 60%) 0%, hsl(${(h + 40) % 360}, 85%, 50%) 100%)`;
-};
+const getInitialsBg = () => '#047857';
 
 export default function ProfilePage() {
   const { t } = useLanguage();
@@ -41,7 +33,7 @@ export default function ProfilePage() {
 
   // Profile Form State
   const [profileData, setProfileData] = useState({ fullName: '', email: '' });
-  
+
   // Password Form State
   const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
 
@@ -68,14 +60,14 @@ export default function ProfilePage() {
     // Validate size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setAvatarError(t('profile.avatarSizeLimit') || 'File size exceeds 5MB limit');
-      setTimeout(() => setAvatarError(''), 4000);
+
       return;
     }
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setAvatarError(t('profile.avatarTypeInvalid') || 'File must be an image');
-      setTimeout(() => setAvatarError(''), 4000);
+
       return;
     }
 
@@ -98,7 +90,7 @@ export default function ProfilePage() {
     } catch (err: unknown) {
       setPreviewUrl(null); // Revert preview on error
       setAvatarError(apiErrorMessage(err, t, 'profile.avatarUploadFailed'));
-      setTimeout(() => setAvatarError(''), 4000);
+
     } finally {
       setAvatarLoading(false);
       e.target.value = ''; // Reset file input to allow selecting the same file again
@@ -160,135 +152,137 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <main className="min-h-screen bg-transparent">
-      
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <motion.div 
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+    <main className="club-profile min-h-screen bg-transparent">
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <header className="mb-6"><h1 className="text-3xl mb-2">{t('profile.title')}</h1><p className="text-sm text-surface-500">{t('profile.desc')}</p></header>
+        <motion.div
+          initial={false}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-white/80 backdrop-blur-2xl rounded-[3rem] shadow-xl border border-white overflow-hidden"
+          className="bg-white rounded-xl border border-surface-200 overflow-hidden"
         >
           <div className="flex flex-col md:flex-row">
             {/* Sidebar Tabs */}
-            <div className="w-full md:w-80 bg-surface-100/50 p-8 border-r border-surface-100">
+            <div className="w-full md:w-64 bg-surface-100/50 p-8 border-r border-surface-100">
               <div className="flex flex-col items-center mb-10">
                 {/* Premium Interactive Avatar Upload */}
-                <div className="relative group w-24 h-24 mb-4 cursor-pointer" onClick={() => setShowOptionsModal(true)}>
-                  <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-brand-primary/10 bg-white flex items-center justify-center shadow-lg relative">
+                <button type="button" aria-label={t('profile.chooseNewPhoto')} className="club-avatar-control relative group w-24 h-24 mb-4 cursor-pointer" onClick={() => setShowOptionsModal(true)}>
+                  <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-brand-primary/10 bg-white flex items-center justify-center relative">
                     {avatarLoading ? (
-                      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-10">
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10">
                         <Loader2 className="w-6 h-6 text-white animate-spin" />
                       </div>
                     ) : null}
                     {previewUrl || user.imageUrl ? (
-                      <img 
-                        src={previewUrl || getAvatarUrl(user.imageUrl) || ''} 
-                        alt={user.fullName} 
+                      <img
+                        src={previewUrl || getAvatarUrl(user.imageUrl) || ''}
+                        alt={user.fullName}
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div 
-                        style={{ background: getInitialsBg(user.fullName) }}
-                        className="w-full h-full flex items-center justify-center text-3xl font-black text-white select-none"
+                      <div
+                        style={{ background: getInitialsBg() }}
+                        className="w-full h-full flex items-center justify-center text-3xl font-semibold text-white select-none"
                       >
                         {getInitials(user.fullName)}
                       </div>
                     )}
                   </div>
-                  
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 rounded-3xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-[10px] font-bold">
-                    <Camera className="w-5 h-5 mb-1 text-white" />
-                    Thay ảnh
-                  </div>
-                </div>
 
-                <input 
-                  type="file" 
+                  {/* Hover Overlay */}
+                  <div className="club-avatar-hover absolute inset-0 rounded-xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex flex-col items-center justify-center text-white text-xs font-medium">
+                    {t('profile.chooseNewPhoto')}
+                  </div>
+                  <span className="club-avatar-badge" aria-hidden="true"><Camera /></span>
+                </button>
+
+                <input
+                  type="file"
                   ref={fileInputRef}
-                  accept="image/*" 
-                  onChange={handleAvatarChange} 
-                  className="hidden" 
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
                   disabled={avatarLoading}
                 />
 
                 {avatarError && (
-                  <span className="text-[10px] text-red-500 font-bold text-center mb-2 animate-pulse">{avatarError}</span>
+                  <span className="text-xs text-red-500 font-medium text-center mb-2 animate-pulse">{avatarError}</span>
                 )}
 
-                <h2 className="text-xl font-black text-surface-900 text-center truncate max-w-full">{user.fullName}</h2>
-                <span className="text-xs font-bold text-brand-text bg-brand-primary/10 px-3 py-1 rounded-full mt-2 uppercase tracking-widest">
+                <h2 className="text-xl font-semibold text-surface-900 text-center truncate max-w-full">{user.fullName}</h2>
+                <span className="text-xs font-medium text-brand-text bg-brand-primary/10 px-3 py-1 rounded-full mt-2 tracking-normal">
                   {user.role}
                 </span>
               </div>
 
-              <div className="space-y-2">
+              <div className="club-profile-nav space-y-2">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-bold transition-all ${
-                    activeTab === 'profile' ? 'bg-white text-brand-text shadow-md' : 'text-surface-500 hover:text-surface-900'
+                  aria-pressed={activeTab==='profile'}
+                  className={`w-full flex items-center gap-3 px-6 py-4 rounded-lg font-medium transition-all ${
+                    activeTab === 'profile' ? 'bg-white text-brand-text ' : 'text-surface-500 hover:text-surface-900'
                   }`}
                 >
-                  <User className="w-5 h-5" />
+                  <span className="club-profile-nav-icon" aria-hidden="true"><IdentificationCard /></span>
                   <span>{t('profile.title')}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('security')}
-                  className={`w-full flex items-center space-x-3 px-6 py-4 rounded-2xl font-bold transition-all ${
-                    activeTab === 'security' ? 'bg-white text-brand-text shadow-md' : 'text-surface-500 hover:text-surface-900'
+                  aria-pressed={activeTab==='security'}
+                  className={`w-full flex items-center gap-3 px-6 py-4 rounded-lg font-medium transition-all ${
+                    activeTab === 'security' ? 'bg-white text-brand-text ' : 'text-surface-500 hover:text-surface-900'
                   }`}
                 >
-                  <ShieldCheck className="w-5 h-5" />
+                  <span className="club-profile-nav-icon" aria-hidden="true"><Fingerprint /></span>
                   <span>{t('profile.security')}</span>
                 </button>
               </div>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 p-10 md:p-14">
+            <div className="flex-1 p-6 md:p-8">
               <AnimatePresence mode="wait">
                 {activeTab === 'profile' ? (
                   <motion.div
                     key="profile"
-                    initial={{ opacity: 0, x: 10 }}
+                    initial={false}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                   >
                     <div className="mb-10">
-                      <h3 className="text-3xl font-black text-surface-900">{t('profile.title')}</h3>
+                      <h3 className="text-3xl font-semibold text-surface-900">{t('profile.title')}</h3>
                       <p className="text-surface-500 font-medium">{t('profile.desc') || 'Manage your account details'}</p>
                     </div>
 
                     <form onSubmit={handleUpdateProfile} className="space-y-6">
-                      <Input 
-                        label={t('auth.fullName')} 
+                      <Input
+                        label={t('auth.fullName')}
                         value={profileData.fullName}
                         onChange={(e) => setProfileData({...profileData, fullName: e.target.value})}
                         required
                       />
-                      <Input 
-                        label={t('auth.email')} 
+                      <Input
+                        label={t('auth.email')}
                         type="email"
                         value={profileData.email}
                         onChange={(e) => setProfileData({...profileData, email: e.target.value})}
                         required
                       />
-                      <Input 
-                        label={t('auth.username')} 
+                      <Input
+                        label={t('auth.username')}
                         value={user.username}
                         disabled
                         className="bg-surface-50 opacity-70 cursor-not-allowed"
                       />
-                      
+
                       {message.text && (
-                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
+                        <div className={`p-4 rounded-lg text-sm font-medium ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
                           {message.text}
                         </div>
                       )}
 
-                      <Button type="submit" className="w-full h-14" isLoading={loading}>
-                        <Save className="w-4 h-4 mr-2" />
+                      <Button type="submit" className="w-full h-12" isLoading={loading}>
+                        <Save className="w-5 h-5 mr-2" />
                         {t('common.save')}
                       </Button>
                     </form>
@@ -296,32 +290,32 @@ export default function ProfilePage() {
                 ) : (
                   <motion.div
                     key="security"
-                    initial={{ opacity: 0, x: 10 }}
+                    initial={false}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                   >
                     <div className="mb-10">
-                      <h3 className="text-3xl font-black text-surface-900">{t('profile.security')}</h3>
+                      <h3 className="text-3xl font-semibold text-surface-900">{t('profile.security')}</h3>
                       <p className="text-surface-500 font-medium">{t('profile.securityDesc') || 'Manage your password and protection'}</p>
                     </div>
 
                     <form onSubmit={handleChangePassword} className="space-y-6">
-                      <Input 
-                        label={t('profile.oldPassword')} 
+                      <Input
+                        label={t('profile.oldPassword')}
                         type="password"
                         value={passwordData.oldPassword}
                         onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
                         required
                       />
-                      <Input 
-                        label={t('profile.newPassword')} 
+                      <Input
+                        label={t('profile.newPassword')}
                         type="password"
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
                         required
                       />
-                      <Input 
-                        label={t('profile.confirmPassword')} 
+                      <Input
+                        label={t('profile.confirmPassword')}
                         type="password"
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
@@ -329,13 +323,13 @@ export default function ProfilePage() {
                       />
 
                       {message.text && (
-                        <div className={`p-4 rounded-2xl text-sm font-bold ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
+                        <div className={`p-4 rounded-lg text-sm font-medium ${message.type === 'success' ? 'bg-green-100 text-brand-text' : 'bg-red-100 text-red-600'}`}>
                           {message.text}
                         </div>
                       )}
 
-                      <Button type="submit" className="w-full h-14" variant="secondary" isLoading={loading}>
-                        <KeyRound className="w-4 h-4 mr-2" />
+                      <Button type="submit" className="w-full h-12" variant="secondary" isLoading={loading}>
+                        <KeyRound className="w-5 h-5 mr-2" />
                         {t('profile.changePassword')}
                       </Button>
                     </form>
@@ -346,51 +340,51 @@ export default function ProfilePage() {
           </div>
         </motion.div>
       </div>
-      
+
       {/* Choices Modal */}
       <AnimatePresence>
         {showOptionsModal && (
-          <motion.div 
-            initial={{ opacity: 0 }}
+          <motion.div
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
             onClick={() => setShowOptionsModal(false)}
           >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
+            <motion.div
+              initial={false}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-3xl p-6 shadow-2xl max-w-xs w-full text-center border border-surface-100"
+              className="bg-white rounded-xl p-6 max-w-xs w-full text-center border border-surface-100"
               onClick={(e) => e.stopPropagation()}
             >
-              <h4 className="text-lg font-black text-surface-900 mb-4">{t('profile.avatarTitle')}</h4>
+              <h4 className="text-lg font-semibold text-surface-900 mb-4">{t('profile.avatarTitle')}</h4>
               <div className="space-y-2">
-                <button 
+                <button
                   onClick={() => {
                     setShowOptionsModal(false);
                     setShowViewerModal(true);
                   }}
-                  className="w-full py-3 px-4 bg-surface-50 hover:bg-surface-100 active:scale-98 text-surface-700 font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-surface-50 hover:bg-surface-100 active:scale-98 text-surface-700 font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                 >
-                  <Eye className="w-4 h-4 text-surface-500" />
+                  <Eye className="w-5 h-5 text-surface-500" />
                   {t('profile.viewAvatar')}
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     setShowOptionsModal(false);
                     fileInputRef.current?.click();
                   }}
-                  className="w-full py-3 px-4 bg-brand-primary/10 hover:bg-brand-primary/20 active:scale-98 text-brand-text font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-brand-primary/10 hover:bg-brand-primary/20 active:scale-98 text-brand-text font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                 >
-                  <Camera className="w-4 h-4 text-brand-primary" />
+                  <Camera className="w-5 h-5 text-brand-primary" />
                   {t('profile.chooseNewPhoto')}
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => setShowOptionsModal(false)}
-                  className="w-full py-3 px-4 bg-transparent hover:bg-surface-50 text-surface-500 font-bold rounded-2xl transition-all"
+                  className="w-full py-3 px-4 bg-transparent hover:bg-surface-50 text-surface-500 font-medium rounded-lg transition-all"
                 >
                   {t('profile.cancel')}
                 </button>
@@ -403,36 +397,36 @@ export default function ProfilePage() {
       {/* Image Viewer Lightbox Modal */}
       <AnimatePresence>
         {showViewerModal && (
-          <motion.div 
-            initial={{ opacity: 0 }}
+          <motion.div
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
             onClick={() => setShowViewerModal(false)}
           >
-            <button 
+            <button
               onClick={() => setShowViewerModal(false)}
-              className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-full transition-all"
+              className="absolute top-6 right-6 p-3 bg-white hover:bg-white active:scale-95 text-white rounded-full transition-all"
             >
               <X className="w-6 h-6" />
             </button>
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
+            <motion.div
+              initial={false}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="max-w-2xl max-h-[80vh] flex items-center justify-center overflow-hidden rounded-3xl shadow-2xl relative"
+              className="max-w-2xl max-h-[80vh] flex items-center justify-center overflow-hidden rounded-xl relative"
               onClick={(e) => e.stopPropagation()}
             >
               {previewUrl || user.imageUrl ? (
-                <img 
-                  src={previewUrl || getAvatarUrl(user.imageUrl) || ''} 
-                  alt={user.fullName} 
-                  className="max-w-full max-h-[80vh] object-contain rounded-3xl"
+                <img
+                  src={previewUrl || getAvatarUrl(user.imageUrl) || ''}
+                  alt={user.fullName}
+                  className="max-w-full max-h-[80vh] object-contain rounded-xl"
                 />
               ) : (
-                <div 
-                  style={{ background: getInitialsBg(user.fullName) }}
-                  className="w-64 h-64 md:w-80 md:h-80 rounded-3xl flex items-center justify-center text-6xl md:text-8xl font-black text-white shadow-2xl select-none"
+                <div
+                  style={{ background: getInitialsBg() }}
+                  className="w-64 h-64 md:w-64 md:h-80 rounded-xl flex items-center justify-center text-3xl md:text-8xl font-semibold text-white select-none"
                 >
                   {getInitials(user.fullName)}
                 </div>

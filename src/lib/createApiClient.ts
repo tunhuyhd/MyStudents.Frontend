@@ -1,7 +1,7 @@
 import axios, { AxiosAdapter, AxiosError } from 'axios';
 
 export function createApiClient(baseURL: string, redirectToLogin: () => void, adapter?: AxiosAdapter) {
-  const api = axios.create({ baseURL, adapter, withCredentials: true });
+  const api = axios.create({ baseURL, adapter, withCredentials: true, timeout: 30_000 });
   let redirected = false;
   api.interceptors.request.use(config => {
     config.headers.set('X-Requested-With', 'MyStudents');

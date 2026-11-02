@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import "./fonts.css";
 import "./globals.css";
+import "./clubhouse.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { MainLayoutWrapper } from "@/components/MainLayoutWrapper";

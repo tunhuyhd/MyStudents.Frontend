@@ -1,6 +1,7 @@
 'use client';
 
-import { BrandLogo } from '@/components/BrandLogo';
+import { AuthShell } from '@/components/AuthShell';
+
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -8,8 +9,6 @@ import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -42,63 +41,41 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-50 p-6 relative overflow-hidden">
-      {/* Nature background decorative */}
-      <div className="absolute top-0 right-0 w-full h-full opacity-50 pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
-      </div>
-
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg relative z-10"
-      >
-        <Link href="/" className="inline-flex items-center text-sm font-bold text-surface-500 hover:text-brand-primary mb-8 transition-colors group">
-          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          {t('common.backToHome')}
-        </Link>
-
-        <div className="bg-white p-10 rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(16,185,129,0.1)] border border-white">
-          <div className="flex flex-col items-center mb-10 text-center">
-            <BrandLogo size="lg" className="mb-6" />
-            <h1 className="text-3xl font-black text-surface-900 tracking-tight">{t('common.register')}</h1>
-            <p className="text-surface-500 font-medium mt-2">{t('auth.createAccount')}</p>
-          </div>
-
-          <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <AuthShell title={t('common.register')} description={t('auth.createAccount')} footer={<p>{t('auth.haveAccount')}{' '}<Link href="/auth/login" className="font-semibold text-brand-text hover:underline">{t('common.login')}</Link></p>}>
+      <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <Input 
-                label={t('auth.fullName')} 
+              <Input
+                label={t('auth.fullName')}
                 placeholder="Ex: John Smith"
-                className="bg-surface-50 border-transparent focus:bg-white"
+
                 value={formData.fullName}
                 onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                 required
               />
             </div>
-            <Input 
-              label={t('auth.username')} 
+            <Input
+              autoComplete="username" label={t('auth.username')}
               placeholder="jsmith88"
-              className="bg-surface-50 border-transparent focus:bg-white"
+
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
               required
             />
-            <Input 
-              label={t('auth.email')} 
-              type="email" 
+            <Input
+              label={t('auth.email')}
+              type="email"
               placeholder="john@example.com"
-              className="bg-surface-50 border-transparent focus:bg-white"
+
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               required
             />
             <div className="md:col-span-2">
-              <Input 
-                label={t('auth.password')} 
-                type="password" 
+              <Input
+                label={t('auth.password')}
+                autoComplete="new-password" type="password"
                 placeholder="••••••••"
-                className="bg-surface-50 border-transparent focus:bg-white"
+
                 value={formData.password}
                 minLength={12}
                 maxLength={128}
@@ -107,23 +84,12 @@ export default function RegisterPage() {
               />
             </div>
 
-            {error && <p className="md:col-span-2 text-sm text-red-500 font-bold text-center">{error}</p>}
+            {error && <p className="md:col-span-2 text-sm text-red-500 font-medium text-center">{error}</p>}
 
-            <Button type="submit" className="md:col-span-2 h-14 rounded-2xl shadow-xl shadow-brand-primary/40" isLoading={loading}>
+            <Button type="submit" className="md:col-span-2 h-12 rounded-lg" isLoading={loading}>
               {t('common.register')}
             </Button>
           </form>
-
-          <div className="mt-10 text-center border-t border-surface-50 pt-8">
-            <p className="text-surface-500 font-medium text-sm">
-              {t('auth.haveAccount')}{' '}
-              <Link href="/auth/login" className="text-brand-primary font-bold hover:underline underline-offset-4">
-                {t('common.login')}
-              </Link>
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+    </AuthShell>
   );
 }

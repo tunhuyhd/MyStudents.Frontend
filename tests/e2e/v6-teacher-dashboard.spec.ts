@@ -9,9 +9,9 @@ const stage = process.env.V6_CAPTURE_STAGE ?? 'verification';
 const artifactDirectory = path.resolve(process.cwd(), 'artifacts/v6-teacher-dashboard', stage);
 const names = {
   vi: {
-    title: 'Quản lý Lớp học',
+    title: 'Mỗi lớp học, một hành trình.',
     metric: 'Lượt ghi danh trên trang này',
-    create: 'Tạo lớp học mới',
+    create: 'Tạo lớp học',
     empty: 'Bạn chưa có lớp học nào. Hãy tạo lớp học đầu tiên!',
     retry: 'Thử lại',
     view: 'Xem chi tiết',
@@ -19,9 +19,9 @@ const names = {
     delete: 'Delete',
   },
   en: {
-    title: 'Class Management',
+    title: 'Every class, a new journey.',
     metric: 'Enrollments on this page',
-    create: 'Create New Class',
+    create: 'Create class',
     empty: "You don't have any classes yet. Create your first one!",
     retry: 'Try again',
     view: 'View Details',
@@ -91,11 +91,11 @@ async function recordLayout(page: Page, width: number, language: Language, state
         padding: style.padding, marginBottom: style.marginBottom, borderRadius: style.borderRadius, fontSize: style.fontSize,
       };
     };
-    const headings = Array.from(document.querySelectorAll<HTMLElement>('main h3'));
+    const headings = Array.from(document.querySelectorAll<HTMLElement>('main article h2')); 
     const alert = document.querySelector<HTMLElement>('main [role="alert"]');
-    const cardGeometry = headings.filter((heading) => heading.closest('.group')).map((heading) => {
-      const card = heading.closest<HTMLElement>('.group')!;
-      const badges = card.firstElementChild as HTMLElement | null;
+    const cardGeometry = headings.filter((heading) => heading.closest('.club-class-card')).map((heading) => {
+      const card = heading.closest<HTMLElement>('.club-class-card')!;
+      const badges = card.querySelector<HTMLElement>('.club-status');
       const titleBox = heading.getBoundingClientRect();
       const badgeBox = badges?.getBoundingClientRect();
       const intersects = Boolean(badgeBox && titleBox.left < badgeBox.right && titleBox.right > badgeBox.left && titleBox.top < badgeBox.bottom && titleBox.bottom > badgeBox.top);
@@ -107,7 +107,7 @@ async function recordLayout(page: Page, width: number, language: Language, state
         titleBadgeOverlap: intersects,
       };
     });
-    const emptyHeading = headings.find((heading) => !heading.closest('.group'));
+    const emptyHeading = headings.find((heading) => !heading.closest('.club-class-card'));
     const emptyPanelElement = emptyHeading?.closest<HTMLElement>('[class*="col-span-full"]') ?? null;
     const emptyPanelBox = emptyPanelElement?.getBoundingClientRect();
     return {
@@ -122,10 +122,10 @@ async function recordLayout(page: Page, width: number, language: Language, state
       cardGeometry,
       firstCardHeading: headings[0] ? (() => { const box = headings[0].getBoundingClientRect(); return { top: Math.round(box.top + window.scrollY), left: Math.round(box.left), width: Math.round(box.width), height: Math.round(box.height), text: headings[0].textContent }; })() : null,
       visibleCardActions: Array.from(document.querySelectorAll<HTMLElement>('main button')).filter((element) => element.getClientRects().length > 0 && Boolean(element.closest('.group'))).length,
-      emptyState: rect('main h3'),
+      emptyState: rect('main h2, main h3'),
       emptyPanel: emptyPanelBox ? { top: Math.round(emptyPanelBox.top + window.scrollY), width: Math.round(emptyPanelBox.width), height: Math.round(emptyPanelBox.height), padding: getComputedStyle(emptyPanelElement!).padding, borderRadius: getComputedStyle(emptyPanelElement!).borderRadius } : null,
       error: alert ? { visible: Boolean(alert.getClientRects().length), height: Math.round(alert.getBoundingClientRect().height) } : null,
-      loadingSkeletons: document.querySelectorAll('main div.h-72.animate-pulse').length,
+      loadingSkeletons: document.querySelectorAll('main div.h-28.animate-pulse').length,
       focusVisible: document.activeElement instanceof HTMLElement && document.activeElement.matches(':focus-visible'),
     };
   }, { viewportWidth: width, currentLanguage: language, currentState: state });
@@ -180,25 +180,27 @@ for (const width of [390, 1440]) {
         if (state === 'populated') {
           await expect(page.getByRole('heading', { name: classes[1].name })).toBeVisible();
           const create = page.getByRole('button', { name: names[language].create }).first();
-          const view = page.getByRole('button', { name: names[language].view }).first();
+          const view = page.locator('.club-open-class').first();
           await expect(create).toBeVisible();
           await expect(view).toBeVisible();
           focusedControls.push({ name: 'create-class', ...(await focusByKeyboard(page, create)) });
           focusedControls.push({ name: 'view-class', ...(await focusByKeyboard(page, view)) });
-          const card = page.getByRole('heading', { name: classes[1].name }).locator('xpath=ancestor::div[contains(@class,"bg-white/80")][1]');
-          const edit = card.getByRole('button').nth(1);
-          const remove = card.getByRole('button').nth(2);
+          const card = page.getByRole('heading', { name: classes[1].name }).locator('xpath=ancestor::article[1]');
+          const menu = card.locator('.club-more');
+          focusedControls.push({ name: 'class-actions', ...(await focusByKeyboard(page, menu)) });
+          await menu.click();
+          const edit = card.locator('.club-popover button').first();
           await expect(edit).toBeVisible();
-          await expect(remove).toBeVisible();
           focusedControls.push({ name: 'edit-class', ...(await focusByKeyboard(page, edit)) });
-          focusedControls.push({ name: 'delete-class', ...(await focusByKeyboard(page, remove)) });
+          await page.keyboard.press('Escape');
+          await expect(menu).toBeFocused();
         } else if (state === 'empty') {
           await expect(page.getByRole('heading', { name: names[language].empty })).toBeVisible();
           const create = page.getByRole('button', { name: names[language].create }).last();
           await expect(create).toBeVisible();
           focusedControls.push({ name: 'create-class', ...(await focusByKeyboard(page, create)) });
         } else if (state === 'loading') {
-          await expect(page.locator('main div.h-72.animate-pulse')).toHaveCount(3);
+          await expect(page.locator('main div.h-28.animate-pulse')).toHaveCount(3);
           const create = page.getByRole('button', { name: names[language].create }).first();
           focusedControls.push({ name: 'create-class', ...(await focusByKeyboard(page, create)) });
         } else {
@@ -225,7 +227,7 @@ for (const width of [320, 768]) {
       await setupDashboard(page, language, state);
       if (state === 'populated') await expect(page.getByRole('heading', { name: classes[1].name })).toBeVisible();
       else await expect(page.getByRole('heading', { name: names[language].empty })).toBeVisible();
-      const primaryAction = page.getByRole('button', { name: names[language].create }).nth(state === 'populated' ? 0 : 1);
+      const primaryAction = page.getByRole('button', { name: names[language].create }).first();
       const focusedControls = [{ name: 'create-class', ...(await focusByKeyboard(page, primaryAction)) }];
       const measurement = await capture(page, width, language, state, focusedControls);
       expect(measurement.viewport.documentWidth).toBeLessThanOrEqual(width);
@@ -233,3 +235,4 @@ for (const width of [320, 768]) {
     });
   }
 }
+

@@ -20,8 +20,8 @@ test('mutation failures distinguish unauthorized, forbidden and retryable server
   const t = (key) => ({ 'common.sessionExpired': 'expired', 'common.permissionDenied': 'denied' })[key] ?? key;
   assert.equal(mutationErrorMessage({ response: { status: 401 } }, t), 'expired');
   assert.equal(mutationErrorMessage({ response: { status: 403 } }, t), 'denied');
-  assert.equal(mutationErrorMessage({ response: { status: 503 } }, t), 'common.mutationFailed');
-  assert.equal(mutationErrorMessage({ code: 'ECONNABORTED' }, t), 'common.mutationFailed');
+  assert.equal(mutationErrorMessage({ response: { status: 503 } }, t), 'apiErrors.unavailable');
+  assert.equal(mutationErrorMessage({ code: 'ECONNABORTED' }, t), 'apiErrors.timeout');
 });
 
 test('teacher class delete retains confirmation intent after rejection and confirms success only after API success', () => {
@@ -38,10 +38,10 @@ test('add-student and attendance failures remain recoverable and prevent concurr
   assert.match(addStudent, /setStudents\(prev => prev\.filter\(s => s\.id !== id\)\)/);
   assert.match(addStudent, /disabled=\{addingId !== null\}/);
   assert.match(classDetail, /await classService\.addStudent\(id as string, studentId\)/);
-  assert.match(attendance, /if \(updatingAttendanceId\) return/);
+  assert.match(attendance, /if \(updatingAttendanceId \|\| sessionLoadFailed\) return/);
   assert.match(attendance, /await classService\.updateAttendance\(\{ attendanceId, status \}\)/);
   assert.match(attendance, /setAttendances\(oldAttendances\);\s*setError\(mutationErrorMessage\(err, t/);
-  assert.match(attendance, /disabled=\{updatingAttendanceId !== null\}/);
+  assert.match(attendance, /disabled=\{updatingAttendanceId !== null \|\| sessionLoadFailed\}/);
 });
 
 test('admin role/status mutations report failures and leave server-derived values untouched until refetch', () => {

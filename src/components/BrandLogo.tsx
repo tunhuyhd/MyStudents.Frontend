@@ -20,10 +20,11 @@ export function BrandLogo({ className = '', size = 'md', theme = 'light', iconOn
         alt=""
         className={`shrink-0 object-contain ${theme === 'dark' ? 'rounded-xl bg-white p-1.5' : ''}`}
         style={{ width: dimension, height: dimension }}
+        loading="eager"
         unoptimized
       />
       {!iconOnly && (
-        <span className={`whitespace-nowrap font-extrabold tracking-[-0.03em] ${size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-2xl' : 'text-xl'} ${theme === 'dark' ? 'text-white' : 'text-surface-800'}`}>
+        <span className={`brand-wordmark whitespace-nowrap font-bold tracking-[-0.03em] ${size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-2xl' : 'text-xl'} ${theme === 'dark' ? 'text-white' : 'text-surface-800'}`}>
           My Student
         </span>
       )}

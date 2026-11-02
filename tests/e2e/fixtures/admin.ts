@@ -93,7 +93,7 @@ export async function installAdminFixtures(page: Page, language: 'vi' | 'en' = '
     if (/^\/admin\/users\/[^/]+\/status$/.test(path) && method === 'PATCH') {
       const errorCopy = language === 'vi' ? longVietnameseClassName : longEnglishClassName;
       await route.fulfill({
-        status: 500,
+        status: 400,
         json: {
           errorCode: 'ERR_SCHEDULE_OVERLAP',
           parameters: { className: errorCopy, day: 'Monday', startTime: '09:00', endTime: '10:00' },
@@ -117,3 +117,4 @@ export async function openAdminUsers(page: Page, language: 'vi' | 'en' = 'en') {
   await expect(page.getByRole('row').filter({ hasText: adminUsers[0].username })).toHaveCount(1);
   await expect(page.getByText(longVietnameseName, { exact: true })).toBeAttached();
 }
+

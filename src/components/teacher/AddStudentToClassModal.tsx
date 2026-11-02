@@ -2,10 +2,11 @@
 
 import { useCallback, useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Search, UserPlus, Check, Loader2 } from 'lucide-react';
+import { X, Search, UserPlus, Loader2 } from '@/components/ui/icons';
 import { Button } from '@/components/ui/Button';
 import { useLanguage } from '@/context/LanguageContext';
 import { AvailableStudent, classService } from '@/services/classService';
+import { apiErrorMessage } from '@/lib/apiError';
 import { mutationErrorMessage } from '@/lib/mutationError';
 import { useAccessibleDialog } from '@/hooks/useAccessibleDialog';
 
@@ -16,32 +17,34 @@ interface AddStudentToClassModalProps {
   classId: string;
 }
 
-export default function AddStudentToClassModal({ 
-  isOpen, 
-  onClose, 
-  onAdd, 
-  classId 
+export default function AddStudentToClassModal({
+  isOpen,
+  onClose,
+  onAdd,
+  classId
 }: AddStudentToClassModalProps) {
   const { t } = useLanguage();
   const dialogId = useId();
   const dialogRef = useAccessibleDialog<HTMLDivElement>(isOpen, onClose);
   const [students, setStudents] = useState<AvailableStudent[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [addingId, setAddingId] = useState<string | null>(null);
   const [addError, setAddError] = useState<string | null>(null);
 
   const fetchStudents = useCallback(async () => {
     setLoading(true);
+    setLoadError('');
     try {
       const res = await classService.getAvailableStudents(classId, searchQuery);
       setStudents(res.data);
     } catch (error: unknown) {
-      console.error('Failed to fetch students', error);
+      setLoadError(apiErrorMessage(error, t, 'apiErrors.loadFailed'));
     } finally {
       setLoading(false);
     }
-  }, [classId, searchQuery]);
+  }, [classId, searchQuery, t]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -71,17 +74,17 @@ export default function AddStudentToClassModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6 lg:p-10">
-        <motion.div 
-          initial={{ opacity: 0 }}
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6 lg:p-6">
+        <motion.div
+          initial={false}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
+          className="absolute inset-0 bg-surface-900/60"
         />
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+
+        <motion.div
+          initial={false}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           ref={dialogRef}
@@ -91,24 +94,24 @@ export default function AddStudentToClassModal({
           aria-describedby={`${dialogId}-description`}
           data-dialog-focus-scope="true"
           tabIndex={-1}
-          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col"
+          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-8 md:p-12 border-b border-surface-50 flex items-center justify-between relative">
+          <div className="p-8 md:p-8 border-b border-surface-50 flex items-center justify-between relative">
             <div>
-              <h2 id={`${dialogId}-title`} className="text-3xl font-black text-brand-text tracking-tighter">
+              <h2 id={`${dialogId}-title`} className="text-3xl font-semibold text-brand-text tracking-tight">
                 {t('teacher.details.addStudent') || 'Thêm học sinh'}
               </h2>
-              <p id={`${dialogId}-description`} className="text-surface-500 font-bold text-sm mt-1">
+              <p id={`${dialogId}-description`} className="text-surface-500 font-medium text-sm mt-1">
                 Chọn học sinh từ danh sách hệ thống để thêm vào lớp.
               </p>
             </div>
-            <button 
+            <button
               onClick={onClose}
               aria-label={t('common.close')}
-              className="p-3 hover:bg-surface-50 rounded-[1.25rem] transition-all group"
+              className="p-3 hover:bg-surface-50 rounded-xl transition-all group"
             >
-              <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 transition-colors" />
+              <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 transition-colors" />
             </button>
           </div>
 
@@ -116,52 +119,52 @@ export default function AddStudentToClassModal({
           <div className="p-8 md:px-12 md:py-8">
             <div className="relative group">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-              <input 
+              <input
                 data-dialog-initial-focus="true"
-                type="text" 
+                type="text"
                 placeholder="Tìm tên hoặc email học sinh..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-16 pl-14 pr-8 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 transition-all outline-none placeholder:text-surface-300"
+                className="w-full h-12 pl-14 pr-8 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-medium text-surface-900 transition-all outline-none placeholder:text-surface-500"
               />
             </div>
           </div>
 
           {/* List */}
           <div className="flex-1 overflow-y-auto px-8 md:px-12 pb-8 space-y-4 scrollbar-hide">
-            {addError && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{addError}</p>}
-            {loading ? (
+            {addError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{addError}</p>}
+            {loadError ? <div role="alert" className="p-5 text-red-700"><p>{loadError}</p><Button variant="outline" onClick={()=>void fetchStudents()}>{t('common.retry')}</Button></div> : loading ? (
               <div className="flex flex-col items-center justify-center py-20 space-y-4">
                 <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
-                <p className="text-surface-400 font-bold">Đang tải danh sách...</p>
+                <p className="text-surface-400 font-medium">Đang tải danh sách...</p>
               </div>
             ) : students.length > 0 ? (
               students.map((student) => (
-                <div 
+                <div
                   key={student.id}
-                  className="p-6 bg-surface-50/40 rounded-[2.5rem] border border-surface-50 hover:border-brand-primary/20 hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 flex items-center justify-between group"
+                  className="p-6 bg-surface-50/40 rounded-xl border border-surface-50 hover:border-brand-primary/20 hover:bg-white hover: hover: transition-all duration-150 flex items-center justify-between group"
                 >
                   <div className="flex items-center space-x-6">
-                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-xl font-black text-brand-text shadow-sm group-hover:rotate-6 transition-transform">
+                    <div className="w-14 h-12 bg-white rounded-lg flex items-center justify-center text-xl font-semibold text-brand-text group-hover:rotate-6 transition-transform">
                       {student.lastName?.substring(0, 1)}{student.firstName?.substring(0, 1)}
                     </div>
                     <div>
-                      <div className="text-lg font-black text-surface-900">
+                      <div className="text-lg font-semibold text-surface-900">
                         {student.lastName} {student.firstName}
                       </div>
-                      <div className="text-xs font-bold text-surface-400 uppercase tracking-widest">
+                      <div className="text-xs font-medium text-surface-400 tracking-normal">
                         {student.email || 'Không có email'}
                       </div>
                     </div>
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => handleAdd(student.id)}
                     disabled={addingId !== null}
-                    className={`h-12 px-6 rounded-xl font-black transition-all text-xs uppercase tracking-widest ${
-                      addingId === student.id 
-                      ? 'bg-surface-100 text-surface-400' 
-                      : 'bg-white text-brand-text hover:bg-brand-action hover:text-white shadow-lg shadow-brand-primary/5 border border-brand-primary/10'
+                    className={`h-12 px-6 rounded-xl font-semibold transition-all text-xs  tracking-normal ${
+                      addingId === student.id
+                      ? 'bg-surface-100 text-surface-400'
+                      : 'bg-white text-brand-text hover:bg-brand-action hover:text-white   border border-brand-primary/10'
                     }`}
                   >
                     {addingId === student.id ? (
@@ -177,19 +180,19 @@ export default function AddStudentToClassModal({
               ))
             ) : (
               <div className="py-20 text-center space-y-4">
-                <div className="w-20 h-20 bg-surface-50 rounded-[2.5rem] flex items-center justify-center mx-auto">
+                <div className="w-20 h-20 bg-surface-50 rounded-xl flex items-center justify-center mx-auto">
                   <Search className="w-10 h-10 text-surface-200" />
                 </div>
-                <p className="text-surface-400 font-bold">Không tìm thấy học sinh phù hợp.</p>
+                <p className="text-surface-400 font-medium">Không tìm thấy học sinh phù hợp.</p>
               </div>
             )}
           </div>
 
           {/* Footer */}
-          <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md sticky bottom-0 z-10 flex justify-end">
-            <Button 
+          <div className="p-8 md:p-8 border-t border-surface-50 bg-white sticky bottom-0 z-10 flex justify-end">
+            <Button
               onClick={onClose}
-              className="rounded-[1.75rem] h-16 px-12 bg-brand-action text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand-primary/20"
+              className="rounded-xl h-12 px-12 bg-brand-action text-white font-semibold tracking-normal text-xs"
             >
               Hoàn tất
             </Button>

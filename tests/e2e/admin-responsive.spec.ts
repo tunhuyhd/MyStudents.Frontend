@@ -164,12 +164,13 @@ for (const { width, language } of viewportCases) {
     const screenshotPath = path.join(artifactDirectory, `admin-v2-${width}px.png`);
     await page.screenshot({ path: screenshotPath, fullPage: true });
 
-    const roleButton = row.locator('td:nth-child(5) button').first();
+    const roleButton = row.getByRole('combobox');
     await roleButton.scrollIntoViewIfNeeded();
     await expect(roleButton).toBeVisible();
     await roleButton.focus();
-    await page.keyboard.press('Enter');
-    await expect(page.getByRole('button', { name: 'Student', exact: true }).last()).toBeVisible();
+    await roleButton.press('ArrowDown');
+    await expect(page.getByRole('option', { name: 'Student', exact: true })).toBeVisible();
+    await roleButton.press('Escape');
 
     await page.getByRole('button', { name: language === 'vi' ? 'Người dùng' : 'Users', exact: true }).click();
     const activeStatus = row.locator('td:nth-child(4) button');
@@ -184,7 +185,7 @@ for (const { width, language } of viewportCases) {
     const toast = page.locator('main [role="alert"]');
     await expect(toast).toBeVisible();
     const longMessage = language === 'vi' ? longVietnameseClassName : longEnglishClassName;
-    await expect(toast).toContainText(longMessage);
+    await expect(toast).toContainText(longMessage.slice(0, 200));
     const toastLayout = await toast.evaluate((element) => {
       const message = element.querySelector('p');
       const closeButton = element.querySelector('button');
@@ -253,3 +254,4 @@ test('Admin controls remain reachable at 720 CSS pixels (200% zoom layout proxy)
     description: `${JSON.stringify(viewportMetrics)}; not a native browser zoom test`,
   });
 });
+

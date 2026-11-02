@@ -6,6 +6,7 @@ import { createApiClient } from '../.test-output/lib/createApiClient.js';
 test('browser sends same-origin session requests without bearer credentials', async () => {
   const api = createApiClient('/api/bff', () => {}, async config => {
     assert.equal(config.withCredentials, true);
+    assert.equal(config.timeout, 30_000);
     assert.equal(config.headers.get('X-Requested-With'), 'MyStudents');
     assert.equal(config.headers.has('Authorization'), false);
     return { data: {}, status: 200, statusText: 'OK', headers: {}, config };

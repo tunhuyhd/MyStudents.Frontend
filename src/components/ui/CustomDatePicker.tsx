@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarIcon, ChevronLeft, ChevronRight } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface CustomDatePickerProps {
@@ -16,7 +16,7 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const [currentMonth, setCurrentMonth] = useState(() => {
     return value ? new Date(value) : new Date();
   });
@@ -33,7 +33,7 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
 
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay(); // 0 is Sunday
-  
+
   // Adjust so Monday is 0, Sunday is 6
   const startingEmptyCells = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
@@ -79,24 +79,23 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={false}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute z-[100] top-full left-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border border-surface-100 p-5"
+            className="absolute z-[100] top-full left-0 mt-2 w-72 bg-white rounded-xl border border-surface-100 p-5"
           >
             <div className="flex items-center justify-between mb-4">
-              <button 
+              <button
                 onClick={handlePrevMonth}
                 type="button"
                 className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-text transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <div className="text-sm font-black text-surface-900 uppercase tracking-widest">
+              <div className="text-sm font-semibold text-surface-900 uppercase tracking-normal">
                 {t('common.month')} {currentMonth.getMonth() + 1}, {currentMonth.getFullYear()}
               </div>
-              <button 
+              <button
                 onClick={handleNextMonth}
                 type="button"
                 className="w-8 h-8 rounded-full bg-surface-50 flex items-center justify-center text-surface-600 hover:bg-brand-primary/10 hover:text-brand-text transition-colors"
@@ -107,7 +106,7 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
 
             <div className="grid grid-cols-7 gap-1 mb-2 text-center">
               {[1, 2, 3, 4, 5, 6, 0].map(d => (
-                <div key={d} className="text-[10px] font-black text-surface-400 py-1">{t(`days.short.${d}`)}</div>
+                <div key={d} className="text-[10px] font-semibold text-surface-400 py-1">{t(`days.short.${d}`)}</div>
               ))}
             </div>
 
@@ -117,12 +116,12 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
               ))}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
-                const isSelected = selectedDateObj && 
-                  selectedDateObj.getDate() === day && 
+                const isSelected = selectedDateObj &&
+                  selectedDateObj.getDate() === day &&
                   selectedDateObj.getMonth() === currentMonth.getMonth() &&
                   selectedDateObj.getFullYear() === currentMonth.getFullYear();
-                
-                const isToday = new Date().getDate() === day && 
+
+                const isToday = new Date().getDate() === day &&
                   new Date().getMonth() === currentMonth.getMonth() &&
                   new Date().getFullYear() === currentMonth.getFullYear();
 
@@ -132,8 +131,8 @@ export function CustomDatePicker({ value, onChange, placeholder, className }: Cu
                     type="button"
                     onClick={() => handleSelectDate(day)}
                     className={`h-8 rounded-xl text-xs font-bold flex items-center justify-center transition-all ${
-                      isSelected 
-                        ? 'bg-brand-action text-white shadow-md shadow-brand-primary/30'
+                      isSelected
+                        ? 'bg-brand-action text-white  '
                         : isToday
                         ? 'text-brand-text bg-brand-primary/10'
                         : 'text-surface-700 hover:bg-surface-100'

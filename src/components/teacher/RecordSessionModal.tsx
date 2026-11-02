@@ -2,10 +2,7 @@
 
 import { useCallback, useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, Check, UserX, Clock, AlertCircle, 
-  Save, Loader2, Calendar, Clock as ClockIcon, FileText, ArrowRight, ChevronLeft, Settings2
-} from 'lucide-react';
+import { X, Check, UserX, Clock, AlertCircle, Loader2, Calendar, Clock as ClockIcon, FileText, ArrowRight, ChevronLeft, Settings2 } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import { ClassSchedule, classService, SessionAttendance } from '@/services/classService';
 import { Button } from '@/components/ui/Button';
@@ -29,10 +26,10 @@ interface RecordSessionModalProps {
   };
 }
 
-export default function RecordSessionModal({ 
-  isOpen, 
-  onClose, 
-  onSuccess, 
+export default function RecordSessionModal({
+  isOpen,
+  onClose,
+  onSuccess,
   classId,
   sessionId: initialSessionId,
   initialData
@@ -52,7 +49,7 @@ export default function RecordSessionModal({
     if (saving || updatingAttendanceId) return;
     if (canCloseDialog(hasUnsavedChanges, () => window.confirm(t('common.discardChanges')))) onClose();
   }
-  
+
   const [sessionData, setSessionData] = useState({
     date: initialData?.date || new Date().toISOString().split('T')[0],
     startTime: initialData?.startTime || '08:00',
@@ -60,6 +57,8 @@ export default function RecordSessionModal({
     note: initialData?.note || ''
   });
 
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [sessionLoadFailed, setSessionLoadFailed] = useState(false);
   const [attendances, setAttendances] = useState<SessionAttendance[]>([]);
   const dateValidationError = error === 'Vui lòng chọn ngày học';
   const validationErrorId = `${formId}-validation-error`;
@@ -92,17 +91,17 @@ export default function RecordSessionModal({
         }));
       }
     } catch (error) {
-      console.error('Error loading schedules:', error);
+      setError(apiErrorMessage(error, t, 'apiErrors.loadFailed'));
     }
-  }, [classId]);
+  }, [classId, t]);
 
   useEffect(() => {
     const initModal = async () => {
       setError(null);
       if (sessionId) {
-        setLoading(true);
+        setLoading(true);setSessionLoadFailed(false);setAttendances([]);
         try {
-          try {
+          {
             const response = await api.get<{ date: string; startTime: string; endTime: string; note?: string }>(`/sessions/${sessionId}`);
             const data = response.data;
             setSessionData({
@@ -111,17 +110,16 @@ export default function RecordSessionModal({
               endTime: data.endTime.substring(0, 5),
               note: data.note || ''
             });
-          } catch {
-            console.warn('Session detail endpoint failed, using initial values if available');
           }
-          
+
           const attRes = await classService.getSessionAttendances(sessionId);
           setAttendances(attRes.data);
           // Only switch to attendance if it's an existing session being opened
           if (isOpen && initialSessionId) setStep('attendance');
         } catch (error: unknown) {
+          setSessionLoadFailed(true);
           console.error('Error loading session data:', error);
-          setError(apiErrorMessage(error, t, 'common.saveError'));
+          setError(apiErrorMessage(error, t, 'apiErrors.loadFailed'));
         } finally {
           setLoading(false);
         }
@@ -146,7 +144,7 @@ export default function RecordSessionModal({
         });
       }
     }
-  }, [sessionId, isOpen, classId, initialSessionId, initialData, sessionData.date, loadScheduleDefaults, t]);
+  }, [loadAttempt, sessionId, isOpen, classId, initialSessionId, initialData, sessionData.date, loadScheduleDefaults, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -163,6 +161,7 @@ export default function RecordSessionModal({
   };
 
   const handleCreateOrUpdateSession = async () => {
+    if(sessionLoadFailed)return;
     setError(null);
     if (!sessionData.date) {
       setError('Vui lòng chọn ngày học');
@@ -179,7 +178,7 @@ export default function RecordSessionModal({
           classId
         });
         setHasUnsavedChanges(false);
-        
+
         // After update, if we were in details step, go to attendance
         const attRes = await classService.getSessionAttendances(sessionId);
         setAttendances(attRes.data);
@@ -193,7 +192,7 @@ export default function RecordSessionModal({
         setHasUnsavedChanges(false);
         const newSessionId = res.data;
         setSessionId(newSessionId);
-        
+
         const attRes = await classService.getSessionAttendances(newSessionId);
         setAttendances(attRes.data);
         setStep('attendance');
@@ -206,11 +205,11 @@ export default function RecordSessionModal({
   };
 
   const handleUpdateStatus = async (attendanceId: string, status: number) => {
-    if (updatingAttendanceId) return;
+    if (updatingAttendanceId || sessionLoadFailed) return;
     const oldAttendances = [...attendances];
     setUpdatingAttendanceId(attendanceId);
     setError(null);
-    setAttendances(attendances.map(a => 
+    setAttendances(attendances.map(a =>
       a.id === attendanceId ? { ...a, status } : a
     ));
 
@@ -247,14 +246,14 @@ export default function RecordSessionModal({
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6">
-        <motion.div 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-surface-900/60 backdrop-blur-md"
+        <motion.div
+          initial={false} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="absolute inset-0 bg-surface-900/60"
           onClick={requestClose}
         />
-        
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          initial={false}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           ref={dialogRef}
@@ -264,114 +263,115 @@ export default function RecordSessionModal({
           aria-describedby={`${formId}-dialog-description`}
           data-dialog-focus-scope="true"
           tabIndex={-1}
-          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col"
+          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-8 md:p-12 border-b border-surface-50 flex items-center justify-between bg-white relative z-20">
+          <div className="p-8 md:p-8 border-b border-surface-50 flex items-center justify-between bg-white relative z-20">
             <div className="flex items-center space-x-6">
               {step === 'attendance' && (
-                <button 
+                <button
                   onClick={() => setStep('details')}
-                  className="w-12 h-12 flex items-center justify-center bg-surface-50 rounded-2xl hover:bg-brand-primary/10 text-surface-400 hover:text-brand-primary transition-all group"
+                  className="w-12 h-12 flex items-center justify-center bg-surface-50 rounded-lg hover:bg-brand-primary/10 text-surface-400 hover:text-brand-primary transition-all group"
                   title="Sửa thông tin buổi học"
                 >
                   <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
                 </button>
               )}
               <div>
-                <h2 id={`${formId}-dialog-title`} className="text-3xl font-black text-brand-text tracking-tighter">
+                <h2 id={`${formId}-dialog-title`} className="text-3xl font-semibold text-brand-text tracking-tight">
                   {step === 'details' ? 'Chi tiết buổi học' : 'Điểm danh lớp học'}
                 </h2>
-                <p id={`${formId}-dialog-description`} className="text-surface-500 font-bold text-sm mt-1">
+                <p id={`${formId}-dialog-description`} className="text-surface-500 font-medium text-sm mt-1">
                   {step === 'details' ? 'Cấu hình thời gian và nội dung bài học' : 'Đánh dấu trạng thái chuyên cần'}
                 </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               {step === 'attendance' && (
-                <button 
+                <button
                   onClick={() => setStep('details')}
-                  className="hidden md:flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-xl hover:bg-brand-primary/10 text-surface-500 hover:text-brand-text transition-all font-black text-[10px] uppercase tracking-widest"
+                  className="hidden md:flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-xl hover:bg-brand-primary/10 text-surface-500 hover:text-brand-text transition-all font-semibold text-xs tracking-normal"
                 >
                   <Settings2 className="w-4 h-4" />
                   <span>Sửa thông tin</span>
                 </button>
               )}
-              <button 
+              <button
                 onClick={requestClose}
-                className="p-4 hover:bg-surface-50 rounded-2xl transition-all duration-300 group"
+                className="p-4 hover:bg-surface-50 rounded-lg transition-all duration-150 group"
               >
-                <X className="w-6 h-6 text-surface-300 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
+                <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
               </button>
             </div>
           </div>
 
           {/* Error Banner */}
           {error && (
-            <div role="alert" className="mx-8 md:mx-12 mt-6 p-6 bg-red-50 border border-red-100 rounded-3xl flex items-center gap-4 text-red-600">
+            <div role="alert" className="mx-8 md:mx-12 mt-6 p-6 bg-red-50 border border-red-100 rounded-xl flex items-center gap-4 text-red-600">
               <AlertCircle className="w-6 h-6 shrink-0" />
-              <p id={validationErrorId} className="font-bold text-sm">{error}</p>
+              <p id={validationErrorId} className="font-medium text-sm">{error}</p>
+              {sessionLoadFailed&&<Button variant="outline" onClick={()=>setLoadAttempt(v=>v+1)}>{t('common.retry')}</Button>}
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto p-8 md:p-12 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto p-8 md:p-8 scrollbar-hide">
             {step === 'details' ? (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label htmlFor={`${formId}-session-date`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Ngày học</label>
+                    <label htmlFor={`${formId}-session-date`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">Ngày học</label>
                     <div className="relative group">
                       <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-                      <input 
+                      <input
                         id={`${formId}-session-date`}
-                        type="date" 
+                        type="date"
                         value={sessionData.date}
                         onChange={e => handleDateChange(e.target.value)}
                         aria-invalid={dateValidationError || undefined}
                         aria-describedby={dateValidationError ? validationErrorId : undefined}
-                        className="w-full h-16 pl-14 pr-6 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
+                        className="w-full h-12 pl-14 pr-6 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-medium text-surface-900 outline-none transition-all"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor={`${formId}-session-start-time`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Bắt đầu</label>
+                      <label htmlFor={`${formId}-session-start-time`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">Bắt đầu</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-                        <input 
+                        <input
                           id={`${formId}-session-start-time`}
-                          type="time" 
+                          type="time"
                           value={sessionData.startTime}
                         onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, startTime: e.target.value}); }}
-                          className="w-full h-16 pl-12 pr-4 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
+                          className="w-full h-12 pl-12 pr-4 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-medium text-surface-900 outline-none transition-all"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor={`${formId}-session-end-time`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Kết thúc</label>
+                      <label htmlFor={`${formId}-session-end-time`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">Kết thúc</label>
                       <div className="relative group">
                         <ClockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-                        <input 
+                        <input
                           id={`${formId}-session-end-time`}
-                          type="time" 
+                          type="time"
                           value={sessionData.endTime}
                         onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, endTime: e.target.value}); }}
-                          className="w-full h-16 pl-12 pr-4 bg-surface-50/70 rounded-[1.75rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all" 
+                          className="w-full h-12 pl-12 pr-4 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-medium text-surface-900 outline-none transition-all"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor={`${formId}-session-note`} className="text-[11px] font-black text-brand-text uppercase tracking-[0.2em] px-2 block">Nội dung / Ghi chú</label>
+                  <label htmlFor={`${formId}-session-note`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">Nội dung / Ghi chú</label>
                   <div className="relative group">
                     <FileText className="absolute left-6 top-6 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-                    <textarea 
+                    <textarea
                       id={`${formId}-session-note`}
                       placeholder="Ví dụ: Kiểm tra 15p, Bài tập về nhà..."
                       value={sessionData.note}
                       onChange={e => { setHasUnsavedChanges(true); setSessionData({...sessionData, note: e.target.value}); }}
-                      className="w-full min-h-[160px] pl-14 pr-8 py-6 bg-surface-50/70 rounded-[2rem] border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-bold text-surface-900 outline-none transition-all resize-none scrollbar-hide placeholder:text-surface-300" 
+                      className="w-full min-h-[160px] pl-14 pr-8 py-6 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-lg font-medium text-surface-900 outline-none transition-all resize-none scrollbar-hide placeholder:text-surface-500"
                     />
                   </div>
                 </div>
@@ -381,18 +381,18 @@ export default function RecordSessionModal({
                 {loading ? (
                   <div className="py-20 flex flex-col items-center justify-center text-surface-400">
                     <Loader2 className="w-12 h-12 animate-spin mb-4 text-brand-primary" />
-                    <p className="font-black uppercase tracking-widest text-xs">Đang tải danh sách học sinh...</p>
+                    <p className="font-semibold tracking-normal text-xs">Đang tải danh sách học sinh...</p>
                   </div>
                 ) : (
                   attendances.map((student) => (
-                    <div key={student.id} className="p-6 bg-surface-50/40 rounded-[2.5rem] border border-surface-50 flex items-center justify-between group hover:bg-white hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 overflow-hidden">
+                    <div key={student.id} className="p-6 bg-surface-50/40 rounded-xl border border-surface-50 flex items-center justify-between group hover:bg-white hover: hover: transition-all duration-150 overflow-hidden">
                       <div className="flex items-center space-x-6 min-w-0 mr-4">
-                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-brand-text text-xl font-black shadow-sm group-hover:rotate-6 transition-transform shrink-0">
+                        <div className="w-14 h-12 bg-white rounded-lg flex items-center justify-center text-brand-text text-xl font-semibold group-hover:rotate-6 transition-transform shrink-0">
                           {student.studentName.substring(0, 1)}
                         </div>
                         <div className="min-w-0">
-                          <div className="text-lg font-black text-surface-900 truncate" title={student.studentName}>{student.studentName}</div>
-                          <div className="text-xs font-bold text-surface-400 uppercase tracking-widest truncate" title={student.studentEmail}>{student.studentEmail}</div>
+                          <div className="text-lg font-semibold text-surface-900 truncate" title={student.studentName}>{student.studentName}</div>
+                          <div className="text-xs font-medium text-surface-400 tracking-normal truncate" title={student.studentEmail}>{student.studentEmail}</div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2 shrink-0">
@@ -400,10 +400,10 @@ export default function RecordSessionModal({
                           <button
                             key={status.value}
                             onClick={() => handleUpdateStatus(student.id, status.value)}
-                            disabled={updatingAttendanceId !== null}
-                            className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center transition-all duration-500 shadow-sm border shrink-0 ${
-                              student.status === status.value 
-                                ? `${status.bg} ${status.color} border-current scale-110 shadow-lg z-10` 
+                            disabled={updatingAttendanceId !== null || sessionLoadFailed}
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-150  border shrink-0 ${
+                              student.status === status.value
+                                ? `${status.bg} ${status.color} border-current scale-110  z-10`
                                 : `bg-white text-surface-400 border-surface-100 ${status.hover}`
                             }`}
                             title={status.label}
@@ -420,18 +420,18 @@ export default function RecordSessionModal({
           </div>
 
           {/* Footer */}
-          <div className="p-8 md:p-12 border-t border-surface-50 bg-white/80 backdrop-blur-md flex items-center justify-between sticky bottom-0 z-30">
-            <button 
+          <div className="p-8 md:p-8 border-t border-surface-50 bg-white flex items-center justify-between sticky bottom-0 z-30">
+            <button
               onClick={requestClose}
-              className="rounded-[1.75rem] px-8 h-16 border-none font-black text-surface-400 hover:text-surface-900 uppercase tracking-widest text-xs transition-all"
+              className="rounded-xl px-8 h-12 border-none font-semibold text-surface-400 hover:text-surface-900 tracking-normal text-xs transition-all"
             >
               Hủy bỏ
             </button>
             {step === 'details' ? (
-              <Button 
-                onClick={handleCreateOrUpdateSession} 
-                disabled={saving}
-                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-action text-white uppercase tracking-widest text-xs"
+              <Button
+                onClick={handleCreateOrUpdateSession}
+                disabled={saving || sessionLoadFailed}
+                className="rounded-xl px-10 h-12 font-semibold bg-brand-action text-white tracking-normal text-xs"
               >
                 {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                   <>
@@ -441,12 +441,12 @@ export default function RecordSessionModal({
                 )}
               </Button>
             ) : (
-              <Button 
+              <Button
                 onClick={() => {
                   onSuccess();
                   onClose();
                 }}
-                className="rounded-[1.75rem] px-10 h-16 shadow-2xl shadow-brand-primary/20 font-black bg-brand-action text-white uppercase tracking-widest text-xs"
+                className="rounded-xl px-10 h-12 font-semibold bg-brand-action text-white tracking-normal text-xs"
               >
                 <Check className="w-5 h-5 mr-3" />
                 Hoàn tất buổi học

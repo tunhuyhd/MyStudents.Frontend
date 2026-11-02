@@ -3,11 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BookOpen, Users, Calendar, Clock, ChevronLeft, 
-  Plus, Search, MoreVertical, CheckCircle2, AlertCircle,
-  Mail, GraduationCap, MapPin, Hash, ArrowRight, X, Loader2, Sparkles, Video, Globe
-} from 'lucide-react';
+import { BookOpen, Users, Calendar, Clock, ChevronLeft, Plus, Search, CheckCircle2, AlertCircle, Hash, ArrowRight, X, Loader2, Sparkles, Video } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
@@ -134,7 +130,7 @@ export default function ClassDetailPage() {
         params: { pageNumber: page, pageSize }
       });
       const { items, totalPages: total, totalCount: count } = response.data;
-      
+
       const normalizedStudents = (items || []).map(s => ({
         ...s,
         id: s.id || s.Id || '',
@@ -273,8 +269,8 @@ export default function ClassDetailPage() {
         <Button variant="ghost" onClick={() => router.back()} className="mb-8">
           <ChevronLeft className="mr-2 h-4 w-4" />{t('common.back')}
         </Button>
-        <div role="alert" className="flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-bold">
+        <div role="alert" className="flex flex-col gap-4 rounded-xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-medium">
             {classLoadFailure === 'unauthorized'
               ? t('common.sessionExpired')
               : classLoadFailure === 'forbidden'
@@ -306,10 +302,10 @@ export default function ClassDetailPage() {
     .sort((a, b) => a.orderIndex - b.orderIndex);
 
   return (
-    <main className="min-h-screen pb-20 px-6 pt-0 lg:pt-4 relative overflow-hidden bg-transparent max-w-7xl mx-auto">
+    <main className="club-page club-class-detail min-h-screen campus-page pb-10">
       {classLoadFailure && (
-        <div role="alert" className="mb-8 flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-bold">
+        <div role="alert" className="mb-8 flex flex-col gap-4 rounded-xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-medium">
             {classLoadFailure === 'unauthorized'
               ? t('common.sessionExpired')
               : classLoadFailure === 'forbidden'
@@ -323,10 +319,10 @@ export default function ClassDetailPage() {
           )}
         </div>
       )}
-      <div className="mb-12">
-          <button 
+      <div className="mb-8">
+          <button
             onClick={() => router.back()}
-            className="group flex items-center text-surface-400 hover:text-brand-text transition-colors mb-6 font-bold text-sm uppercase tracking-widest"
+            className="group flex items-center text-surface-400 hover:text-brand-text transition-colors mb-6 font-medium text-sm tracking-normal"
           >
             <ChevronLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             {t('common.back')}
@@ -336,19 +332,19 @@ export default function ClassDetailPage() {
             <div className="space-y-4">
               <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-primary/10 rounded-full border border-brand-primary/20">
                 <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse" />
-                <span className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em]">
+                <span className="text-xs font-semibold text-brand-text tracking-normal">
                   {classData.subjectName}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-surface-900 tracking-tighter leading-tight md:leading-none">
+              <h1 className="text-3xl md:text-3xl font-semibold text-surface-900 tracking-tight leading-tight md:leading-none">
                 {classData.name}
               </h1>
-              <div className="flex flex-wrap items-center gap-4 md:gap-8 text-surface-400 font-bold">
+              <div className="flex flex-wrap items-center gap-4 md:gap-8 text-surface-400 font-medium">
                 <div className="flex items-center">
                   <Hash className="w-4 h-4 mr-2 text-brand-primary/40" />
                   <span>{classData.code}</span>
                 </div>
-                <div className={`flex items-center space-x-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${
+                <div className={`flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-semibold  tracking-normal  border ${
                   classData.status === 1 ? 'bg-green-50 text-brand-text border-green-100' :
                   classData.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
                   classData.status === 3 ? 'bg-brand-primary/10 text-brand-text border-brand-primary/20' :
@@ -375,32 +371,31 @@ export default function ClassDetailPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <Button variant="outline" onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-[1.5rem] px-8 h-14 border-brand-primary/20 text-brand-text hover:bg-brand-primary/5">
+              <Button variant="outline" onClick={() => setIsModalOpen(true)} className="w-full md:w-auto rounded-xl px-8 h-12 border-brand-primary/20 text-brand-text hover:bg-brand-primary/5">
                 {t('common.edit')}
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center p-1.5 bg-white/50 backdrop-blur-xl border border-white rounded-[2rem] md:rounded-[2.5rem] mb-12 overflow-x-auto scrollbar-hide max-w-full">
+        <div className="flex items-center p-1.5 bg-white border border-surface-200 rounded-xl md:rounded-xl mb-8 overflow-x-auto scrollbar-hide max-w-full">
           <div className="flex items-center min-w-max">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center space-x-3 px-4 md:px-8 py-3 md:py-4 rounded-[1.25rem] md:rounded-[1.75rem] font-black text-sm transition-all duration-500 ${
+              className={`relative flex items-center space-x-3 px-4 md:px-8 py-3 md:py-4 rounded-xl md:rounded-xl font-semibold text-sm transition-all duration-150 ${
                 activeTab === tab.id ? 'text-white' : 'text-surface-400 hover:text-surface-600'
               }`}
             >
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="active-tab-bg"
-                  className="absolute inset-0 bg-brand-primary rounded-[1.25rem] md:rounded-[1.75rem] shadow-xl shadow-brand-primary/30"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
+                  className="absolute inset-0 bg-brand-primary rounded-xl md:rounded-xl"
+                  />
               )}
               <tab.icon className="w-4 h-4 relative z-10" />
-              <span className="relative z-10 uppercase tracking-widest whitespace-nowrap">{tab.label}</span>
+              <span className="relative z-10 tracking-normal whitespace-nowrap">{tab.label}</span>
             </button>
           ))}
           </div>
@@ -409,27 +404,27 @@ export default function ClassDetailPage() {
         <div className="relative">
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
-              <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+              <motion.div key="overview" initial={false} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
                 {classData.category === 0 && (
-                  <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 relative overflow-hidden group">
+                  <div className="bg-white p-6 rounded-xl border border-surface-200 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-bl-[5rem] transition-all group-hover:w-40 group-hover:h-40" />
-                    <h3 className="text-2xl font-black text-surface-900 mb-6 flex items-center">
+                    <h3 className="text-2xl font-semibold text-surface-900 mb-6 flex items-center">
                       <Video className="w-6 h-6 mr-4 text-brand-primary" />
                       {t('teacher.details.onlineLink')}
                     </h3>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 bg-surface-50/50 rounded-3xl border border-surface-100/50 hover:bg-white hover:shadow-lg transition-all duration-500">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 bg-surface-50/50 rounded-xl border border-surface-100/50 hover:bg-white hover: transition-all duration-150">
                       <div className="space-y-1">
-                        <div className="text-xs font-black text-surface-400 uppercase tracking-widest">{t('teacher.details.onlineLinkLabel')}</div>
-                        <div className="text-base font-bold text-surface-700 break-all select-all">
+                        <div className="text-xs font-semibold text-surface-400 tracking-normal">{t('teacher.details.onlineLinkLabel')}</div>
+                        <div className="text-base font-medium text-surface-700 break-all select-all">
                           {classData.linkOnline || t('teacher.details.noOnlineLink')}
                         </div>
                       </div>
                       {classData.linkOnline && (
-                        <a 
-                          href={classData.linkOnline} 
-                          target="_blank" 
+                        <a
+                          href={classData.linkOnline}
+                          target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center h-12 px-6 bg-brand-action hover:bg-brand-action-hover text-white rounded-[1.25rem] font-black text-xs uppercase tracking-wider transition-all shadow-lg shadow-brand-primary/10 shrink-0"
+                          className="inline-flex items-center justify-center h-12 px-6 bg-brand-action hover:bg-brand-action-hover text-white rounded-xl font-semibold text-xs tracking-wider transition-all shrink-0"
                         >
                           {t('teacher.details.joinMeeting')}
                           <ArrowRight className="w-4 h-4 ml-2" />
@@ -439,21 +434,21 @@ export default function ClassDetailPage() {
                   </div>
                 )}
 
-                <div className="bg-white/80 backdrop-blur-2xl p-10 rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 relative overflow-hidden group">
+                <div className="bg-white p-6 rounded-xl border border-surface-200 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-bl-[5rem] transition-all group-hover:w-40 group-hover:h-40" />
-                  <h3 className="text-2xl font-black text-surface-900 mb-8 flex items-center">
+                  <h3 className="text-2xl font-semibold text-surface-900 mb-8 flex items-center">
                     <Calendar className="w-6 h-6 mr-4 text-brand-primary" />
                     {t('teacher.details.schedule')}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {classData.schedules.map((s, i) => (
-                      <div key={i} className="flex items-center p-6 bg-surface-50/50 rounded-3xl border border-surface-100/50 hover:bg-white hover:shadow-lg transition-all duration-500 group/card">
-                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mr-6 group-hover/card:rotate-6 transition-transform">
+                      <div key={i} className="flex items-center p-6 bg-surface-50/50 rounded-xl border border-surface-100/50 hover:bg-white hover: transition-all duration-150 group/card">
+                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mr-6 group-hover/card:rotate-6 transition-transform">
                           <Clock className="w-6 h-6 text-brand-primary" />
                         </div>
                         <div>
-                          <div className="text-xs font-black text-surface-400 uppercase tracking-widest mb-1">{t(`days.${s.dayOfWeek}`)}</div>
-                          <div className="text-lg font-black text-surface-900">{formatTime(s.startTime)} — {getEndTime(s.startTime, s.durationHours)}</div>
+                          <div className="text-xs font-semibold text-surface-400 tracking-normal mb-1">{t(`days.${s.dayOfWeek}`)}</div>
+                          <div className="text-lg font-semibold text-surface-900">{formatTime(s.startTime)} — {getEndTime(s.startTime, s.durationHours)}</div>
                         </div>
                       </div>
                     ))}
@@ -463,21 +458,21 @@ export default function ClassDetailPage() {
             )}
 
             {activeTab === 'students' && (
-              <motion.div key="students" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white shadow-xl shadow-surface-900/5 overflow-hidden min-h-[600px] flex flex-col">
+              <motion.div key="students" initial={false} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="bg-white rounded-xl border border-surface-200 overflow-hidden min-h-[600px] flex flex-col">
                 <div className="p-8 border-b border-surface-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" />
-                    <input type="text" placeholder={t('teacher.details.searchStudents')} className="w-full h-14 pl-14 pr-6 bg-surface-50/50 rounded-2xl border-none text-sm font-bold placeholder:text-surface-300 focus:ring-2 focus:ring-brand-primary/20 transition-all" />
+                    <input type="text" placeholder={t('teacher.details.searchStudents')} className="w-full h-12 pl-14 pr-6 bg-surface-50/50 rounded-lg border-none text-sm font-medium placeholder:text-surface-500 focus:ring-2 focus:ring-brand-primary/20 transition-all" />
                   </div>
-                  <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="rounded-2xl h-14 px-6 border-surface-100 text-surface-600 font-bold hover:bg-surface-50">
+                  <Button onClick={() => setIsAddStudentModalOpen(true)} variant="outline" className="rounded-lg h-12 px-6 border-surface-100 text-surface-600 font-medium hover:bg-surface-50">
                     <Plus className="w-4 h-4 mr-2" />
                     {t('teacher.details.addStudent')}
                   </Button>
                 </div>
                 <div className="overflow-x-auto flex-1">
                   {studentsLoadFailure && currentStudents.length > 0 && isRetryableLoadFailure(studentsLoadFailure) && (
-                    <div role="alert" className="m-6 flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
-                      <p className="font-bold">
+                    <div role="alert" className="m-6 flex flex-col gap-4 rounded-xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="font-medium">
                         {studentsLoadFailure === 'unauthorized'
                           ? t('common.sessionExpired')
                           : studentsLoadFailure === 'forbidden'
@@ -494,10 +489,10 @@ export default function ClassDetailPage() {
                   {studentsLoadState === 'loading' ? (
                     <div className="py-20 flex flex-col items-center justify-center">
                       <Loader2 className="w-10 h-10 animate-spin text-brand-primary mb-4" />
-                      <p className="text-surface-400 font-bold">{t('common.loading')}</p>
+                      <p className="text-surface-400 font-medium">{t('common.loading')}</p>
                     </div>
                   ) : studentsLoadFailure && !isRetryableLoadFailure(studentsLoadFailure) ? (
-                    <div role="alert" className="py-20 px-6 text-center font-bold text-red-700">
+                    <div role="alert" className="py-20 px-6 text-center font-medium text-red-700">
                       {t(studentsLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'teacher.details.studentsForbidden')}
                     </div>
                   ) : currentStudents.length > 0 ? (
@@ -505,10 +500,10 @@ export default function ClassDetailPage() {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-surface-50/30">
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('auth.fullName')}</th>
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">{t('teacher.details.joinedAt') || 'Ngày tham gia'}</th>
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest">Trạng thái</th>
-                          <th className="px-8 py-6 text-[10px] font-black text-surface-400 uppercase tracking-widest text-right">{t('teacher.actions')}</th>
+                          <th className="px-8 py-6 text-xs font-semibold text-surface-400 tracking-normal">{t('auth.fullName')}</th>
+                          <th className="px-8 py-6 text-xs font-semibold text-surface-400 tracking-normal">{t('teacher.details.joinedAt') || 'Ngày tham gia'}</th>
+                          <th className="px-8 py-6 text-xs font-semibold text-surface-400 tracking-normal">Trạng thái</th>
+                          <th className="px-8 py-6 text-xs font-semibold text-surface-400 tracking-normal text-right">{t('teacher.actions')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-50">
@@ -518,29 +513,29 @@ export default function ClassDetailPage() {
                             <tr key={student.id} className="hover:bg-brand-primary/[0.02] transition-colors group">
                               <td className="px-8 py-6">
                                 <div className="flex items-center space-x-4">
-                                  <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-text font-black text-xs group-hover:scale-110 transition-transform">
+                                  <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center text-brand-text font-semibold text-xs group-hover:scale-110 transition-transform">
                                     {student.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
                                   </div>
-                                  <span className="font-black text-surface-900">{student.fullName}</span>
+                                  <span className="font-semibold text-surface-900">{student.fullName}</span>
                                 </div>
                               </td>
                               <td className="px-8 py-6">
-                                <div className="flex items-center text-sm font-bold text-surface-500">
+                                <div className="flex items-center text-sm font-medium text-surface-500">
                                   <Calendar className="w-3.5 h-3.5 mr-2 opacity-40" />
                                   {new Date(student.joinedAt).toLocaleDateString('vi-VN')}
                                 </div>
                               </td>
                               <td className="px-8 py-6">
-                                <div className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusInfo.color}`}>{statusInfo.label}</div>
+                                <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold  tracking-normal ${statusInfo.color}`}>{statusInfo.label}</div>
                               </td>
                               <td className="px-8 py-6 text-right">
                                 <div className="flex items-center justify-end space-x-4">
-                                  <StatusDropdown 
+                                  <StatusDropdown
                                     value={student.status}
                                     onChange={(val) => handleUpdateStudentStatus(student.id, val)}
                                     disabled={updatingStudentId === student.id}
                                   />
-                                  <button onClick={() => handleRemoveStudent(student.id)} disabled={updatingStudentId === student.id} className="p-3 hover:bg-red-50 rounded-xl text-surface-300 hover:text-red-500 transition-all group/delete" title="Xóa khỏi lớp">
+                                  <button onClick={() => handleRemoveStudent(student.id)} disabled={updatingStudentId === student.id} className="p-3 hover:bg-red-50 rounded-xl text-surface-500 hover:text-red-500 transition-all group/delete" title="Xóa khỏi lớp">
                                     {updatingStudentId === student.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5 group-hover/delete:scale-110 transition-transform" />}
                                   </button>
                                 </div>
@@ -554,13 +549,13 @@ export default function ClassDetailPage() {
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                       <div className="p-8 border-t border-surface-50 flex items-center justify-between">
-                        <div className="text-xs font-bold text-surface-400">
+                        <div className="text-xs font-medium text-surface-400">
                           Hiển thị <span className="text-surface-900">{(pageNumber - 1) * pageSize + 1}</span> - <span className="text-surface-900">{Math.min(pageNumber * pageSize, totalCount)}</span> trên <span className="text-surface-900">{totalCount}</span> học sinh
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             disabled={pageNumber === 1}
                             onClick={() => setPageNumber(prev => prev - 1)}
                             className="rounded-xl"
@@ -572,9 +567,9 @@ export default function ClassDetailPage() {
                               <button
                                 key={i}
                                 onClick={() => setPageNumber(i + 1)}
-                                className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${
-                                  pageNumber === i + 1 
-                                    ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
+                                className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
+                                  pageNumber === i + 1
+                                    ? 'bg-brand-action text-white  '
                                     : 'text-surface-400 hover:bg-surface-50'
                                 }`}
                               >
@@ -582,9 +577,9 @@ export default function ClassDetailPage() {
                               </button>
                             ))}
                           </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             disabled={pageNumber === totalPages}
                             onClick={() => setPageNumber(prev => prev + 1)}
                             className="rounded-xl"
@@ -597,7 +592,7 @@ export default function ClassDetailPage() {
                     </>
                   ) : studentsLoadFailure ? (
                     <div role="alert" className="py-20 px-6 flex flex-col items-center justify-center gap-4 text-center text-red-700">
-                      <p className="font-bold">
+                      <p className="font-medium">
                         {studentsLoadFailure === 'unauthorized'
                           ? t('common.sessionExpired')
                           : studentsLoadFailure === 'forbidden'
@@ -611,11 +606,11 @@ export default function ClassDetailPage() {
                       )}
                     </div>
                   ) : (
-                    <div className="py-32 text-center">
-                      <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">
+                    <div className="py-16 text-center">
+                      <div className="w-20 h-20 bg-surface-50 rounded-xl flex items-center justify-center mx-auto mb-6">
                         <Users className="w-10 h-10 text-surface-200" />
                       </div>
-                      <p className="text-surface-400 font-bold">{t('teacher.details.noStudents')}</p>
+                      <p className="text-surface-400 font-medium">{t('teacher.details.noStudents')}</p>
                     </div>
                   )}
                 </div>
@@ -623,7 +618,7 @@ export default function ClassDetailPage() {
             )}
 
             {activeTab === 'sessions' && (
-              <motion.div key="sessions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+              <motion.div key="sessions" initial={false} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
                 <style dangerouslySetInnerHTML={{ __html: `
                   @keyframes pulse-highlight {
                     0% { border-color: rgba(var(--brand-primary-rgb), 0.2); box-shadow: 0 0 0 0 rgba(var(--brand-primary-rgb), 0.2); }
@@ -635,15 +630,15 @@ export default function ClassDetailPage() {
                     border-width: 3px !important;
                   }
                 `}} />
-                
+
                 <div className="flex items-center justify-between px-2">
-                  <h3 className="text-2xl font-black text-surface-900">{t('teacher.details.sessions')}</h3>
-                  <Button 
+                  <h3 className="text-2xl font-semibold text-surface-900">{t('teacher.details.sessions')}</h3>
+                  <Button
                     onClick={() => {
                       setSelectedSessionId(undefined);
                       setIsRecordModalOpen(true);
                     }}
-                    className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20"
+                    className="rounded-lg h-12 px-8"
                   >
                     <Plus className="w-5 h-5 mr-2" />
                     {t('teacher.details.recordSession')}
@@ -653,43 +648,43 @@ export default function ClassDetailPage() {
                 {/* Today's Special Session Card */}
                 {todaySession && (
                   <div className="relative group">
-                    <div className="absolute -top-4 left-8 px-4 py-1 bg-brand-action text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full z-30 shadow-lg flex items-center">
+                    <div className="absolute -top-4 left-8 px-4 py-1 bg-brand-action text-white text-xs font-semibold tracking-normal rounded-full z-30 flex items-center">
                       <Sparkles className="w-3 h-3 mr-2 animate-spin-slow" />
                       Hôm nay
                     </div>
-                    <div 
+                    <div
                       onClick={() => {
                         setSelectedSessionId(todaySession.id);
                         setIsRecordModalOpen(true);
                       }}
-                      className="bg-white p-12 rounded-[3.5rem] border-brand-primary/40 animate-pulse-highlight flex flex-col md:flex-row md:items-center justify-between gap-10 group hover:scale-[1.01] transition-all duration-500 cursor-pointer shadow-2xl shadow-brand-primary/10"
+                      className="bg-white p-8 rounded-xl border-brand-primary/40 animate-pulse-highlight flex flex-col md:flex-row md:items-center justify-between gap-6 group hover:scale-[1.01] transition-all duration-150 cursor-pointer"
                     >
-                      <div className="flex items-center gap-10">
-                        <div className="w-24 h-24 bg-brand-primary/10 rounded-[2.5rem] flex flex-col items-center justify-center border border-brand-primary/20">
-                          <span className="text-3xl font-black text-brand-text">{todaySession.date.split('-')[2]}</span>
-                          <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{todaySession.date.split('-')[1]}</span>
+                      <div className="flex items-center gap-6">
+                        <div className="w-24 h-24 bg-brand-primary/10 rounded-xl flex flex-col items-center justify-center border border-brand-primary/20">
+                          <span className="text-3xl font-semibold text-brand-text">{todaySession.date.split('-')[2]}</span>
+                          <span className="text-xs font-semibold text-brand-text tracking-normal">{todaySession.date.split('-')[1]}</span>
                         </div>
                         <div className="space-y-2">
-                          <div className="flex items-center text-sm font-black text-brand-text uppercase tracking-[0.2em]">
+                          <div className="flex items-center text-sm font-semibold text-brand-text tracking-normal">
                             <Clock className="w-4 h-4 mr-2" />
                             {formatTime(todaySession.startTime)} - {formatTime(todaySession.endTime)}
                           </div>
-                          <div className="text-3xl font-black text-surface-900">
+                          <div className="text-3xl font-semibold text-surface-900">
                             Buổi {todaySession.orderIndex.toString().padStart(2, '0')}
-                            {todaySession.note && <span className="text-surface-400 font-bold ml-4 text-xl">— {todaySession.note}</span>}
+                            {todaySession.note && <span className="text-surface-400 font-medium ml-4 text-xl">— {todaySession.note}</span>}
                           </div>
-                          <div className="flex items-center text-sm font-bold text-surface-400">
+                          <div className="flex items-center text-sm font-medium text-surface-400">
                             <Users className="w-4 h-4 mr-2 opacity-50" />
                             {todaySession.presentCount}/{todaySession.totalCount} {t('teacher.details.present')}
                           </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-6">
-                        <div className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest flex items-center ${todaySession.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
+                        <div className={`px-6 py-3 rounded-full text-xs font-semibold  tracking-normal flex items-center ${todaySession.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
                           {todaySession.status === 2 ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <AlertCircle className="w-4 h-4 mr-2" />}
                           {todaySession.status === 2 ? t('teacher.details.completed') : 'Đang diễn ra'}
                         </div>
-                        <Button className="rounded-2xl h-16 px-10 shadow-xl shadow-brand-primary/30 group/btn">
+                        <Button className="rounded-lg h-12 px-10 group/btn">
                           {t('common.viewDetails') || 'Details'}
                           <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                         </Button>
@@ -702,36 +697,36 @@ export default function ClassDetailPage() {
                 <div className="grid grid-cols-1 gap-6">
                   {otherSessions.length > 0 ? (
                     otherSessions.map((session) => (
-                      <div 
-                        key={session.id} 
+                      <div
+                        key={session.id}
                         onClick={() => {
                           setSelectedSessionId(session.id);
                           setIsRecordModalOpen(true);
                         }}
-                        className="bg-white/80 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white shadow-xl shadow-surface-900/5 flex flex-col md:flex-row md:items-center justify-between gap-8 group hover:shadow-2xl hover:shadow-brand-primary/5 transition-all duration-500 cursor-pointer"
+                        className="bg-white p-8 rounded-xl border border-surface-200 flex flex-col md:flex-row md:items-center justify-between gap-8 group hover: hover: transition-all duration-150 cursor-pointer"
                       >
                         <div className="flex items-center gap-8">
-                          <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex flex-col items-center justify-center group-hover:bg-brand-primary/5 transition-colors">
-                            <span className="text-xl font-black text-surface-900">{session.date.split('-')[2]}</span>
-                            <span className="text-[10px] font-black text-surface-400 uppercase tracking-widest">{session.date.split('-')[1]}</span>
+                          <div className="w-20 h-20 bg-surface-50 rounded-xl flex flex-col items-center justify-center group-hover:bg-brand-primary/5 transition-colors">
+                            <span className="text-xl font-semibold text-surface-900">{session.date.split('-')[2]}</span>
+                            <span className="text-xs font-semibold text-surface-400 tracking-normal">{session.date.split('-')[1]}</span>
                           </div>
                           <div className="space-y-1">
-                            <div className="flex items-center text-xs font-black text-brand-text uppercase tracking-[0.2em] mb-1">
+                            <div className="flex items-center text-xs font-semibold text-brand-text tracking-normal mb-1">
                               <Clock className="w-3 h-3 mr-2" />
                               {formatTime(session.startTime)} - {formatTime(session.endTime)}
                             </div>
-                            <div className="text-xl font-black text-surface-900">
+                            <div className="text-xl font-semibold text-surface-900">
                               Buổi {session.orderIndex.toString().padStart(2, '0')}
-                              {session.note && <span className="text-surface-400 font-bold ml-3 text-base">— {session.note}</span>}
+                              {session.note && <span className="text-surface-400 font-medium ml-3 text-base">— {session.note}</span>}
                             </div>
-                            <div className="flex items-center text-xs font-bold text-surface-400">
+                            <div className="flex items-center text-xs font-medium text-surface-400">
                               <Users className="w-3 h-3 mr-2 opacity-50" />
                               {session.presentCount}/{session.totalCount} {t('teacher.details.present')}
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center ${session.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
+                          <div className={`px-4 py-2 rounded-full text-xs font-semibold  tracking-normal flex items-center ${session.status === 2 ? 'bg-green-100 text-brand-text' : 'bg-amber-100 text-amber-600'}`}>
                             {session.status === 2 ? <CheckCircle2 className="w-3 h-3 mr-2" /> : <AlertCircle className="w-3 h-3 mr-2" />}
                             {session.status === 2 ? t('teacher.details.completed') : t('teacher.details.scheduled')}
                           </div>
@@ -744,11 +739,11 @@ export default function ClassDetailPage() {
                     ))
                   ) : (
                     !todaySession && (
-                      <div className="py-32 bg-white/80 backdrop-blur-2xl rounded-[3.5rem] border border-white text-center">
-                        <div className="w-20 h-20 bg-surface-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 animate-float">
+                      <div className="py-16 bg-white rounded-xl border border-surface-200 text-center">
+                        <div className="w-20 h-20 bg-surface-50 rounded-xl flex items-center justify-center mx-auto mb-6">
                           <Calendar className="w-10 h-10 text-surface-200" />
                         </div>
-                        <p className="text-surface-400 font-bold">{t('teacher.details.noSessions')}</p>
+                        <p className="text-surface-400 font-medium">{t('teacher.details.noSessions')}</p>
                       </div>
                     )
                   )}
@@ -758,14 +753,14 @@ export default function ClassDetailPage() {
           </AnimatePresence>
         </div>
 
-      <AddStudentToClassModal 
-        isOpen={isAddStudentModalOpen} 
-        onClose={() => setIsAddStudentModalOpen(false)} 
-        onAdd={handleAddStudent} 
+      <AddStudentToClassModal
+        isOpen={isAddStudentModalOpen}
+        onClose={() => setIsAddStudentModalOpen(false)}
+        onAdd={handleAddStudent}
         classId={id as string}
       />
 
-      <RecordSessionModal 
+      <RecordSessionModal
         isOpen={isRecordModalOpen}
         onClose={() => setIsRecordModalOpen(false)}
         onSuccess={fetchClassDetail}
@@ -773,14 +768,14 @@ export default function ClassDetailPage() {
         sessionId={selectedSessionId}
       />
 
-      <ClassModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={handleSaveClass} 
+      <ClassModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveClass}
         initialData={classData as Class}
       />
 
-      <Toast 
+      <Toast
         isOpen={toast.isOpen}
         message={toast.message}
         type={toast.type}

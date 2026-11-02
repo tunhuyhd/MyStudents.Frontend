@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import api from '@/lib/api';
+import { apiErrorMessage } from '@/lib/apiError';
 import { useRouter } from 'next/navigation';
 import { Toast } from '@/components/ui/Toast';
 import { useLanguage } from '@/context/LanguageContext';
@@ -41,15 +42,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { t } = useLanguage();
-  const [logoutError, setLogoutError] = useState(false);
+  const [logoutError, setLogoutError] = useState<unknown>(null);
+  const [restoreError, setRestoreError] = useState<unknown>(null);
 
   const refreshUser = async () => {
     try {
       const currentUser = await fetchCurrentUser();
       setUser(currentUser);
+      setRestoreError(null);
     } catch (error) {
       console.error('Failed to fetch user', error);
-      setUser(null);
+      setRestoreError(error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -65,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (active) setUser(currentUser);
       })
       .catch((error: unknown) => {
-        console.error('Failed to restore session', error);
+        if(active)setRestoreError(error);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -73,7 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { active = false; };
   }, []);
 
-  const login = async () => { await refreshUser(); };
+  const login = async () => {
+    const currentUser = await fetchCurrentUser();
+    if (!currentUser) throw { response: { status: 503 } };
+    setUser(currentUser);setRestoreError(null);setLoading(false);
+  };
 
   const clearSession = () => {
     localStorage.removeItem('accessToken');
@@ -90,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       const status = (error as { response?: { status?: number } }).response?.status;
       if (status !== 401) {
-        setLogoutError(true);
+        setLogoutError(error);
         return;
       }
     }
@@ -99,8 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, clearSession, refreshUser }}>
+      {!!restoreError&&<div role="alert" className="m-4 rounded-xl bg-red-50 p-4 text-sm text-red-800"><p>{apiErrorMessage(restoreError,t,'apiErrors.loadFailed')}</p><button type="button" className="min-h-11 underline" onClick={()=>{void refreshUser().catch(()=>{});}}>{t('common.retry')}</button></div>}
       {children}
-      <Toast isOpen={logoutError} message={t('auth.logoutError')} type="error" onClose={() => setLogoutError(false)} />
+      <Toast isOpen={!!logoutError} message={apiErrorMessage(logoutError,t,'auth.logoutError')} type="error" onClose={() => setLogoutError(null)} />
     </AuthContext.Provider>
   );
 }

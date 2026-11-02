@@ -1,6 +1,7 @@
 'use client';
 
-import { BrandLogo } from '@/components/BrandLogo';
+import { AuthShell } from '@/components/AuthShell';
+
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -8,8 +9,6 @@ import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -30,7 +29,7 @@ export default function UserLoginPage() {
     try {
       const res = await api.post('/auth/login', { username, password });
       await authLogin();
-      
+
       // Navigate based on role
       if (res.data.userRole === UserRoles.Admin) {
         window.location.href = '/admin';
@@ -45,66 +44,33 @@ export default function UserLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-transparent p-6 relative overflow-hidden">
-      {/* Nature-themed background orbs */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-brand-secondary/10 rounded-full blur-3xl" />
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-md relative z-10"
-      >
-        <Link href="/" className="inline-flex items-center text-sm font-bold text-surface-500 hover:text-brand-primary mb-8 transition-all group">
-          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          {t('common.backToHome')}
-        </Link>
-
-        <div className="bg-white/80 backdrop-blur-xl p-10 rounded-[3rem] shadow-[0_32px_64px_-12px_rgba(16,185,129,0.1)] border border-white">
-          <div className="flex flex-col items-center mb-10 text-center">
-            <BrandLogo size="lg" className="mb-6" />
-            <h1 className="text-3xl font-black text-surface-900 tracking-tight">{t('common.login')}</h1>
-            <p className="text-surface-500 font-medium mt-2">{t('auth.loginDesc')}</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <Input 
-              label={t('auth.username')} 
+    <AuthShell title={t('common.login')} description={t('auth.loginDesc')} footer={<p>{t('auth.noAccount')}{' '}<Link href="/auth/register" className="font-semibold text-brand-text hover:underline">{t('auth.createAccount')}</Link></p>}>
+      <form onSubmit={handleLogin} className="space-y-6">
+            <Input
+              autoComplete="username" label={t('auth.username')}
               placeholder={t('auth.username')}
-              className="bg-surface-50 border-transparent focus:bg-white"
+
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <Input 
-              label={t('auth.password')} 
-              type="password" 
+            <Input
+              label={t('auth.password')}
+              autoComplete="current-password" type="password"
               placeholder="••••••••"
-              className="bg-surface-50 border-transparent focus:bg-white"
+
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
 
-            <Link href="/auth/forgot-password" className="block text-sm font-bold text-brand-primary hover:underline">{t('auth.forgotPassword')}</Link>
-            {error && <p role="alert" className="text-sm text-red-500 font-bold text-center">{error}</p>}
+            <Link href="/auth/forgot-password" className="block text-sm font-medium text-brand-primary hover:underline">{t('auth.forgotPassword')}</Link>
+            {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 font-medium text-left">{error}</p>}
 
-            <Button type="submit" className="w-full h-14 rounded-2xl shadow-xl shadow-brand-primary/40" isLoading={loading}>
+            <Button type="submit" className="w-full h-12 rounded-lg" isLoading={loading}>
               {t('common.login')}
             </Button>
           </form>
-
-          <div className="mt-10 text-center border-t border-surface-50 pt-8">
-            <p className="text-surface-500 font-medium text-sm">
-              {t('auth.noAccount')}{' '}
-              <Link href="/auth/register" className="text-brand-primary font-bold hover:underline underline-offset-4">
-                {t('auth.createAccount')}
-              </Link>
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+    </AuthShell>
   );
 }

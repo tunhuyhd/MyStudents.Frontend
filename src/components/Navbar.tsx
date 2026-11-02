@@ -1,159 +1,35 @@
 'use client';
-
-import { BrandLogo } from '@/components/BrandLogo';
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/Button';
+import { usePathname } from 'next/navigation';
+import { Menu, X, LogOut, ArrowUpRight } from '@/components/ui/icons';
+import { BrandLogo } from './BrandLogo';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { LogOut, User as UserIcon, Menu, X, ShieldCheck } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { getAvatarUrl } from '@/lib/api';
 
-import { useLanguage } from '@/context/LanguageContext';
-import { UserRoles } from '@/constants/roles';
-
-const getInitials = (name: string) => {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase();
-  }
-  const first = parts[0];
-  const last = parts[parts.length - 1];
-  return (first[0] + last[0]).toUpperCase();
-};
-
-export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
-  const { t } = useLanguage();
+export function Navbar() {
   const { user, logout, loading } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const isAdmin = user?.role === UserRoles.Admin;
-
-  const NavLinks = () => {
-    // Generate background color based on name hash for initials avatar
-    const getInitialsBg = (name: string) => {
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      const h = Math.abs(hash) % 360;
-      return `linear-gradient(135deg, hsl(${h}, 80%, 60%) 0%, hsl(${(h + 40) % 360}, 85%, 50%) 100%)`;
-    };
-
-    return (
-      <>
-        {user && isAdmin && (
-          <Link 
-            href="/admin" 
-            onClick={() => setIsMenuOpen(false)}
-            className="flex items-center space-x-2 text-sm font-black text-brand-primary hover:opacity-70 transition-opacity uppercase tracking-tighter"
-          >
-            <ShieldCheck className="w-4 h-4" />
-            <span>{t('admin.panel')}</span>
-          </Link>
-        )}
-        {user ? (
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-            <Link 
-              href="/me" 
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-full border border-surface-100 hover:bg-surface-100 transition-all active:scale-95 group w-full md:w-auto justify-center"
-            >
-              {user.imageUrl ? (
-                <img 
-                  src={getAvatarUrl(user.imageUrl) || ''} 
-                  alt={user.fullName} 
-                  className="w-6 h-6 rounded-full object-cover border border-brand-primary/20 shrink-0"
-                />
-              ) : (
-                <div 
-                  style={{ background: getInitialsBg(user.fullName) }}
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shrink-0 shadow-sm"
-                >
-                  {getInitials(user.fullName)}
-                </div>
-              )}
-              <span className="text-sm font-bold text-surface-700 truncate max-w-[120px]">{t('common.hello')}, {user.fullName}</span>
-            </Link>
-          <button 
-            onClick={() => { logout(); setIsMenuOpen(false); }}
-            className="flex items-center space-x-2 text-sm font-bold text-red-500 hover:text-red-600 transition-colors px-4 py-2"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>{t('auth.logout')}</span>
-          </button>
-        </div>
-      ) : (
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4 w-full md:w-auto">
-          <Link href="/auth/login" onClick={() => setIsMenuOpen(false)} className="w-full md:w-auto">
-            <Button variant="outline" className="w-full rounded-full border-brand-primary/20 text-brand-primary font-bold">
-              {t('auth.login')}
-            </Button>
-          </Link>
-          <Link href="/auth/register" onClick={() => setIsMenuOpen(false)} className="w-full md:w-auto">
-            <Button className="w-full rounded-full bg-brand-primary text-white font-bold shadow-lg shadow-brand-primary/20">
-              {t('auth.register')}
-            </Button>
-          </Link>
-        </div>
-      )}
-    </>
-    );
-  };
-
-  return (
-    <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-100 px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          {onMenuClick && (
-            <button 
-              onClick={onMenuClick}
-              className="p-2 -ml-2 hover:bg-brand-primary/5 rounded-xl lg:hidden text-brand-primary"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-          )}
-          <Link href="/" className="flex items-center space-x-3 group transition-transform active:scale-95">
-            <BrandLogo className="[&>span]:hidden sm:[&>span]:inline" />
-          </Link>
-        </div>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-8">
-          <LanguageSwitcher />
-          {!loading && NavLinks()}
-        </div>
-
-        {/* Mobile Toggle */}
-        <div className="flex md:hidden items-center space-x-4">
-          <LanguageSwitcher />
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-surface-600 hover:bg-surface-100 rounded-xl transition-colors"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+  const { t } = useLanguage();
+  const pathname = usePathname();
+  const [open,setOpen] = useState(false);
+  useEffect(()=>{ if(!open)return;const close=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false);};document.addEventListener('keydown',close);return()=>document.removeEventListener('keydown',close);},[open]);
+  const links = user?.role === 'Admin' ? [{href:'/admin',label:t('admin.panel')},{href:'/me',label:t('campus.profileNav')}] : user ? [{href:'/teacher',label:t('club.classesNav')},{href:'/teacher/students',label:t('teacher.students.label')},{href:'/me',label:t('club.profileNav')}] : [{href:'/#features',label:t('campus.homeExplore')},{href:'/auth/login',label:t('auth.login')}];
+  const initials=(user?.fullName||'').split(/\s+/).filter(Boolean).map(word=>word[0]).slice(-2).join('');
+  return <header className="club-nav-wrap">
+    <nav aria-label={t('common.navigation')} className="club-nav">
+      <Link href="/" className="club-brand"><BrandLogo /></Link>
+      <div className="club-nav-links">{links.map(link=><Link key={link.href} href={link.href} aria-current={(pathname===link.href || link.href==='/teacher'&&pathname.startsWith('/teacher/class/'))?'page':undefined}>{link.label}</Link>)}</div>
+      <div className="club-nav-account">
+        {!loading && user && <details className="club-account-menu"><summary aria-label={user.fullName} className="club-profile-control">
+          {user.imageUrl?<img src={getAvatarUrl(user.imageUrl)||''} alt="" className="club-user-image"/>:<span className="club-user-initials">{initials}</span>}<span className="club-user-name">{user.fullName}</span>
+        </summary><div className="club-popover"><Link href="/me">{t('campus.profileNav')}<ArrowUpRight className="h-4 w-4"/></Link><button type="button" onClick={()=>void logout()}><LogOut className="h-4 w-4"/>{t('auth.logout')}</button></div></details>}
+        <LanguageSwitcher />
+        {!user&&!loading&&<Link href="/auth/register" className="club-nav-signup">{t('common.getStarted')}</Link>}
+        <button type="button" className="club-mobile-toggle" aria-label={open?t('common.closeNavigation'):t('common.openNavigation')} aria-expanded={open} aria-controls="club-mobile-navigation" onClick={()=>setOpen(!open)}>{open?<X className="h-5 w-5"/>:<Menu className="h-5 w-5"/>}</button>
       </div>
-
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden bg-white border-t border-surface-50 mt-4"
-          >
-            <div className="flex flex-col space-y-6 py-6 items-center">
-              {!loading && NavLinks()}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open&&<div id="club-mobile-navigation" className="club-mobile-menu">{links.map(link=><Link href={link.href} key={link.href} onClick={()=>setOpen(false)}>{link.label}</Link>)}{user&&<button type="button" onClick={()=>void logout()}>{t('auth.logout')}</button>}</div>}
     </nav>
-  );
+  </header>;
 }

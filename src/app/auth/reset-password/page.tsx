@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import { BrandLogo } from '@/components/BrandLogo';
+import { AuthShell } from '@/components/AuthShell';
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -15,10 +15,11 @@ export default function ResetPasswordPage() {
   const { t } = useLanguage();
   const { refreshUser } = useAuth();
   const token = useRef<string | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'invalid' | 'success'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ready' | 'invalid' | 'failed' | 'success'>('loading');
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [saving, setSaving] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [error, setError] = useState('');
   useEffect(() => {
     const controller = new AbortController();
@@ -29,11 +30,20 @@ export default function ResetPasswordPage() {
     }
     const validation = /^[A-F0-9]{64}$/.test(token.current)
       ? api.post('/auth/reset-password/validate', { token: token.current }, { signal: controller.signal })
-      : Promise.reject(new Error('Invalid reset token.'));
+      : Promise.reject({response:{status:400,data:{errorCode:'ERR_INVALID_RESET_TOKEN'}}});
     validation.then(() => { if (!controller.signal.aborted) setStatus('ready'); })
-      .catch(() => { if (!controller.signal.aborted) setStatus('invalid'); });
+      .catch((failure: unknown) => {
+        if (controller.signal.aborted) return;
+        const response = (failure as { response?: { data?: { errorCode?: string } } }).response;
+        if (response?.data?.errorCode === 'ERR_INVALID_RESET_TOKEN') {
+          setStatus('invalid');
+        } else {
+          setError(apiErrorMessage(failure, t, 'apiErrors.loadFailed'));
+          setStatus('failed');
+        }
+      });
     return () => controller.abort();
-  }, []);
+  }, [attempt, t]);
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setError('');
     if (password !== confirmation) { setError(t('profile.passwordMismatch')); return; }
@@ -45,12 +55,10 @@ export default function ResetPasswordPage() {
     finally { setSaving(false); }
   };
   return (
-    <main className="min-h-screen flex items-center justify-center p-6">
-      <section className="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-xl border border-surface-100">
-        <BrandLogo className="mb-6" />
-        <h1 className="text-3xl font-black text-surface-900 mb-6">{t('auth.resetPassword')}</h1>
+    <AuthShell title={t('auth.resetPassword')}>
         {status === 'loading' && <p role="status">{t('common.loading')}</p>}
-        {status === 'invalid' && <div role="alert"><p>{t('auth.invalidToken')}</p><Link className="block mt-6 text-brand-primary font-bold" href="/auth/forgot-password">{t('auth.requestNewLink')}</Link></div>}
+        {status === 'failed' && <div role="alert"><p>{error}</p><Button className="mt-4" onClick={()=>{setStatus('loading');setAttempt(v=>v+1);}}>{t('common.retry')}</Button></div>}
+        {status === 'invalid' && <div role="alert"><p>{t('auth.invalidToken')}</p><Link className="block mt-6 text-brand-primary font-medium" href="/auth/forgot-password">{t('auth.requestNewLink')}</Link></div>}
         {status === 'success' && <p role="status" className="text-brand-primary">{t('auth.resetSuccess')}</p>}
         {status === 'ready' && <form onSubmit={submit} className="space-y-6">
           <p className="text-surface-500">{t('auth.passwordTooShort')}</p>
@@ -59,9 +67,8 @@ export default function ResetPasswordPage() {
           {error && <p role="alert" className="text-red-600">{error}</p>}
           <Button type="submit" isLoading={saving} className="w-full">{t('auth.resetPassword')}</Button>
         </form>}
-        <Link href="/auth/login" className="inline-block mt-8 text-brand-primary font-bold hover:underline">{t('auth.backToLogin')}</Link>
-      </section>
-    </main>
+        <Link href="/auth/login" className="inline-block mt-8 text-brand-primary font-medium hover:underline">{t('auth.backToLogin')}</Link>
+      </AuthShell>
   );
 }
 

@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {test} from 'node:test';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const {apiErrorMessage}=require('../.test-output/lib/apiError.js');
+const translations=Object.fromEntries(['vi','en'].map(lang=>[lang,JSON.parse(readFileSync(new URL(`../src/locales/${lang}.json`,import.meta.url),'utf8'))]));
+const translate=lang=>(key,params={})=>{let v=key.split('.').reduce((a,k)=>a?.[k],translations[lang]);if(typeof v!=='string')return key;for(const[k,x]of Object.entries(params))v=v.replaceAll(`{${k}}`,String(x));return v;};
+for(const lang of ['vi','en'])test(`API failures have safe actionable ${lang} messages`,()=>{
+ const t=translate(lang),fail=(status,data={},headers={})=>({response:{status,data,headers}});
+ assert.equal(apiErrorMessage(fail(401,{errorCode:'ERR_UNAUTHORIZED',message:'Authentication failed or the session is no longer valid.'}),t,'auth.loginFailed'),t('apiErrors.invalidCredentials'));
+ assert.equal(apiErrorMessage(fail(401),t),t('common.sessionExpired'));
+ assert.equal(apiErrorMessage(fail(403),t),t('common.permissionDenied'));
+ for(const [status,key]of [[400,'errors.ERR_VALIDATION'],[404,'errors.ERR_NOT_FOUND'],[409,'apiErrors.conflict'],[413,'apiErrors.uploadTooLarge'],[415,'apiErrors.unsupportedFile'],[429,'errors.ERR_RATE_LIMIT'],[500,'errors.ERR_INTERNAL'],[503,'apiErrors.unavailable']])assert.equal(apiErrorMessage(fail(status,{message:'SQL password=secret /var/server/trace',errorCode:'UNKNOWN'}),t),t(key));
+ assert.equal(apiErrorMessage({isAxiosError:true,code:'ERR_NETWORK'},t),t('apiErrors.network'));
+ assert.equal(apiErrorMessage({code:'ECONNABORTED'},t),t('apiErrors.timeout'));
+ assert.equal(apiErrorMessage(fail(429,{}, {'retry-after':'30'}),t),t('apiErrors.rateLimitWait',{seconds:'30'}));
+ assert.equal(apiErrorMessage(fail(400,{errorCode:'ERR_VALIDATION',errors:{Email:['raw internal'],NewPassword:['raw message']}}),t),t('apiErrors.validationFields',{fields:`${t('apiFields.email')}, ${t('apiFields.newpassword')}`}));
+ for(const code of Object.keys(translations[lang].errors))assert.notEqual(t(`errors.${code}`),`errors.${code}`);
+ assert.equal(apiErrorMessage(fail(409,{errorCode:'ERR_EMAIL_EXISTS'}),t),t('errors.ERR_EMAIL_EXISTS'));
+ assert.equal(apiErrorMessage(fail(400,{errorCode:'ERR_SCHEDULE_OVERLAP',parameters:{className:'Toán 9',day:'Thứ Hai',startTime:'17:30',endTime:'19:00'}}),t),t('errors.ERR_SCHEDULE_OVERLAP',{className:'Toán 9',day:'Thứ Hai',startTime:'17:30',endTime:'19:00'}));
+ assert.equal(apiErrorMessage(fail(400,'<html>server error</html>'),t),t('errors.ERR_VALIDATION'));
+});

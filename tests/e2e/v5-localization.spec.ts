@@ -24,7 +24,7 @@ async function openTeacherDashboard(page: Page, language: 'vi' | 'en') {
     await route.fulfill({ status: 200, json: {} });
   });
   await page.goto('/teacher');
-  await expect(page.getByRole('heading', { name: language === 'vi' ? 'Quản lý Lớp học' : 'Class Management' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: language === 'vi' ? 'Mỗi lớp học, một hành trình.' : 'Every class, a new journey.' })).toBeVisible();
   const searchLabel = language === 'vi' ? 'Tìm kiếm lớp học theo tên hoặc mã...' : 'Search classes by name or code...';
   await expect(page.getByPlaceholder(searchLabel)).toBeVisible();
   await expect(page.getByRole('textbox', { name: searchLabel })).toBeVisible();
@@ -75,7 +75,7 @@ test('Admin management copy follows runtime language changes', async ({ page }) 
   await page.setViewportSize({ width: 390, height: 900 });
   await openAdminUsers(page, 'en');
 
-  await page.getByRole('button', { name: 'VN', exact: true }).click();
+  await page.getByRole('button', { name: 'VI', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Người dùng', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Môn học', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Danh sách môn học' })).toBeVisible();

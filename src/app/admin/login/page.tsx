@@ -1,17 +1,16 @@
 'use client';
 
-import { BrandLogo } from '@/components/BrandLogo';
+import { Lock } from '@/components/ui/icons';
+import { AuthShell } from '@/components/AuthShell';
+
 
 import { useState } from 'react';
-import axios from 'axios';
+import { apiErrorMessage } from '@/lib/apiError';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import api from '@/lib/api';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Lock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import ZodiacBackground from '@/components/ZodiacBackground';
 import Link from 'next/link';
 
 export default function AdminLoginPage() {
@@ -31,47 +30,27 @@ export default function AdminLoginPage() {
       await authLogin();
       window.location.href = '/admin';
     } catch (error: unknown) {
-      const message = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message : undefined;
-      setError(message || t('admin.loginFailed'));
+      setError(apiErrorMessage(error, t, 'admin.loginFailed'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#020403] p-6 relative overflow-hidden">
-      <ZodiacBackground />
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md relative z-10"
-      >
-        <Link href="/" className="inline-flex items-center text-sm font-bold text-emerald-300 hover:text-emerald-200 mb-8 transition-all group">
-          <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          {t('common.backToHome')}
-        </Link>
-
-        <div className="bg-[#111814]/80 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] shadow-[0_0_80px_-20px_rgba(16,185,129,0.3)] border border-emerald-500/20">
-          <div className="flex flex-col items-center mb-10 text-center">
-            <BrandLogo size="lg" className="mb-6" theme="dark" />
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase italic drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">{t('admin.loginTitle')}</h1>
-            <p className="text-emerald-300 font-medium mt-2 text-[10px] md:text-sm tracking-widest uppercase">{t('admin.loginSubtitle')}</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <Input 
-              theme="dark"
-              label={t('admin.loginIdentifier')}
+    <AuthShell title={t('admin.loginTitle')} description={t('admin.loginSubtitle')} footer={<Link href="/auth/login" className="text-brand-text hover:underline">{t('common.login')}</Link>}>
+      <form onSubmit={handleLogin} className="space-y-6">
+            <Input
+              theme="light"
+              autoComplete="username" label={t('admin.loginIdentifier')}
               placeholder={t('auth.username')}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
-            <Input 
-              theme="dark"
+            <Input
+              theme="light"
               label={t('admin.securityKey')}
-              type="password" 
+              autoComplete="current-password" type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -79,31 +58,23 @@ export default function AdminLoginPage() {
             />
 
             {error && (
-              <motion.div 
-                initial={{ opacity: 0, x: -10 }} 
-                animate={{ opacity: 1, x: 0 }}
-                className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-bold text-red-400 text-center"
+              <div
+                className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-xs font-medium text-red-700 text-center"
               >
                 {error}
-              </motion.div>
+              </div>
             )}
 
-            <Button 
-              type="submit" 
-              theme="dark"
-              className="w-full h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-widest shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]" 
+            <Button
+              type="submit"
+              theme="light"
+              className="w-full h-12 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black font-semibold tracking-normal"
               isLoading={loading}
             >
               <Lock className="w-4 h-4 mr-2" />
               {t('admin.authorize')}
             </Button>
           </form>
-        </div>
-        
-        <p className="text-center mt-8 text-[10px] font-black text-emerald-300 uppercase tracking-[0.3em]">
-          {t('admin.restrictedArea')}
-        </p>
-      </motion.div>
-    </div>
+    </AuthShell>
   );
 }

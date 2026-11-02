@@ -203,12 +203,12 @@ for (const width of [390, 1440]) {
     expect(jsonPath).toContain('light-');
   });
 
-  test(`shared controls retain the Admin dark theme at ${width}px`, async ({ page }) => {
+  test(`shared controls retain the Admin Campus light theme at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openAdminUsers(page, 'en');
 
     const refresh = page.getByRole('button', { name: 'Refresh Data' });
-    await expect(refresh).toHaveAttribute('data-theme', 'dark');
+    await expect(refresh).toHaveAttribute('data-theme', 'light');
     await refresh.hover();
     await page.waitForTimeout(250);
     const hoverButton = await measureControl(refresh);
@@ -222,10 +222,10 @@ for (const width of [390, 1440]) {
     const subjectName = page.getByLabel('Subject Name');
     const subjectDescription = page.getByLabel('Description');
     const createSubject = page.getByRole('button', { name: 'Create Subject' });
-    await expect(subjectName).toHaveAttribute('data-theme', 'dark');
-    await expect(createSubject).toHaveAttribute('data-theme', 'dark');
+    await expect(subjectName).toHaveAttribute('data-theme', 'light');
+    await expect(createSubject).toHaveAttribute('data-theme', 'light');
 
-    const screenshot = path.join(artifactDirectory, `admin-dark-${width}px.png`);
+    const screenshot = path.join(artifactDirectory, `admin-campus-${width}px.png`);
     await mkdir(artifactDirectory, { recursive: true });
     await page.screenshot({ path: screenshot, fullPage: true });
     const defaultInput = await measureControl(subjectName);
@@ -247,7 +247,7 @@ for (const width of [390, 1440]) {
     await expect(createSubject).toBeFocused();
     const focusPrimaryButton = await measureControl(createSubject);
     expect(focusPrimaryButton.focusVisible).toBe(true);
-    const darkPanel: Rgb = [17, 24, 20];
+    const darkPanel: Rgb = [255, 255, 255];
     expect(contrastRatio(parseRgb(hoverPrimaryButton.foreground.css), parseRgb(hoverPrimaryButton.background.css))).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(parseRgb(focusPrimaryButton.outline.color.css), darkPanel)).toBeGreaterThanOrEqual(3);
 
@@ -302,7 +302,7 @@ for (const width of [390, 1440]) {
     const loadingButton = await measureControl(createSubject);
     await expect(page.locator('main [role="alert"]')).toBeVisible();
 
-    const jsonPath = await persistCapture('dark', width, screenshot, {
+    const jsonPath = await persistCapture('light', width, screenshot, {
       controls: { subjectNameLabel, defaultInput, defaultPrimaryButton, hoverPrimaryButton, activePrimaryButton, focusPrimaryButton, hoverButton, focusButton, errorInput, errorMessage, successInput, disabledInput, loadingButton },
       contrastRatios: {
         inputTextOnFill: inputTextAgainstFill,
@@ -317,8 +317,8 @@ for (const width of [390, 1440]) {
         errorBorderAgainstFill,
         successBorderAgainstFill,
       },
-      notes: ['Control fills are opaque and directly measured; label and error text are compared against the form 5% white overlay composited over #111814 as a conservative dark-surface proxy.', 'Disabled controls are recorded but excluded from WCAG text contrast thresholds.', 'Error and success input visuals were previewed using the component data-state attribute and the component error-message class; current Admin subject form has no field-level validation state.'],
+      notes: ['Control fills are opaque and directly measured; label and error text are compared against the opaque white Campus form surface.', 'Disabled controls are recorded but excluded from WCAG text contrast thresholds.', 'Error and success input visuals were previewed using the component data-state attribute and the component error-message class; current Admin subject form has no field-level validation state.'],
     });
-    expect(jsonPath).toContain('dark-');
+    expect(jsonPath).toContain('light-');
   });
 }

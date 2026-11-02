@@ -1,31 +1,15 @@
 'use client';
 
+import { ClubClassCard } from '@/components/teacher/ClubClassCard';
+
+import Link from 'next/link';
+
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Navbar } from '@/components/Navbar';
+
 import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BookOpen, 
-  Users, 
-  Calendar, 
-  Plus, 
-  MoreVertical, 
-  Edit, 
-  Eye, 
-  Trash2,
-  RefreshCw,
-  Clock,
-  ChevronRight,
-  Sparkles,
-  Zap,
-  Search,
-  Filter,
-  ArrowUpDown,
-  TrendingUp,
-  ChevronDown,
-  Check
-} from 'lucide-react';
+import { BookOpen, Plus, RefreshCw, ChevronRight, Search, Filter, ArrowUpDown, ChevronDown, Check } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { UserRoles } from '@/constants/roles';
@@ -39,7 +23,7 @@ import { mutationErrorMessage } from '@/lib/mutationError';
 import { getPageEnrollmentCount } from '@/lib/dashboardMetrics';
 
 export default function TeacherDashboard() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [classes, setClasses] = useState<Class[]>([]);
@@ -172,81 +156,36 @@ export default function TeacherDashboard() {
   if (authLoading || !user || user.role !== UserRoles.User) return null;
 
   return (
-    <main className="min-h-screen pb-16 space-y-8 relative overflow-hidden">
-      {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex-1"
-        >
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-brand-primary/10 rounded-full mb-4 border border-brand-primary/10">
-            <Sparkles className="w-4 h-4 text-brand-primary animate-pulse" />
-            <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{t('teacher.teacherSpace')}</span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl font-black text-surface-900 tracking-tighter leading-none mb-4">
-            {t('teacher.title')}
-          </h1>
-          <p className="text-surface-500 text-lg font-medium max-w-xl">
-            {t('teacher.desc')}
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto"
-        >
-          {/* Quick Stats */}
-          <div className="flex bg-white border border-surface-100 rounded-2xl p-3 pr-5 items-center shadow-sm w-full sm:w-auto">
-            <div className="w-10 h-10 bg-brand-primary/10 text-brand-primary rounded-xl flex items-center justify-center mr-3">
-              <TrendingUp className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-1">{t('teacher.pageEnrollmentCount')}</p>
-              <p className="text-xl font-black text-surface-900">
-                {getPageEnrollmentCount(classes)} {t('teacher.enrollments')}
-              </p>
-            </div>
-          </div>
-
-          <Button 
-            onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
-            size="lg" 
-            className="rounded-2xl h-14 px-8 shadow-xl shadow-brand-primary/20 group bg-brand-action text-white font-black w-full sm:w-auto"
-          >
-            <Plus className="w-6 h-6 mr-3 group-hover:rotate-180 transition-transform duration-500" />
-            {t('teacher.createClass')}
-          </Button>
-        </motion.div>
-      </div>
+    <main className="club-dashboard">
+      <header className="club-hero">
+        <div className="club-hero-intro"><span className="club-heading-gesture" aria-hidden="true"/><h1 className="club-headline"><span>{t('club.titleOne')}</span><span>{t('club.titleTwo')}</span></h1><div className="club-hero-action"><h2>{t('club.yourClasses')}</h2><Button onClick={() => { setEditingClass(null); setIsModalOpen(true); }}><Plus className="h-5 w-5"/>{t('club.createClass')}</Button></div></div>
+        <section className="club-week" aria-label={t('club.weekSchedule')}><h2>{t('club.weekSchedule')}</h2><div className="club-week-items">{classes.flatMap(c=>(c.schedules||[]).slice(0,1).map(schedule=>({c,schedule}))).slice(0,3).map(({c,schedule},i)=><Link key={c.id} href={`/teacher/class/${c.id}`} className={`club-week-item week-tone-${i}`}><strong>{t(`days.${schedule.dayOfWeek}`)}</strong><time>{schedule.startTime.slice(0,5)} – {(()=>{const [h,m]=schedule.startTime.split(':').map(Number);const minutes=Math.round((h*60+m+schedule.durationHours*60)%1440);return `${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;})()}</time><span>{c.name}</span><ChevronRight className="h-4 w-4"/></Link>)}</div>{!classes.length&&<p className="club-week-empty">{loading?t('common.loading'):t('club.scheduleEmpty')}</p>}</section>
+      </header>
 
       {/* Filters and Controls */}
-      <div className="flex flex-col md:flex-row gap-3 bg-white/60 backdrop-blur-md p-3 rounded-2xl border border-white relative z-50">
+      <div className="club-filter-bar relative z-30">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" />
-          <input 
-            type="text" 
+          <input
+            type="text"
             aria-label={t('teacher.searchClasses')}
             placeholder={t('teacher.searchClasses')}
             value={searchTerm}
             onChange={(e) => { setSearchTerm(e.target.value); setPageNumber(1); }}
-            className="w-full h-14 pl-12 pr-4 bg-white rounded-2xl border-none focus:ring-2 focus:ring-brand-primary/20 text-sm font-bold shadow-sm"
+            className="w-full h-11 pl-12 pr-4 bg-white rounded-lg border-none focus:ring-2 focus:ring-brand-primary/20 text-sm font-medium"
           />
         </div>
-        
+
         <div className="flex flex-wrap gap-3">
           {/* Year Filter Dropdown */}
           <div className="relative" ref={yearDropdownRef}>
             <button
               onClick={() => { setIsYearDropdownOpen(!isYearDropdownOpen); setIsSortDropdownOpen(false); }}
-              className="h-14 bg-white rounded-2xl shadow-sm px-4 flex items-center justify-between min-w-[180px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
+              className="h-11 bg-white rounded-lg px-4 flex items-center justify-between min-w-[180px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
             >
               <div className="flex items-center text-surface-400">
                 <Filter className="w-5 h-5 mr-3" />
-                <span className="text-sm font-bold text-surface-900">
+                <span className="text-sm font-medium text-surface-900">
                   {year === '' ? t('teacher.allYears') : t('teacher.yearLabel', { year })}
                 </span>
               </div>
@@ -256,15 +195,14 @@ export default function TeacherDashboard() {
             <AnimatePresence>
               {isYearDropdownOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-100 py-2 z-50 overflow-hidden"
+                  className="absolute top-full mt-2 w-full bg-white rounded-lg border border-surface-100 py-2 z-50 overflow-hidden"
                 >
                   <button
                     onClick={() => { setYear(''); setPageNumber(1); setIsYearDropdownOpen(false); }}
-                    className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
+                    className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-surface-50 transition-colors ${year === '' ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                   >
                     {t('teacher.allYears')}
                     {year === '' && <Check className="w-4 h-4" />}
@@ -275,7 +213,7 @@ export default function TeacherDashboard() {
                       <button
                         key={y}
                         onClick={() => { setYear(y); setPageNumber(1); setIsYearDropdownOpen(false); }}
-                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
+                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-surface-50 transition-colors ${year === y ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                       >
                         {t('teacher.yearLabel', { year: y })}
                         {year === y && <Check className="w-4 h-4" />}
@@ -291,11 +229,11 @@ export default function TeacherDashboard() {
           <div className="relative" ref={sortDropdownRef}>
             <button
               onClick={() => { setIsSortDropdownOpen(!isSortDropdownOpen); setIsYearDropdownOpen(false); }}
-              className="h-14 bg-white rounded-2xl shadow-sm px-4 flex items-center justify-between min-w-[220px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
+              className="h-11 bg-white rounded-lg px-4 flex items-center justify-between min-w-[220px] hover:bg-surface-50 transition-colors border-2 border-transparent focus:border-brand-primary/20"
             >
               <div className="flex items-center text-surface-400">
                 <ArrowUpDown className="w-5 h-5 mr-3" />
-                <span className="text-sm font-bold text-surface-900">
+                <span className="text-sm font-medium text-surface-900">
                   {sortBy === 'startDate' && sortDescending === true ? t('teacher.sortNewest') :
                    sortBy === 'startDate' && sortDescending === false ? t('teacher.sortOldest') :
                    sortBy === 'name' && sortDescending === false ? t('teacher.sortNameAscending') :
@@ -310,11 +248,10 @@ export default function TeacherDashboard() {
             <AnimatePresence>
               {isSortDropdownOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-2 w-full bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-surface-100 py-2 z-50 overflow-hidden"
+                  className="absolute top-full mt-2 w-full bg-white rounded-lg border border-surface-100 py-2 z-50 overflow-hidden"
                 >
                   {[
                     { label: t('teacher.sortNewest'), valSortBy: 'startDate', valDesc: true },
@@ -334,7 +271,7 @@ export default function TeacherDashboard() {
                           setPageNumber(1);
                           setIsSortDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-3 text-sm font-bold flex items-center justify-between hover:bg-surface-50 transition-colors ${isActive ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
+                        className={`w-full text-left px-4 py-3 text-sm font-medium flex items-center justify-between hover:bg-surface-50 transition-colors ${isActive ? 'text-brand-text bg-brand-primary/5' : 'text-surface-700'}`}
                       >
                         {option.label}
                         {isActive && <Check className="w-4 h-4" />}
@@ -349,10 +286,11 @@ export default function TeacherDashboard() {
       </div>
 
         {/* Dynamic Class Cards Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="club-result-summary"><span>{t('teacher.pageEnrollmentCount')}: {getPageEnrollmentCount(classes)} {t('teacher.enrollments')}</span></div>
+        <div className="club-class-grid">
           {classesLoadFailure && (
-            <div role="alert" className="col-span-full flex flex-col gap-4 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-bold">
+            <div role="alert" className="col-span-full flex flex-col gap-4 rounded-xl border border-red-200 bg-red-50 p-6 text-red-800 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-medium">
                 {classesLoadFailure === 'unauthorized'
                   ? t('common.sessionExpired')
                   : classesLoadFailure === 'forbidden'
@@ -376,133 +314,27 @@ export default function TeacherDashboard() {
           )}
           {classesLoadState === 'loading' ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-white/50 backdrop-blur-sm h-72 rounded-3xl animate-pulse border border-white/50" />
+              <div key={i} className="bg-white h-28 rounded-xl animate-pulse border border-surface-200" />
             ))
           ) : (
             <AnimatePresence>
               {classes.length > 0 && !(classesLoadFailure && !isRetryableLoadFailure(classesLoadFailure)) ? (
-                classes.map((c, index) => (
-                  <motion.div
-                    key={c.id}
-                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 100, 
-                      damping: 15, 
-                      delay: index * 0.1 
-                    }}
-                    whileHover={{ y: -4, scale: 1.005 }}
-                    className="relative"
-                  >
-                    <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-[0_20px_50px_-20px_rgba(0,0,0,0.08)] border border-white/80 relative group overflow-hidden h-full flex flex-col">
-                      {/* Floating Category Tag */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4">
-                        <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm ${
-                          c.category === 0 
-                          ? 'bg-blue-50 text-blue-500 border border-blue-100' 
-                          : 'bg-brand-primary/5 text-brand-text border border-brand-primary/10'
-                        }`}>
-                          <Zap className="w-3 h-3" />
-                          <span>{c.category === 0 ? t('common.online') : t('common.offline')}</span>
-                        </div>
-                        {/* Status Badge */}
-                        <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border ${
-                          c.status === 1 ? 'bg-green-50 text-brand-text border-green-100' :
-                          c.status === 2 ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                          c.status === 3 ? 'bg-brand-primary/10 text-brand-text border-brand-primary/20' :
-                          'bg-red-50 text-red-600 border-red-100'
-                        }`}>
-                          <div className={`w-1.5 h-1.5 rounded-full ${
-                            c.status === 1 ? 'bg-green-500' :
-                            c.status === 2 ? 'bg-yellow-500' :
-                            c.status === 3 ? 'bg-brand-primary' :
-                            'bg-red-500'
-                          }`} />
-                          <span>{
-                            c.status === 1 ? t('teacher.status.active') :
-                            c.status === 2 ? t('teacher.status.inactive') :
-                            c.status === 3 ? t('teacher.status.completed') :
-                            t('teacher.status.cancelled')
-                          }</span>
-                        </div>
-                      </div>
-
-                      {/* Decoration Icon */}
-                      <div className="absolute -right-6 -bottom-6 opacity-[0.04] transform rotate-[-15deg] group-hover:rotate-0 transition-transform duration-700 pointer-events-none">
-                        <BookOpen className="w-48 h-48 text-brand-primary" />
-                      </div>
-
-                      <div className="mb-6">
-                        <div className="text-[10px] font-black text-brand-text uppercase tracking-[0.2em] mb-2">
-                          {c.subjectName}
-                        </div>
-                        <h3 className="text-2xl font-black text-surface-900 mb-2 group-hover:text-brand-text transition-colors duration-500 leading-tight">
-                          {c.name}
-                        </h3>
-                        <div className="w-12 h-1 bg-brand-primary/10 rounded-full group-hover:w-24 transition-all duration-500" />
-                      </div>
-
-                      <div className="space-y-3 mb-6 flex-1">
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
-                          <Users className="w-5 h-5 mr-3 text-brand-primary/40" />
-                          <span>{c.studentCount} <span className="text-surface-400 font-medium">{t('teacher.studentCount')}</span></span>
-                        </div>
-                        
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
-                          <Calendar className="w-5 h-5 mr-3 text-brand-primary/40" />
-                          <span>{c.startDate ? new Date(c.startDate).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US') : t('teacher.toBeAnnounced')}</span>
-                        </div>
-
-                        <div className="flex items-center text-surface-600 font-bold text-sm bg-surface-50/50 px-3 py-2.5 rounded-2xl border border-surface-100/50">
-                          <Clock className="w-5 h-5 mr-3 text-brand-primary/40" />
-                          <span>{c.schedules?.length || 0} <span className="text-surface-400 font-medium">{t('teacher.sessionsPerWeek')}</span></span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          onClick={() => router.push(`/teacher/class/${c.id}`)}
-                          className="flex-[2] rounded-[1.25rem] h-12 bg-surface-900 hover:bg-surface-800 text-white shadow-lg shadow-surface-900/10 group/btn px-4"
-                        >
-                          <Eye className="w-4 h-4 mr-2 shrink-0" />
-                          <span className="font-black tracking-tight text-[11px] uppercase truncate">{t('teacher.viewClass')}</span>
-                          <ChevronRight className="w-3 h-3 ml-1 group-hover/btn:translate-x-1 transition-transform shrink-0" />
-                        </Button>
-                        
-                        <div className="flex gap-1.5 flex-1">
-                          <button 
-                            onClick={() => handleEdit(c)} 
-                            className="flex-1 h-12 bg-white border border-surface-100 rounded-[1.25rem] flex items-center justify-center text-surface-400 hover:text-brand-text hover:border-brand-primary/30 transition-all hover:shadow-lg hover:shadow-brand-primary/5"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={() => handleDeleteClick(c.id)} 
-                            className="flex-1 h-12 bg-white border border-surface-100 rounded-[1.25rem] flex items-center justify-center text-surface-400 hover:text-red-500 hover:border-red-100 transition-all hover:shadow-lg hover:shadow-red-500/5"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))
+                classes.map((c,index) => <ClubClassCard key={c.id} data={c} index={index} onEdit={()=>handleEdit(c)} onDelete={()=>handleDeleteClick(c.id)} />)
               ) : classesLoadFailure ? null : (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
+                <motion.div
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="col-span-full py-12 sm:py-14 text-center bg-white/50 backdrop-blur-md rounded-3xl border-2 border-dashed border-surface-200"
+                  className="col-span-full py-12 sm:py-14 text-center bg-white rounded-xl border-2 border-dashed border-surface-200"
                 >
-                  <div className="w-20 h-20 bg-brand-primary/5 rounded-3xl flex items-center justify-center mx-auto mb-5 animate-float">
+                  <div className="w-20 h-20 bg-brand-primary/5 rounded-xl flex items-center justify-center mx-auto mb-5">
                     <BookOpen className="w-10 h-10 text-brand-primary/40" />
                   </div>
-                  <h3 className="text-2xl font-black text-surface-900 mb-3">{t('teacher.noClasses')}</h3>
+                  <h3 className="text-2xl font-semibold text-surface-900 mb-3">{t('teacher.noClasses')}</h3>
                   <p className="text-surface-500 font-medium mb-6 max-w-md mx-auto">{t('teacher.noClassesDesc')}</p>
-                  <Button 
-                    onClick={() => { setEditingClass(null); setIsModalOpen(true); }} 
+                  <Button
+                    onClick={() => { setEditingClass(null); setIsModalOpen(true); }}
                     size="lg"
-                    className="rounded-2xl px-8 h-14 shadow-2xl shadow-brand-primary/20"
+                    className="rounded-lg px-8 h-11"
                   >
                     <Plus className="w-5 h-5 mr-3" />
                     {t('teacher.createClass')}
@@ -515,13 +347,13 @@ export default function TeacherDashboard() {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/60 backdrop-blur-md p-6 rounded-3xl border border-white mt-8">
-            <div className="text-sm font-bold text-surface-500">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-6 rounded-xl border border-surface-200 mt-8">
+            <div className="text-sm font-medium text-surface-500">
               {t('teacher.classesShowing', { start: (pageNumber - 1) * pageSize + 1, end: Math.min(pageNumber * pageSize, totalCount), total: totalCount })}
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 disabled={pageNumber === 1}
                 onClick={() => setPageNumber(prev => prev - 1)}
                 className="rounded-xl h-12 px-4 border-surface-100"
@@ -533,9 +365,9 @@ export default function TeacherDashboard() {
                   <button
                     key={i}
                     onClick={() => setPageNumber(i + 1)}
-                    className={`w-12 h-12 rounded-xl text-sm font-black transition-all ${
-                      pageNumber === i + 1 
-                        ? 'bg-brand-action text-white shadow-lg shadow-brand-primary/20'
+                    className={`w-12 h-12 rounded-xl text-sm font-semibold transition-all ${
+                      pageNumber === i + 1
+                        ? 'bg-brand-action text-white  '
                         : 'text-surface-500 hover:bg-surface-50'
                     }`}
                   >
@@ -543,8 +375,8 @@ export default function TeacherDashboard() {
                   </button>
                 ))}
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 disabled={pageNumber === totalPages}
                 onClick={() => setPageNumber(prev => prev + 1)}
                 className="rounded-xl h-12 px-4 border-surface-100"
@@ -555,7 +387,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
-      <ClassModal 
+      <ClassModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveClass}
@@ -571,7 +403,7 @@ export default function TeacherDashboard() {
         message={t('teacher.deleteMessage')}
       />
 
-      <Toast 
+      <Toast
         isOpen={toast.isOpen}
         message={toast.message}
         type={toast.type}

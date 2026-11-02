@@ -63,7 +63,11 @@ test('teacher status text no longer uses the low-contrast green-600 foreground',
   for (const path of teacherFiles) {
     assert.doesNotMatch(read(path), /text-green-600/);
   }
-  assert.match(read('../src/app/teacher/page.tsx'), /bg-green-50 text-brand-text/);
+  const clubhouse = read('../src/app/clubhouse.css');
+  assert.ok(contrastRatio('#06664d', '#ddf5e7') >= 4.5, 'active class status meets AA');
+  assert.ok(contrastRatio('#865409', '#fff4d8') >= 4.5, 'paused class status meets AA');
+  assert.match(clubhouse, /club-status\.is-active/);
+  assert.match(read('../src/components/teacher/ClubClassCard.tsx'), /club-status/);
   assert.match(read('../src/app/teacher/class/[id]/page.tsx'), /bg-green-100 text-brand-text/);
   assert.match(read('../src/components/teacher/RecordSessionModal.tsx'), /color: 'text-brand-text'/);
   assert.match(read('../src/components/LanguageSwitcher.tsx'), /bg-white text-brand-text/);

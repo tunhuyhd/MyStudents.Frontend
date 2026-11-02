@@ -26,18 +26,18 @@ test('shared Input centralizes dark labels, placeholder, focus, error and succes
   assert.match(input, /const state = error \? 'error' : success \? 'success' : 'default'/);
   assert.match(input, /data-control-theme=\{theme\}/);
   assert.match(input, /data-state=\{state\}/);
-  assert.match(globalStyles, /--control-dark-placeholder: #a7f3d0/);
+  assert.match(globalStyles, /--control-dark-placeholder: #d8ebe2/);
   assert.match(globalStyles, /\.ui-input\[data-theme="dark"\]:focus-visible/);
   assert.match(globalStyles, /\.ui-input\[data-state="error"\]/);
   assert.match(globalStyles, /\.ui-input\[data-state="success"\]/);
   assert.match(globalStyles, /\.ui-input:disabled/);
 });
 
-test('Admin shared controls select the dark semantic theme without per-input color overrides', () => {
-  assert.match(adminPage, /variant="outline"\s+theme="dark"/);
-  assert.match(adminLogin, /<Input\s+theme="dark"/);
-  assert.match(adminLogin, /<Button\s+[\s\S]*?theme="dark"/);
-  assert.equal((subjects.match(/<Input\s+theme="dark"/g) ?? []).length, 2);
-  assert.match(subjects, /<Button\s+theme="dark"/);
+test('Admin shared controls use the approved light theme without per-input color overrides', () => {
+  assert.match(adminPage, /variant="outline"\s+theme="light"/);
+  assert.match(adminLogin, /<Input\s+theme="light"/);
+  assert.match(adminLogin, /<Button\s+[\s\S]*?theme="light"/);
+  assert.equal((subjects.match(/<Input\s+theme="light"/g) ?? []).length, 2);
+  assert.match(subjects, /<Button\s+theme="light"/);
   assert.doesNotMatch(subjects, /className="bg-white\/5 border-white\/10 text-white focus:bg-white\/10"/);
 });

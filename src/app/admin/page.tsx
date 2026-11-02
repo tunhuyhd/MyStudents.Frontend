@@ -3,12 +3,11 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
-import ZodiacBackground from '@/components/ZodiacBackground';
 import RoleDropdown from '@/components/RoleDropdown';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ShieldCheck, UserCog, RefreshCw, CheckCircle2, BookOpen, Loader2, ArrowRight } from 'lucide-react';
+import { Users, UserCog, RefreshCw, BookOpen, Loader2, ArrowRight } from '@/components/ui/icons';
 import SubjectManagement from '@/components/admin/SubjectManagement';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -65,7 +64,7 @@ export default function AdminDashboard() {
   const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  
+
   const [users, setUsers] = useState<UserDto[]>([]);
   const [roles, setRoles] = useState<RoleDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -185,31 +184,30 @@ export default function AdminDashboard() {
   if (authLoading || !user || user.role !== 'Admin') return null;
 
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      <ZodiacBackground />
+    <main className="club-admin min-h-screen bg-surface-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+        <motion.div
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6"
+          className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6"
         >
           <div>
             <div className="flex items-center space-x-3 mb-2">
               <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0">
-                <UserCog className="w-6 h-6 text-emerald-500" />
+                <UserCog className="w-6 h-6 text-brand-text" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">{t('admin.title')}</h1>
+              <h1 className="text-3xl md:text-3xl font-semibold text-surface-900 tracking-tight">{t('admin.title')}</h1>
             </div>
-            <p className="text-emerald-300 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
+            <p className="text-surface-600 font-medium md:ml-13 text-sm md:text-base">{t('admin.desc')}</p>
           </div>
-          
-          <div className="flex items-center bg-white/5 p-1.5 rounded-2xl border border-white/5">
+
+          <div className="flex items-center bg-white p-1.5 rounded-lg border border-surface-200">
             <button
               onClick={() => setActiveTab('users')}
-              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                activeTab === 'users' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-300 hover:text-emerald-200'
+              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                activeTab === 'users' ? 'bg-brand-action text-white  ' : 'text-surface-600 hover:text-surface-600'
               }`}
             >
               <Users className="w-4 h-4 mr-2" />
@@ -217,8 +215,8 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab('subjects')}
-              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                activeTab === 'subjects' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-emerald-300 hover:text-emerald-200'
+              className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                activeTab === 'subjects' ? 'bg-brand-action text-white  ' : 'text-surface-600 hover:text-surface-600'
               }`}
             >
               <BookOpen className="w-4 h-4 mr-2" />
@@ -226,11 +224,11 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          <Button 
-            onClick={fetchData} 
-            variant="outline" 
-            theme="dark"
-            className="rounded-2xl h-12"
+          <Button
+            onClick={fetchData}
+            variant="outline"
+            theme="light"
+            className="rounded-lg h-12"
             isLoading={loading}
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
@@ -240,17 +238,17 @@ export default function AdminDashboard() {
 
         <AnimatePresence mode="wait">
           {activeTab === 'users' ? (
-            <motion.div 
+            <motion.div
               key="users"
-              initial={{ opacity: 0, x: -20 }}
+              initial={false}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="bg-[#111814]/40 backdrop-blur-3xl rounded-[3rem] shadow-2xl border border-white/10 overflow-hidden"
+              className="bg-white rounded-xl border border-surface-200 overflow-hidden"
             >
               {(usersLoadFailure || rolesLoadFailure || rolesLoadState === 'loading' || rolesLoadState === 'empty') && (
                 <div className="space-y-3 p-6 pb-0">
                   {usersLoadFailure && (users.length > 0 || usersLoadFailure !== 'failed') && (
-                    <div role="alert" className="flex flex-col gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-red-200 sm:flex-row sm:items-center sm:justify-between">
+                    <div role="alert" className="flex flex-col gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-700 sm:flex-row sm:items-center sm:justify-between">
                       <p className="font-semibold">
                         {usersLoadFailure === 'unauthorized'
                           ? t('common.sessionExpired')
@@ -261,14 +259,14 @@ export default function AdminDashboard() {
                               : t('admin.usersLoadEmptyError')}
                       </p>
                       {isRetryableLoadFailure(usersLoadFailure) && (
-                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-medium text-red-700 hover:bg-red-500/10 disabled:opacity-50">
                           <RefreshCw className={`h-4 w-4 ${usersLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
                         </button>
                       )}
                     </div>
                   )}
                   {rolesLoadFailure && (
-                    <div role="alert" className="flex flex-col gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-red-200 sm:flex-row sm:items-center sm:justify-between">
+                    <div role="alert" className="flex flex-col gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-700 sm:flex-row sm:items-center sm:justify-between">
                       <p className="font-semibold">
                         {rolesLoadFailure === 'unauthorized'
                           ? t('common.sessionExpired')
@@ -279,22 +277,22 @@ export default function AdminDashboard() {
                               : t('admin.rolesLoadEmptyError')}
                       </p>
                       {isRetryableLoadFailure(rolesLoadFailure) && (
-                        <button type="button" onClick={() => { void fetchRoles(); }} disabled={rolesLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                        <button type="button" onClick={() => { void fetchRoles(); }} disabled={rolesLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 text-sm font-medium text-red-700 hover:bg-red-500/10 disabled:opacity-50">
                           <RefreshCw className={`h-4 w-4 ${rolesLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
                         </button>
                       )}
                     </div>
                   )}
                   {rolesLoadState === 'empty' && (
-                    <p className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 font-semibold text-amber-200">{t('admin.rolesEmpty')}</p>
+                    <p className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-4 font-semibold text-amber-200">{t('admin.rolesEmpty')}</p>
                   )}
                   {rolesLoadState === 'loading' && (
-                    <p className="rounded-2xl border border-white/10 bg-white/5 p-4 font-semibold text-emerald-100/70"><Loader2 className="inline h-4 w-4 animate-spin mr-2" />{t('admin.rolesLoading')}</p>
+                    <p className="rounded-lg border border-surface-200 bg-white p-4 font-semibold text-surface-600"><Loader2 className="inline h-4 w-4 animate-spin mr-2" />{t('admin.rolesLoading')}</p>
                   )}
                 </div>
               )}
               {tableHasHorizontalOverflow && (
-                <p id="admin-user-table-scroll-hint" className="flex items-center gap-2 px-5 pt-4 text-xs font-medium text-emerald-200/80 md:px-8">
+                <p id="admin-user-table-scroll-hint" className="flex items-center gap-2 px-5 pt-4 text-xs font-medium text-surface-600/80 md:px-8">
                   <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0" />
                   <span>{t('admin.scrollToViewAllColumns')}</span>
                 </p>
@@ -309,81 +307,81 @@ export default function AdminDashboard() {
               >
                 <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/5">
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.user')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('auth.email')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.currentRole')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('teacher.modal.statusLabel')}</th>
-                  <th className="px-4 md:px-8 py-6 text-xs font-black text-emerald-300 uppercase tracking-widest">{t('admin.changeRole')}</th>
+                <tr className="border-b border-surface-200">
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.user')}</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('auth.email')}</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.currentRole')}</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('teacher.modal.statusLabel')}</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.changeRole')}</th>
                 </tr>
               </thead>
               <tbody>
                 <AnimatePresence>
                   {usersLoadState === 'loading' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center text-emerald-300/70"><Loader2 className="inline h-5 w-5 animate-spin mr-2" />{t('common.loading')}</td></tr>
+                    <tr><td colSpan={5} className="px-8 py-12 text-center text-surface-600/70"><Loader2 className="inline h-5 w-5 animate-spin mr-2" />{t('common.loading')}</td></tr>
                   ) : usersLoadFailure && usersLoadFailure !== 'failed' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-red-200">{t(usersLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'admin.usersForbidden')}</td></tr>
+                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-red-700">{t(usersLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'admin.usersForbidden')}</td></tr>
                   ) : usersLoadFailure === 'failed' && users.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-8 py-12 text-center text-red-200">
+                      <td colSpan={5} className="px-8 py-12 text-center text-red-700">
                         <p className="mb-4 font-semibold">{t('admin.usersLoadEmptyError')}</p>
-                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50">
+                        <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 font-medium text-red-700 hover:bg-red-500/10 disabled:opacity-50">
                           <RefreshCw className={`h-4 w-4 ${usersLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
                         </button>
                       </td>
                     </tr>
                   ) : usersLoadState === 'empty' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-emerald-100/70">{t('admin.usersEmpty')}</td></tr>
+                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-surface-600">{t('admin.usersEmpty')}</td></tr>
                   ) : users.map((u) => (
-                    <motion.tr 
+                    <motion.tr
                       key={u.id}
-                      initial={{ opacity: 0 }}
+                      initial={false}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="border-b border-white/[0.02] hover:bg-emerald-500/[0.03] transition-colors group"
+                      className="border-b border-surface-200 hover:bg-emerald-500/[0.03] transition-colors group"
                     >
-                      <td className="px-4 md:px-8 py-6">
+                      <td className="px-4 md:px-6 py-4">
                         <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 transition-colors shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)] shrink-0">
-                            <Users className="w-5 h-5 text-emerald-500 group-hover:text-black" />
+                          <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center group-hover:bg-emerald-500 transition-colors shrink-0">
+                            <Users className="w-5 h-5 text-brand-text group-hover:text-black" />
                           </div>
                           <div>
-                            <ExpandableTableValue value={u.fullName} valueType="name" className="font-bold text-white max-w-[120px] md:max-w-[220px]" />
-                            <ExpandableTableValue value={`@${u.username}`} valueType="username" className="mt-1 text-sm text-emerald-300 max-w-[100px] md:max-w-[180px]" />
+                            <ExpandableTableValue value={u.fullName} valueType="name" className="font-medium text-surface-900 max-w-[120px] md:max-w-[220px]" />
+                            <ExpandableTableValue value={`@${u.username}`} valueType="username" className="mt-1 text-sm text-surface-600 max-w-[100px] md:max-w-[180px]" />
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 md:px-8 py-6 text-white/70 font-medium max-w-[150px] md:max-w-[260px]">
-                        <ExpandableTableValue value={u.email} valueType="email" className="text-white/70 font-medium max-w-[150px] md:max-w-[260px]" />
+                      <td className="px-4 md:px-6 py-4 text-surface-900/70 font-medium max-w-[150px] md:max-w-[260px]">
+                        <ExpandableTableValue value={u.email} valueType="email" className="text-surface-900/70 font-medium max-w-[150px] md:max-w-[260px]" />
                       </td>
-                      <td className="px-4 md:px-8 py-6">
-                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                          u.roleName === 'Admin' 
-                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
-                          : 'bg-white/5 text-white/70 border-white/10'
+                      <td className="px-4 md:px-6 py-4">
+                        <span className={`px-4 py-1.5 rounded-full text-xs font-semibold  tracking-normal border ${
+                          u.roleName === 'Admin'
+                          ? 'bg-emerald-500/10 text-surface-600 border-emerald-500/20 '
+                          : 'bg-white text-surface-900/70 border-surface-200'
                         }`}>
                           {u.roleName}
                         </span>
                       </td>
-                      <td className="px-4 md:px-8 py-6">
+                      <td className="px-4 md:px-6 py-4">
                         <button
                           onClick={() => handleUpdateStatus(u.id, u.status)}
                           disabled={updatingId === u.id}
-                          className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
-                            u.status === 1 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)]' 
-                            : 'bg-white/5 text-white/70 border-white/10'
+                          className={`px-4 py-2 rounded-xl text-xs font-semibold  tracking-normal transition-all border ${
+                            u.status === 1
+                            ? 'bg-emerald-500/10 text-surface-600 border-emerald-500/20 '
+                            : 'bg-white text-surface-900/70 border-surface-200'
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            <div className={`w-1.5 h-1.5 rounded-full ${u.status === 1 ? 'bg-emerald-500 animate-pulse' : 'bg-white/20'}`} />
+                            <div className={`w-1.5 h-1.5 rounded-full ${u.status === 1 ? 'bg-emerald-500 animate-pulse' : 'bg-white'}`} />
                             {u.status === 1 ? t('teacher.status.active') : t('teacher.status.inactive')}
                           </div>
                         </button>
                       </td>
-                      <td className="px-4 md:px-8 py-6">
+                      <td className="px-4 md:px-6 py-4">
                         <div className="flex items-center">
-                          <RoleDropdown 
+                          <RoleDropdown
                             roles={rolesLoadFailure && rolesLoadFailure !== 'failed' ? [] : roles}
                             currentRoleId={u.roleId}
                             onUpdate={(newRoleId) => handleUpdateRole(u.id, newRoleId)}
@@ -392,10 +390,9 @@ export default function AdminDashboard() {
                           {updatingId === u.id && (
                             <motion.div
                               animate={{ rotate: 360 }}
-                              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                               className="ml-3"
                             >
-                              <RefreshCw className="w-4 h-4 text-emerald-500" />
+                              <RefreshCw className="w-4 h-4 text-brand-text" />
                             </motion.div>
                           )}
                         </div>
@@ -410,7 +407,7 @@ export default function AdminDashboard() {
           ) : (
             <motion.div
               key="subjects"
-              initial={{ opacity: 0, x: 20 }}
+              initial={false}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >

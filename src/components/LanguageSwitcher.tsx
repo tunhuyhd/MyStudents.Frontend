@@ -1,36 +1,9 @@
 'use client';
-
 import { useLanguage } from '@/context/LanguageContext';
-import { motion } from 'framer-motion';
-import { Globe } from 'lucide-react';
-
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ theme = 'light' }: { theme?: 'light' | 'dark' }) {
   const { language, setLanguage } = useLanguage();
-
-  return (
-    <div className="flex items-center bg-surface-50/50 rounded-2xl p-1 border border-surface-100/50 backdrop-blur-sm">
-      <button
-        onClick={() => setLanguage('vi')}
-        className={`flex-1 px-3 md:px-4 py-2 text-[10px] font-black rounded-xl transition-all duration-300 whitespace-nowrap ${
-          language === 'vi' 
-          ? 'bg-white text-brand-text shadow-xl shadow-brand-primary/10'
-          : 'text-surface-400 hover:text-surface-600'
-        }`}
-      >
-        <span className="hidden md:inline">VIETNAM</span>
-        <span className="inline md:hidden">VN</span>
-      </button>
-      <button
-        onClick={() => setLanguage('en')}
-        className={`flex-1 px-3 md:px-4 py-2 text-[10px] font-black rounded-xl transition-all duration-300 whitespace-nowrap ${
-          language === 'en' 
-          ? 'bg-white text-brand-text shadow-xl shadow-brand-primary/10'
-          : 'text-surface-400 hover:text-surface-600'
-        }`}
-      >
-        <span className="hidden md:inline">ENGLISH</span>
-        <span className="inline md:hidden">EN</span>
-      </button>
-    </div>
-  );
+  return <div className={`language-switcher inline-flex items-center rounded-lg p-1 border ${theme === 'dark' ? 'bg-white/10 border-white/25' : 'bg-surface-50 border-surface-200'}`}>
+    {(['vi','en'] as const).map(value=><button key={value} type="button" onClick={()=>setLanguage(value)} aria-pressed={language===value} className={`flex-1 min-h-9 px-3 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${language===value ? 'bg-white text-brand-text' : theme==='dark' ? 'text-emerald-50 hover:bg-white/10' : 'text-surface-500 hover:text-surface-800'}`}><span className="hidden md:inline">{value==='vi'?'VI':'EN'}</span><span className="inline md:hidden">{value==='vi'?'VI':'EN'}</span></button>)}
+  </div>;
 }
+

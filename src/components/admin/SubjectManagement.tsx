@@ -5,30 +5,34 @@ import { subjectService, Subject } from '@/services/subjectService';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Plus, Trash2, Edit2, X, Check, BookPlus } from 'lucide-react';
+import { BookOpen, Plus, Trash2, Edit2, X, Check, BookPlus } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import { Toast } from '@/components/ui/Toast';
+import { apiErrorMessage } from '@/lib/apiError';
 import { mutationErrorMessage } from '@/lib/mutationError';
 
 export default function SubjectManagement() {
   const { t } = useLanguage();
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [loadError, setLoadError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({ isOpen: false, message: '', type: 'success' });
-  
+
   const [formData, setFormData] = useState({ name: '', description: '' });
 
   const fetchSubjects = useCallback(async () => {
+    setLoading(true);setLoadError('');
     try {
       const res = await subjectService.getAll();
       setSubjects(res.data);
     } catch (err) {
-      console.error('Failed to fetch subjects', err);
-    }
-  }, []);
+      setLoadError(apiErrorMessage(err,t,'apiErrors.loadFailed'));
+    } finally { setLoading(false); }
+  }, [t]);
 
   useEffect(() => {
     // Fetch the subject list; state updates follow the completed API request.
@@ -83,16 +87,18 @@ export default function SubjectManagement() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black text-white flex items-center">
-          <BookOpen className="w-6 h-6 mr-3 text-emerald-500" />
+      {loadError&&<div role="alert" className="rounded-xl bg-red-50 p-5 text-sm text-red-800"><p>{loadError}</p><Button variant="outline" isLoading={loading} onClick={()=>void fetchSubjects()}>{t('common.retry')}</Button></div>}
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-2xl font-semibold text-surface-900 flex items-center">
+          <BookOpen className="w-6 h-6 mr-3 text-brand-text" />
           {t('admin.subjectsTitle')}
         </h2>
-        <Button 
-          theme="dark"
+        <Button
+          theme="light"
           disabled={saving}
           onClick={() => { setIsAdding(!isAdding); setEditingId(null); setFormData({name:'', description:''}); }}
-          className="rounded-2xl h-12 px-6 shadow-lg shadow-emerald-500/20"
+          className="rounded-lg h-12 px-5 shrink-0 whitespace-nowrap self-start sm:self-auto"
         >
           {isAdding ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
           {isAdding ? t('admin.cancel') : t('admin.addSubject')}
@@ -102,23 +108,23 @@ export default function SubjectManagement() {
       <AnimatePresence>
         {isAdding && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
+            initial={false}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 space-y-6">
+            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl border border-surface-200 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input 
-                  theme="dark"
+                <Input
+                  theme="light"
                   label={t('admin.subjectName')}
                   placeholder={t('admin.subjectNamePlaceholder')}
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
                 />
-                <Input 
-                  theme="dark"
+                <Input
+                  theme="light"
                   label={t('admin.subjectDescription')}
                   placeholder={t('admin.subjectDescriptionPlaceholder')}
                   value={formData.description}
@@ -126,7 +132,7 @@ export default function SubjectManagement() {
                 />
               </div>
               <div className="flex justify-end">
-                <Button type="submit" theme="dark" disabled={saving} isLoading={saving} className="px-10 h-12 rounded-xl shadow-xl shadow-emerald-500/30">
+                <Button type="submit" theme="light" disabled={saving} isLoading={saving} className="px-10 h-12 rounded-xl">
                   <Check className="w-4 h-4 mr-2" />
                   {editingId ? t('admin.updateSubject') : t('admin.createSubject')}
                 </Button>
@@ -141,20 +147,20 @@ export default function SubjectManagement() {
           <motion.div
             key={s.id}
             layout
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={false}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/5 hover:border-emerald-500/30 transition-all group relative"
+            className="bg-white p-6 rounded-xl border border-surface-200 hover:border-emerald-500/30 transition-all group relative"
           >
             <div className="flex justify-between items-start mb-4">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
-                <BookPlus className="w-6 h-6 text-emerald-500" />
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                <BookPlus className="w-6 h-6 text-brand-text" />
               </div>
               <div className="flex space-x-2">
                 <button
                   type="button"
                   onClick={() => handleEdit(s)}
                   aria-label={t('admin.editSubject', { name: s.name })}
-                  className="p-2 bg-white/5 hover:bg-emerald-500/20 text-emerald-500 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+                  className="p-2 bg-white hover:bg-emerald-500/20 text-brand-text rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
                 >
                   <Edit2 className="w-4 h-4" aria-hidden="true" />
                 </button>
@@ -163,14 +169,14 @@ export default function SubjectManagement() {
                   onClick={() => handleDelete(s.id)}
                   disabled={deletingId === s.id}
                   aria-label={t('admin.deleteSubject', { name: s.name })}
-                  className="p-2 bg-white/5 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+                  className="p-2 bg-white hover:bg-red-500/20 text-red-700 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
                 >
                   <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">{s.name}</h3>
-            <p className="text-emerald-300 text-sm line-clamp-2">{s.description || t('admin.noDescription')}</p>
+            <h3 className="text-xl font-medium text-surface-900 mb-2">{s.name}</h3>
+            <p className="text-surface-600 text-sm line-clamp-2">{s.description || t('admin.noDescription')}</p>
           </motion.div>
         ))}
       </div>

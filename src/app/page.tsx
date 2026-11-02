@@ -1,133 +1,59 @@
 'use client';
 
-import { BrandLogo } from '@/components/BrandLogo';
-
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { GraduationCap, ShieldCheck, Zap, Users, Calendar, BookOpen } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
-import { Magnetic } from '@/components/ui/Magnetic';
-
+import { ArrowRight, BookOpen, CalendarDays, Users } from '@/components/ui/icons';
+import { SubjectIcon } from '@/components/ui/SubjectIcon';
+import { BrandLogo } from '@/components/BrandLogo';
+import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Home() {
   const { t } = useLanguage();
-  const { user, loading } = useAuth();
-
+  const { user } = useAuth();
+  const workspace = user?.role === 'Admin' ? '/admin' : '/teacher';
   return (
-    <main className="min-h-screen relative overflow-hidden bg-transparent text-surface-900">
-      {/* Nature-inspired Orbs */}
-      <div className="absolute top-0 -left-10 w-[500px] h-[500px] bg-brand-primary/10 rounded-full filter blur-[120px] animate-blob z-0" />
-      <div className="absolute -bottom-20 -right-10 w-[600px] h-[600px] bg-brand-secondary/5 rounded-full filter blur-[150px] animate-blob animation-delay-2000 z-0" />
-      
-      {/* Decorative Leaf Icons */}
-      <div className="absolute top-40 right-[10%] opacity-20 animate-sway">
-        <BookOpen className="w-12 h-12 text-brand-primary" />
-      </div>
-      <div className="absolute bottom-40 left-[5%] opacity-10 animate-sway animation-delay-3000">
-        <Calendar className="w-20 h-20 text-brand-primary" />
-      </div>
-
-
-      {/* Hero Section */}
-      <section className="relative z-10 pt-16 pb-32 px-6 max-w-7xl mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <div className="inline-flex items-center space-x-2 px-4 py-2 mb-8 bg-brand-primary/10 rounded-full border border-brand-primary/20">
-            <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse" />
-            <span className="text-xs font-black text-brand-primary uppercase tracking-widest">
-              {t('home.badge')}
-            </span>
+    <div className="club-home">
+      <section className="club-home-hero max-w-7xl mx-auto px-6 py-16 sm:py-24 grid lg:grid-cols-[.9fr_1.1fr] gap-8 lg:gap-16 items-center">
+        <div className="max-w-xl">
+          <h1 className="text-[2.75rem] sm:text-[3.75rem] leading-[1.12] tracking-[-0.035em] text-surface-900 mb-6">{t('club.titleOne')}<br />{t('club.titleTwo')}</h1>
+          <p className="text-lg leading-relaxed text-surface-600 mb-8">{t('campus.homeDesc')}</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href={user ? workspace : '/auth/register'}><Button size="lg">{user ? t('campus.workspace') : t('common.getStarted')}<ArrowRight className="h-4 w-4 ml-2" /></Button></Link>
+            <a href="#features" className="inline-flex items-center min-h-11 px-3 text-sm font-semibold text-surface-700 hover:text-brand-text">{t('campus.homeExplore')}</a>
           </div>
-
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter text-surface-900 leading-[1.1]">
-            {t('home.heroTitle')} <br />
-            <span className="gradient-text-nature">{t('home.heroSubTitle')}</span>
-          </h1>
-          <p className="text-lg md:text-xl text-surface-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
-            {t('home.heroDesc')}
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-            {!loading && user ? (
-              <Magnetic>
-                <Link href="/teacher">
-                  <Button size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg shadow-2xl shadow-brand-primary/40 group">
-                    <GraduationCap className="mr-2 w-6 h-6 transition-transform group-hover:rotate-12" />
-                    {t('common.goToTeacherSpace') || 'Đến không gian Giáo viên'}
-                  </Button>
-                </Link>
-              </Magnetic>
-            ) : (
-              <>
-                <Magnetic>
-                  <Link href="/auth/register">
-                    <Button size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg shadow-2xl shadow-brand-primary/40">
-                      {t('common.getStarted')}
-                    </Button>
-                  </Link>
-                </Magnetic>
-                <Magnetic>
-                  <Link href="/auth/login">
-                    <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 px-12 rounded-3xl text-lg border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5 bg-white">
-                      {t('common.login')}
-                    </Button>
-                  </Link>
-                </Magnetic>
-              </>
-            )}
+        </div>
+        <div className="club-home-preview overflow-hidden bg-white">
+          <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-surface-200"><BrandLogo size="sm" /><span className="text-xs text-surface-500">{t('campus.preview')}</span></div>
+          <div className="club-preview-body min-h-[340px]">
+            <div className="p-4 sm:p-6 bg-surface-50">
+              <div className="flex items-center justify-between mb-5"><h2 className="text-base sm:text-lg">{t('teacher.title')}</h2><BookOpen className="h-5 w-5 text-brand-text" /></div>
+              <div className="club-preview-classes">
+                {['exampleClass1','exampleClass2','exampleClass3'].map((key,i) => {
+                  return (
+                  <div key={key} className={`club-preview-class preview-tone-${i} p-4 sm:px-5 flex items-start sm:items-center justify-between gap-3`}>
+                    <span className="club-preview-subject" aria-hidden="true"><SubjectIcon subjectName={t(`campus.${key}`)} /></span>
+                    <div className="min-w-0 flex-1"><p className="text-sm font-semibold text-surface-900">{t(`campus.${key}`)}</p><p className="text-xs text-surface-500 mt-1 tabular-nums">{['17:30 – 19:00','19:00 – 20:30','18:00 – 19:30'][i]}</p></div>
+                    <span className="inline-flex gap-1 items-center text-xs text-brand-text bg-surface-100 px-2 py-1 rounded-md shrink-0"><Users className="h-4 w-4" />{[12,8,15][i]}</span>
+                  </div>
+                );})}
+              </div>
+              <p className="mt-4 text-xs text-surface-500">{t('home.footerSlogan')}</p>
+            </div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* Features Grid */}
-      <section id="features" className="relative z-10 py-20 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { icon: Zap, title: t('home.features.flex'), desc: t('home.features.flexDesc'), color: "bg-emerald-50 text-emerald-600" },
-            { icon: ShieldCheck, title: t('home.features.secure'), desc: t('home.features.secureDesc'), color: "bg-teal-50 text-teal-600" },
-            { icon: Users, title: t('home.features.connect'), desc: t('home.features.connectDesc'), color: "bg-sky-50 text-sky-600" }
-          ].map((feature, i) => {
-            const content = (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                whileHover={{ y: -12, scale: 1.02, rotateZ: 1 }}
-                className="h-full bg-white/70 backdrop-blur-md p-10 rounded-[3rem] border border-brand-primary/10 shadow-xl shadow-brand-primary/5 cursor-pointer transition-shadow hover:shadow-brand-primary/20"
-              >
-                <div className={`w-14 h-14 ${feature.color} rounded-2xl flex items-center justify-center mb-8 shadow-inner`}>
-                  <feature.icon className="w-7 h-7" />
-                </div>
-                <h3 className="text-2xl font-black mb-4 text-surface-900">{feature.title}</h3>
-                <p className="text-surface-500 leading-relaxed font-medium">{feature.desc}</p>
-              </motion.div>
-            );
-
-            return user ? (
-              <Link key={i} href="/teacher">
-                {content}
-              </Link>
-            ) : (
-              <div key={i}>{content}</div>
-            );
-          })}
         </div>
       </section>
-
-      <footer className="relative z-10 py-20 text-center border-t border-brand-primary/5">
-        <div className="flex items-center justify-center space-x-3 mb-4 opacity-50">
-          <BrandLogo size="sm" />
+      <section id="features" className="club-home-features scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6 py-16 sm:py-20 grid lg:grid-cols-[.8fr_1.2fr] gap-6 lg:gap-20">
+          <div><h2 className="text-3xl text-surface-900 max-w-sm mb-5">{t('campus.homeSection')}</h2><p className="text-surface-500 max-w-sm leading-relaxed">{t('home.heroDesc')}</p></div>
+          <div className="divide-y divide-surface-200">
+            {[{icon:BookOpen,key:'flex'},{icon:Users,key:'secure'},{icon:CalendarDays,key:'connect'}].map(({icon:Icon,key}) => (
+              <div key={key} className="flex gap-5 py-6 first:pt-0 last:pb-0"><Icon className="w-6 h-6 text-brand-text shrink-0 mt-1" /><div><h3 className="text-lg mb-2">{t(`home.features.${key}`)}</h3><p className="text-surface-500 leading-relaxed">{t(`home.features.${key}Desc`)}</p></div></div>
+            ))}
+          </div>
         </div>
-        <p className="text-surface-400 text-xs font-bold uppercase tracking-widest">
-          {t('home.footerSlogan')}
-        </p>
-      </footer>
-    </main>
+      </section>
+      <footer className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"><BrandLogo size="sm" /><p className="text-sm text-surface-500">{t('home.footerSlogan')}</p></footer>
+    </div>
   );
 }

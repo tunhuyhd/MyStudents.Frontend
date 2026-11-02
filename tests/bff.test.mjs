@@ -142,3 +142,52 @@ test('Redis stores authenticated ciphertext and TTL, never raw tokens', async ()
     await assert.rejects(store.get(id));
   } finally { globalThis.fetch = originalFetch; }
 });
+
+test('CSRF rejects sibling origins, missing Origin and cross-site requests for every write method', async () => {
+  let upstreamCalls = 0;
+  const { call } = await setup(async () => { upstreamCalls++; return json({}); });
+  for (const method of ['POST', 'PUT', 'PATCH', 'DELETE']) {
+    for (const headers of [
+      { Origin: 'https://sibling.web.test' },
+      { Origin: '' },
+      { 'X-Requested-With': '' },
+      { 'Sec-Fetch-Site': 'cross-site' },
+    ]) assert.equal((await call('students', method, {}, headers)).status, 403);
+  }
+  assert.equal(upstreamCalls, 0);
+});
+
+test('admin authorization failures are preserved and browser headers cannot grant privileges', async () => {
+  let calls = 0;
+  const { call, store } = await setup(async (_url, options) => {
+    calls++;
+    assert.equal(options.headers.get('Authorization'), 'Bearer access-old');
+    for (const name of ['Cookie', 'X-User-Role', 'X-User-Id', 'X-Forwarded-User'])
+      assert.equal(options.headers.has(name), false);
+    return json({ code: 'ERR_FORBIDDEN' }, 403);
+  });
+  const response = await call('admin/users', 'GET', undefined, {
+    Authorization: 'Bearer forged-admin', 'X-User-Role': 'Admin', 'X-User-Id': 'admin', 'X-Forwarded-User': 'admin',
+  });
+  assert.equal(response.status, 403);
+  assert.equal(calls, 1); // A permission denial must not trigger token refresh.
+  assert.ok(await store.get(id));
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
+  await store.delete(id);
+  const anonymous = await call('admin/users');
+  assert.equal(anonymous.status, 401);
+  assert.match(anonymous.headers.get('Set-Cookie'), /Max-Age=0/);
+  assert.equal(calls, 1);
+});
+
+test('revoked session clears browser cookie and cannot be replayed', async () => {
+  let calls = 0;
+  const { call, store } = await setup(async () => { calls++; return json({}, 401); });
+  const rejected = await call('auth/me');
+  assert.equal(rejected.status, 401);
+  assert.match(rejected.headers.get('Set-Cookie'), /Max-Age=0/);
+  assert.equal(await store.get(id), null);
+  assert.equal(calls, 2);
+  assert.equal((await call('admin/users')).status, 401);
+  assert.equal(calls, 2);
+});

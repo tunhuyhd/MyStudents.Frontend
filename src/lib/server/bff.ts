@@ -105,10 +105,10 @@ export function createBff({ store, apiURL, origin, secure, fetcher = fetch }: Op
         }
         return relay(response);
       }
-      if (!sessionId) return route === 'auth/logout' ? cookie(new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } }), '', 0) : reply({ message: 'Unauthenticated' }, 401);
+      if (!sessionId) return route === 'auth/logout' ? cookie(new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } }), '', 0) : cookie(reply({ message: 'Unauthenticated' }, 401), '', 0);
       return await locked(sessionId, async owner => {
         let session = await store.get(sessionId);
-        if (!session) return route === 'auth/logout' ? cookie(new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } }), '', 0) : reply({ message: 'Unauthenticated' }, 401);
+        if (!session) return route === 'auth/logout' ? cookie(new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } }), '', 0) : cookie(reply({ message: 'Unauthenticated' }, 401), '', 0);
         const target = route + new URL(request.url).search;
         let response = await upstream(target, session);
         if (response.status === 401) {
@@ -122,7 +122,7 @@ export function createBff({ store, apiURL, origin, secure, fetcher = fetch }: Op
             // Network, 429 and 5xx failures preserve the session for a later retry.
             if (refreshed.status === 401 || refreshed.status === 403) {
               await store.delete(sessionId);
-              return reply({ message: 'Session expired' }, 401);
+              return cookie(reply({ message: 'Session expired' }, 401), '', 0);
             }
             return reply({ message: 'Authentication temporarily unavailable' }, 503);
           }
@@ -135,7 +135,7 @@ export function createBff({ store, apiURL, origin, secure, fetcher = fetch }: Op
         }
         if (response.status === 401 || (response.ok && ['auth/logout', 'auth/change-password'].includes(route))) {
           await store.delete(sessionId);
-          return response.ok ? cookie(relay(response), '', 0) : relay(response);
+          return cookie(relay(response), '', 0);
         }
         await store.set(sessionId, { ...session, idleUntil: Date.now() + IDLE }, owner);
         return relay(response);

@@ -94,10 +94,10 @@ export default function AddStudentToClassModal({
           aria-describedby={`${dialogId}-description`}
           data-dialog-focus-scope="true"
           tabIndex={-1}
-          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-xl overflow-hidden flex flex-col"
+          className="club-modal club-enroll-modal relative bg-white overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-8 md:p-8 border-b border-surface-50 flex items-center justify-between relative">
+          <div className="club-modal-header">
             <div>
               <h2 id={`${dialogId}-title`} className="text-3xl font-semibold text-brand-text tracking-tight">
                 {t('teacher.details.addStudent') || 'Thêm học sinh'}
@@ -109,14 +109,14 @@ export default function AddStudentToClassModal({
             <button
               onClick={onClose}
               aria-label={t('common.close')}
-              className="p-3 hover:bg-surface-50 rounded-xl transition-all group"
+              className="club-modal-close"
             >
               <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 transition-colors" />
             </button>
           </div>
 
           {/* Search */}
-          <div className="p-8 md:px-12 md:py-8">
+          <div className="club-enroll-search">
             <div className="relative group">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
               <input
@@ -131,7 +131,7 @@ export default function AddStudentToClassModal({
           </div>
 
           {/* List */}
-          <div className="flex-1 overflow-y-auto px-8 md:px-12 pb-8 space-y-4 scrollbar-hide">
+          <div className="club-modal-content club-enroll-list">
             {addError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">{addError}</p>}
             {loadError ? <div role="alert" className="p-5 text-red-700"><p>{loadError}</p><Button variant="outline" onClick={()=>void fetchStudents()}>{t('common.retry')}</Button></div> : loading ? (
               <div className="flex flex-col items-center justify-center py-20 space-y-4">
@@ -152,7 +152,7 @@ export default function AddStudentToClassModal({
                       <div className="text-lg font-semibold text-surface-900">
                         {student.lastName} {student.firstName}
                       </div>
-                      <div className="text-xs font-medium text-surface-400 tracking-normal">
+                      <div className="club-enroll-email text-xs font-medium text-surface-400 tracking-normal" title={student.email||undefined}>
                         {student.email || 'Không có email'}
                       </div>
                     </div>
@@ -189,7 +189,7 @@ export default function AddStudentToClassModal({
           </div>
 
           {/* Footer */}
-          <div className="p-8 md:p-8 border-t border-surface-50 bg-white sticky bottom-0 z-10 flex justify-end">
+          <div className="club-modal-footer club-enroll-footer">
             <Button
               onClick={onClose}
               className="rounded-xl h-12 px-12 bg-brand-action text-white font-semibold tracking-normal text-xs"

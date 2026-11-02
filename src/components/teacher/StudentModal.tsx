@@ -147,39 +147,22 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
           aria-describedby={`${formId}-dialog-description`}
           data-dialog-focus-scope="true"
           tabIndex={-1}
-          className="bg-white w-full h-full md:h-auto md:max-w-4xl md:max-h-[90vh] md:rounded-xl relative z-10 overflow-hidden flex flex-col"
+          className="club-modal club-student-modal bg-white relative z-10 overflow-hidden flex flex-col"
         >
-          {/* Header */}
-          <div className="p-5 sm:p-8 border-b border-surface-50 flex items-center justify-between bg-white relative z-20">
-            <div className="flex items-center space-x-6">
-              <div className="w-16 h-12 bg-brand-primary/10 rounded-xl flex items-center justify-center">
-                <UserCircle className="w-8 h-8 text-brand-primary" />
-              </div>
-              <div>
-                <h2 id={`${formId}-dialog-title`} className="text-3xl font-semibold text-brand-text tracking-tight">
-                  {initialData ? t('teacher.students.editTitle') : t('teacher.students.createTitle')}
-                </h2>
-                <p id={`${formId}-dialog-description`} className="text-surface-500 font-medium text-sm mt-1">
-                  {initialData ? t('teacher.students.editDesc') : t('teacher.students.createDesc')}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={requestClose}
-              aria-label={t('common.close')}
-              className="p-4 hover:bg-surface-50 rounded-lg transition-all duration-150 group"
-            >
-              <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
-            </button>
-          </div>
+          <header className="club-modal-header">
+            <span className="club-modal-symbol" aria-hidden="true"><UserCircle /></span>
+            <div className="club-modal-heading"><h2 id={`${formId}-dialog-title`}>{initialData?t('teacher.students.editTitle'):t('teacher.students.createTitle')}</h2><p id={`${formId}-dialog-description`}>{t('modals.studentHint')}</p></div>
+            <button type="button" className="club-modal-close" onClick={requestClose} aria-label={t('common.close')}><X /></button>
+          </header>
 
           {/* Form Content */}
-          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-8 scrollbar-hide">
+          <form onSubmit={handleSubmit} className="club-modal-content club-student-form">
             {error && (
               <motion.div
                 initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 id={validationErrorId}
+                role="alert"
                 className="mb-8 p-6 bg-red-50 border border-red-100 rounded-xl flex items-center gap-4 text-red-600"
               >
                 <AlertCircle className="w-6 h-6 shrink-0" />
@@ -187,17 +170,17 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
               </motion.div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div className="club-student-sections">
               {/* Section: Basic Info */}
-              <div className="space-y-8">
-                <div className="flex items-center space-x-4 mb-2">
+              <div className="club-form-section">
+                <div className="club-form-section-heading">
                   <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center">
                     <User className="w-5 h-5 text-brand-primary" />
                   </div>
                   <h3 className="text-lg font-semibold text-surface-900 tracking-tight">{t('teacher.students.basicInfo')}</h3>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="club-name-pair">
                   <div className="space-y-2">
                     <label htmlFor={`${formId}-last-name`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('auth.lastName')} <span className="text-red-500">*</span></label>
                     <input
@@ -228,7 +211,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="club-contact-pair"><div className="space-y-2">
                   <label htmlFor={`${formId}-email`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('auth.email')} <span className="text-red-500">*</span></label>
                   <div className="relative group">
                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
@@ -244,9 +227,22 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                       required
                     />
                   </div>
-                </div>
+                </div><div className="space-y-2">
+                    <label htmlFor={`${formId}-student-phone`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.students.phone')}</label>
+                    <div className="relative group">
+                      <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
+                      <input
+                        id={`${formId}-student-phone`}
+                        type="text"
+                        placeholder="091..."
+                        value={formData.phone || ''}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        className="ui-input placeholder:text-surface-500 w-full h-12 md:h-12 pl-14 pr-6 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-medium text-surface-900 outline-none transition-all"
+                      />
+                    </div>
+                  </div></div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="club-demographics">
                   <CustomDatePicker
                     id={`${formId}-date-of-birth`}
                     label={t('teacher.students.dob')}
@@ -296,8 +292,8 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
               </div>
 
               {/* Section: Parent & Contact */}
-              <div className="space-y-8">
-                <div className="flex items-center space-x-4 mb-2">
+              <div className="club-form-section">
+                <div className="club-form-section-heading">
                   <div className="w-10 h-10 bg-brand-primary/5 rounded-xl flex items-center justify-center">
                     <Users className="w-5 h-5 text-brand-primary" />
                   </div>
@@ -316,7 +312,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="club-parent-phone">
                   <div className="space-y-2">
                     <label htmlFor={`${formId}-parent-phone`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.students.parentPhone')}</label>
                     <div className="relative group">
@@ -331,20 +327,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor={`${formId}-student-phone`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.students.phone')}</label>
-                    <div className="relative group">
-                      <Phone className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary/40 group-focus-within:text-brand-primary transition-colors" />
-                      <input
-                        id={`${formId}-student-phone`}
-                        type="text"
-                        placeholder="091..."
-                        value={formData.phone || ''}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="ui-input placeholder:text-surface-500 w-full h-12 md:h-12 pl-14 pr-6 bg-surface-50/70 rounded-xl border-2 border-transparent focus:border-brand-primary/20 focus:bg-white text-base font-medium text-surface-900 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
+                  
                 </div>
 
                 <div className="space-y-2">
@@ -377,7 +360,7 @@ export default function StudentModal({ isOpen, onClose, onSave, initialData }: S
           </form>
 
           {/* Action Buttons */}
-          <div className="p-5 sm:p-8 border-t border-surface-50 bg-white flex items-center justify-between sticky bottom-0 z-30 mt-auto">
+          <div className="club-modal-footer club-student-footer">
             <button
               onClick={requestClose}
               className="rounded-xl px-8 md:px-12 h-12 border-none font-semibold text-surface-400 hover:text-surface-900 tracking-normal text-xs transition-all"

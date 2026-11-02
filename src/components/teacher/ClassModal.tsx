@@ -190,74 +190,23 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
         aria-label={initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
         data-dialog-focus-scope="true"
         tabIndex={-1}
-        className="relative w-full h-[100dvh] md:h-[85vh] md:max-h-[800px] md:max-w-4xl bg-white md:rounded-xl overflow-hidden flex flex-col md:flex-row"
+        className="club-modal club-class-modal relative bg-white overflow-hidden flex flex-col"
       >
-        {/* Sidebar Decor - Desktop */}
-        <div className="hidden md:flex w-56 lg:w-60 bg-brand-primary/5 p-6 lg:p-8 flex-col justify-between relative overflow-hidden shrink-0">
-
-          <div className="relative z-10">
-            <div className="w-14 h-12 bg-white rounded-xl flex items-center justify-center mb-8">
-              <BookOpen className="w-7 h-7 text-brand-primary" />
-            </div>
-            <h2 className="text-2xl lg:text-2xl font-semibold text-surface-900 leading-tight mb-5 tracking-tight">
-              {initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
-            </h2>
-            <p className="text-surface-500 font-medium text-xs lg:text-sm leading-relaxed max-w-[200px]">
-              {t('teacher.modal.desc')}
-            </p>
-          </div>
-
-          <div className="relative z-10 space-y-6 lg:space-y-8">
-            {[1, 2].map((s) => (
-              <div key={s} className="flex items-center gap-4 lg:gap-5">
-                <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center font-semibold text-base lg:text-lg transition-all duration-150 ${
-                  step === s ? 'bg-brand-action text-white   scale-110' :
-                  step > s ? 'bg-brand-action text-white  ' : 'bg-white text-surface-500 border border-surface-100'
-                }`}>
-                  {step > s ? <Check className="w-6 h-6" /> : s}
-                </div>
-                <div className="flex flex-col">
-                  <span className={`text-xs font-semibold  tracking-normal mb-1 ${step === s ? 'text-brand-text' : 'text-surface-500'}`}>{t('teacher.modal.stepLabel')} {s}</span>
-                  <span className={`text-sm lg:text-base font-semibold ${step === s ? 'text-surface-900' : 'text-surface-400'}`}>
-                    {s === 1 ? t('teacher.modal.step1') : t('teacher.modal.step2')}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Header */}
-        <div className="md:hidden bg-white p-5 border-b border-surface-50 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center gap-4">
-             <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-brand-primary" />
-             </div>
-             <div>
-                <h2 className="text-lg font-semibold text-surface-900">
-                  {initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}
-                </h2>
-                <div className="flex gap-1 mt-1">
-                  {[1, 2].map(s => (
-                    <div key={s} className={`h-1 rounded-full transition-all duration-150 ${step === s ? 'w-8 bg-brand-primary' : step > s ? 'w-4 bg-green-500' : 'w-4 bg-surface-100'}`} />
-                  ))}
-                </div>
-             </div>
-          </div>
-          <button type="button" onClick={requestClose} aria-label={t('common.close')} className="h-11 w-11 shrink-0 flex items-center justify-center hover:bg-surface-50 rounded-xl">
-            <X className="w-6 h-6 text-surface-400" />
-          </button>
-        </div>
+        <header className="club-modal-header">
+          <span className="club-modal-symbol" aria-hidden="true"><BookOpen /></span>
+          <div className="club-modal-heading"><h2>{initialData ? t('teacher.modal.editTitle') : t('teacher.modal.createTitle')}</h2><p>{t('modals.classHint')}</p></div>
+          <button type="button" className="club-modal-close" aria-label={t('common.close')} onClick={requestClose}><X /></button>
+        </header>
+        <ol className="club-form-steps" aria-label={t('teacher.modal.stepLabel')}>
+          {[1,2].map(number=><li key={number} aria-current={step===number?'step':undefined} data-complete={step>number||undefined}>
+            <span className="club-step-number" aria-hidden="true">{step>number?<Check />:number}</span>
+            <span>{t(number===1?'teacher.modal.step1':'teacher.modal.step2')}</span>
+          </li>)}
+        </ol>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
-          <div className="hidden md:flex shrink-0 justify-end px-6 lg:px-8 py-3">
-            <button type="button" onClick={requestClose} aria-label={t('common.close')} className="h-11 w-11 shrink-0 flex items-center justify-center hover:bg-surface-50 rounded-xl transition-all group">
-              <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 transition-all duration-150" />
-            </button>
-          </div>
-
-          <div className="flex-1 p-6 md:p-8 lg:p-8 md:pt-0 lg:pt-0 overflow-y-auto scrollbar-hide min-h-0">
+        <div className="club-modal-main">
+          <div className="club-modal-content">
             <AnimatePresence mode="wait">
               {step === 1 ? (
                 <motion.div
@@ -265,9 +214,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   initial={false}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="space-y-8 lg:space-y-6"
+                  className="club-class-fields"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <label htmlFor={`${formId}-name`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.modal.nameLabel')}</label>
                       <div className="relative group">
@@ -298,7 +247,7 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2 relative">
                       {subjectsError&&<div role="alert" className="text-sm text-red-700"><p>{subjectsError}</p><button type="button" className="underline min-h-11" onClick={()=>setSubjectsAttempt(v=>v+1)}>{t('common.retry')}</button></div>}
                       <span id={`${formId}-subject-label`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.modal.subjectLabel')}</span>
@@ -436,9 +385,9 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                   initial={false}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  className="club-schedule-section"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <span id={`${formId}-start-date-label`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">{t('teacher.modal.startDateLabel')}</span>
                       <div role="group" aria-labelledby={`${formId}-start-date-label`} className="relative group">
@@ -461,8 +410,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                     </div>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between px-2">
+                  <div className="club-schedule-section">
+                    <div className="club-schedule-heading">
                       <div className="flex items-center gap-3 lg:gap-4">
                         <div className="w-9 h-9 bg-brand-primary/10 rounded-xl flex items-center justify-center">
                           <Clock className="w-5 h-5 text-brand-primary" />
@@ -483,20 +432,22 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                             initial={false}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-5 p-5 md:p-6 bg-surface-50/40 rounded-xl border border-surface-50 group hover:bg-white hover: hover: transition-all duration-150"
+                            className="club-schedule-row group"
                           >
                             <div className="w-full flex justify-between items-center lg:hidden">
                               <span className="text-xs font-semibold text-brand-text tracking-normal px-1">
                                 {t('teacher.modal.sessionLabel')} {index + 1}
                               </span>
                               <button
+                                aria-label={t('modals.removeSchedule',{number:index+1})}
+                                disabled={formData.schedules.length===1}
                                 onClick={() => removeSchedule(index)}
                                 className="p-2 text-surface-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
-                            <div className="w-full lg:flex-1 grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                            <div className="club-schedule-fields">
                               <div className="relative">
                                 <span id={`${formId}-schedule-${index}-day-label`} className="text-xs font-semibold text-brand-text tracking-normal mb-1 px-1 block">{t('teacher.modal.dayLabel')}</span>
                                 <button
@@ -563,6 +514,8 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
                               </div>
                             </div>
                             <button
+                              aria-label={t('modals.removeSchedule',{number:index+1})}
+                              disabled={formData.schedules.length===1}
                               onClick={() => removeSchedule(index)}
                               className="hidden lg:block lg:mt-4 p-3 md:p-4 text-surface-200 hover:text-red-500 hover:bg-red-50 rounded-xl md:rounded-lg transition-all group-hover:text-surface-500 shrink-0"
                             >
@@ -579,20 +532,20 @@ export default function ClassModal({ isOpen, onClose, onSave, initialData }: Cla
           </div>
 
           {/* Footer Controls */}
-          <div className="p-6 md:p-8 lg:p-6 bg-white border-t border-surface-50 flex items-center justify-between sticky bottom-0 z-30 mt-auto shrink-0">
+          <div className="club-modal-footer">
             {step === 1 ? (
               <div />
             ) : (
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center gap-2 md:gap-3 px-4 md:px-8 h-12 md:h-12 rounded-xl font-semibold text-surface-500 hover:text-surface-900 transition-all group"
+                className="club-modal-back flex items-center h-12 font-semibold text-surface-500 hover:text-surface-900"
               >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
-                <span className="hidden md:inline tracking-normal text-xs md:text-xs">{t('common.back')}</span>
+                <span className="tracking-normal text-sm">{t('common.back')}</span>
               </button>
             )}
 
-            <div className="flex gap-3 md:gap-4 w-full md:w-auto">
+            <div className="club-modal-actions">
               <Button variant="outline" onClick={requestClose} className="flex-1 md:flex-none rounded-xl px-6 md:px-10 h-12 md:h-12 border-surface-100 font-semibold text-surface-600 hover:bg-surface-50 tracking-normal text-xs md:text-xs">
                 {t('teacher.modal.cancel')}
               </Button>

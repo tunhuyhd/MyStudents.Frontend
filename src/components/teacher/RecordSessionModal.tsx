@@ -2,7 +2,7 @@
 
 import { useCallback, useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, UserX, Clock, AlertCircle, Loader2, Calendar, Clock as ClockIcon, FileText, ArrowRight, ChevronLeft, Settings2 } from '@/components/ui/icons';
+import { X, Check, UserX, Clock, AlertCircle, Loader2, Calendar, Clock as ClockIcon, FileText, ArrowRight, ChevronLeft } from '@/components/ui/icons';
 import { useLanguage } from '@/context/LanguageContext';
 import { ClassSchedule, classService, SessionAttendance } from '@/services/classService';
 import { Button } from '@/components/ui/Button';
@@ -263,10 +263,10 @@ export default function RecordSessionModal({
           aria-describedby={`${formId}-dialog-description`}
           data-dialog-focus-scope="true"
           tabIndex={-1}
-          className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-2xl bg-white md:rounded-xl overflow-hidden flex flex-col"
+          className="club-modal club-record-modal relative bg-white overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-8 md:p-8 border-b border-surface-50 flex items-center justify-between bg-white relative z-20">
+          <div className="club-modal-header">
             <div className="flex items-center space-x-6">
               {step === 'attendance' && (
                 <button
@@ -287,18 +287,10 @@ export default function RecordSessionModal({
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              {step === 'attendance' && (
-                <button
-                  onClick={() => setStep('details')}
-                  className="hidden md:flex items-center space-x-2 px-4 py-2 bg-surface-50 rounded-xl hover:bg-brand-primary/10 text-surface-500 hover:text-brand-text transition-all font-semibold text-xs tracking-normal"
-                >
-                  <Settings2 className="w-4 h-4" />
-                  <span>Sửa thông tin</span>
-                </button>
-              )}
               <button
                 onClick={requestClose}
-                className="p-4 hover:bg-surface-50 rounded-lg transition-all duration-150 group"
+                type="button" aria-label={t('common.close')}
+                className="club-modal-close"
               >
                 <X className="w-6 h-6 text-surface-500 group-hover:text-surface-900 group-hover:rotate-90 transition-all" />
               </button>
@@ -314,9 +306,9 @@ export default function RecordSessionModal({
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto p-8 md:p-8 scrollbar-hide">
+          <div className="club-modal-content">
             {step === 'details' ? (
-              <div className="space-y-8">
+              <div className="club-record-fields">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label htmlFor={`${formId}-session-date`} className="text-xs font-semibold text-brand-text tracking-normal px-2 block">Ngày học</label>
@@ -420,7 +412,7 @@ export default function RecordSessionModal({
           </div>
 
           {/* Footer */}
-          <div className="p-8 md:p-8 border-t border-surface-50 bg-white flex items-center justify-between sticky bottom-0 z-30">
+          <div className="club-modal-footer">
             <button
               onClick={requestClose}
               className="rounded-xl px-8 h-12 border-none font-semibold text-surface-400 hover:text-surface-900 tracking-normal text-xs transition-all"

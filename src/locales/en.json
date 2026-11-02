@@ -46,7 +46,7 @@
       "connect": "Scientific Scheduling",
       "connectDesc": "Smart teaching schedule, avoid conflicts, and optimize time management."
     },
-    "footerSlogan": "Smart Management - Inspired Teaching"
+    "footerSlogan": "Smart Management"
   },
   "auth": {
     "login": "Login",
@@ -460,5 +460,10 @@
     "paused": "On hold",
     "completed": "Completed",
     "withdrawn": "Withdrawn"
+  },
+  "modals": {
+    "classHint": "Set up class details, then choose dates and a weekly schedule.",
+    "studentHint": "Add student details and the contact information you need.",
+    "removeSchedule": "Remove schedule {number}"
   }
 }

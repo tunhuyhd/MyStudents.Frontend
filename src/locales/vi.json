@@ -46,7 +46,7 @@
       "connect": "Lịch học Khoa học",
       "connectDesc": "Sắp xếp lịch dạy thông minh, tránh trùng lịch và quản lý thời gian biểu tối ưu."
     },
-    "footerSlogan": "Quản lý thông minh - Dạy học thăng hoa"
+    "footerSlogan": "Quản lý thông minh"
   },
   "auth": {
     "login": "Đăng nhập",
@@ -460,5 +460,10 @@
     "paused": "Bảo lưu",
     "completed": "Hoàn thành",
     "withdrawn": "Nghỉ học"
+  },
+  "modals": {
+    "classHint": "Thiết lập thông tin lớp, sau đó chọn thời gian và lịch học.",
+    "studentHint": "Nhập hồ sơ học sinh và thông tin liên hệ cần thiết.",
+    "removeSchedule": "Xóa buổi học {number}"
   }
 }

@@ -1,0 +1,131 @@
+[
+  {
+    "file": "account.jpg",
+    "origin": "Local MyStudents UI /auth/login; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      779,
+      952
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "students.jpg",
+    "origin": "Local MyStudents UI /teacher/students; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      1360,
+      774
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "classes.jpg",
+    "origin": "Local MyStudents UI /teacher; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      1360,
+      822
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "class-details.jpg",
+    "origin": "Local MyStudents UI /teacher; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      852,
+      609
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "class-schedule.jpg",
+    "origin": "Local MyStudents UI /teacher; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      852,
+      590
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "enrollment.jpg",
+    "origin": "Local MyStudents UI /teacher/class/demo-class; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      712,
+      567
+    ],
+    "targets": [
+      1,
+      2
+    ]
+  },
+  {
+    "file": "schedule.jpg",
+    "origin": "Local MyStudents UI /teacher/class/demo-class; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      1360,
+      866
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "attendance.jpg",
+    "origin": "Local MyStudents UI /teacher/class/demo-class; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      712,
+      585
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "profile.jpg",
+    "origin": "Local MyStudents UI /me; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      1360,
+      866
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "file": "security.jpg",
+    "origin": "Local MyStudents UI /me; synthetic fixtures; en; numbered browser overlays",
+    "dimensions": [
+      1360,
+      866
+    ],
+    "targets": [
+      1,
+      2,
+      3
+    ]
+  }
+]

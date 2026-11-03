@@ -15,7 +15,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [open,setOpen] = useState(false);
   useEffect(()=>{ if(!open)return;const close=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false);};document.addEventListener('keydown',close);return()=>document.removeEventListener('keydown',close);},[open]);
-  const links = user?.role === 'Admin' ? [{href:'/admin',label:t('admin.panel')},{href:'/me',label:t('campus.profileNav')}] : user ? [{href:'/teacher',label:t('club.classesNav')},{href:'/teacher/students',label:t('teacher.students.label')},{href:'/me',label:t('club.profileNav')}] : [{href:'/#features',label:t('campus.homeExplore')},{href:'/auth/login',label:t('auth.login')}];
+  const links = [...(user?.role === 'Admin' ? [{href:'/admin',label:t('admin.panel')},{href:'/me',label:t('campus.profileNav')}] : user ? [{href:'/teacher',label:t('club.classesNav')},{href:'/teacher/students',label:t('teacher.students.label')},{href:'/me',label:t('club.profileNav')}] : [{href:'/#features',label:t('campus.homeExplore')},{href:'/auth/login',label:t('auth.login')}]), {href:'/handbook',label:t('common.handbook')}];
   const initials=(user?.fullName||'').split(/\s+/).filter(Boolean).map(word=>word[0]).slice(-2).join('');
   return <header className="club-nav-wrap">
     <nav aria-label={t('common.navigation')} className="club-nav">

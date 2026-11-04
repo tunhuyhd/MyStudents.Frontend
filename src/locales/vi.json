@@ -115,6 +115,14 @@
     "avatarUploadFailed": "Tải ảnh đại diện thất bại"
   },
   "admin": {
+    "deleteUserTitle": "Xóa vĩnh viễn tài khoản",
+    "deleteUserColumn": "Xóa tài khoản",
+    "deleteUserAction": "Xóa vĩnh viễn",
+    "deleteUserLabel": "Xóa vĩnh viễn tài khoản {email}",
+    "protectedAccount": "Tài khoản được bảo vệ",
+    "deleteUserDescription": "Thao tác này không thể hoàn tác. Toàn bộ tài khoản, học sinh, lớp học, lịch học, buổi học, ghi danh, điểm danh và avatar đã tải lên của người dùng sẽ bị xóa, kể cả dữ liệu đã xóa mềm. Email có thể được dùng để đăng ký lại.",
+    "deleteUserConfirmation": "Nhập lại email của tài khoản để xác nhận",
+    "deleteUserSuccess": "Đã xóa vĩnh viễn tài khoản và dữ liệu riêng. Email có thể đăng ký lại.",
     "panel": "Quản trị hệ thống",
     "title": "Bảng điều khiển Admin",
     "desc": "Quản lý danh sách giáo viên và phân quyền người dùng",
@@ -356,6 +364,9 @@
     }
   },
   "errors": {
+    "ERR_CANNOT_DELETE_ADMIN": "Không thể xóa tài khoản quản trị hoặc tài khoản của chính bạn.",
+    "ERR_DELETE_EMAIL_MISMATCH": "Email xác nhận không khớp với tài khoản cần xóa.",
+    "ERR_ACCOUNT_AVATAR_DELETE_FAILED": "Chưa thể xóa avatar đã tải lên. Dữ liệu tài khoản chưa bị xóa; hãy kiểm tra dịch vụ lưu trữ và thử lại.",
     "ERR_EMAIL_UNVERIFIED": "Email chưa được xác thực. Hãy mở liên kết trong hộp thư hoặc chọn Gửi lại email xác thực.",
     "ERR_EMAIL_IMMUTABLE": "Không thể thay đổi email đăng ký trong hồ sơ.",
     "ERR_INVALID_VERIFICATION_TOKEN": "Liên kết xác thực không hợp lệ, đã hết hạn hoặc đã được sử dụng. Hãy yêu cầu gửi lại email xác thực.",

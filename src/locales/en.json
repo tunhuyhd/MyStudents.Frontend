@@ -115,6 +115,14 @@
     "avatarUploadFailed": "Failed to upload avatar"
   },
   "admin": {
+    "deleteUserTitle": "Permanently delete account",
+    "deleteUserColumn": "Delete account",
+    "deleteUserAction": "Delete permanently",
+    "deleteUserLabel": "Permanently delete account {email}",
+    "protectedAccount": "Protected account",
+    "deleteUserDescription": "This action cannot be undone. The account and all its students, classes, schedules, sessions, enrollments, attendance records and uploaded avatar will be deleted, including archived data. The email can be used to register again.",
+    "deleteUserConfirmation": "Re-enter the account email to confirm",
+    "deleteUserSuccess": "Account and private data permanently deleted. The email can be registered again.",
     "panel": "System Admin",
     "title": "Admin Dashboard",
     "desc": "Manage teachers and user roles",
@@ -356,6 +364,9 @@
     }
   },
   "errors": {
+    "ERR_CANNOT_DELETE_ADMIN": "Administrator accounts and your own account cannot be deleted.",
+    "ERR_DELETE_EMAIL_MISMATCH": "The confirmation email does not match the account to delete.",
+    "ERR_ACCOUNT_AVATAR_DELETE_FAILED": "The uploaded avatar could not be deleted. Account data has not been deleted; check storage and try again.",
     "ERR_EMAIL_UNVERIFIED": "Your email is not verified. Open the link in your inbox or choose Resend verification email.",
     "ERR_EMAIL_IMMUTABLE": "Your registered email cannot be changed in your profile.",
     "ERR_INVALID_VERIFICATION_TOKEN": "This verification link is invalid, expired, or already used. Request another verification email.",

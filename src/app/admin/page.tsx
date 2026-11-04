@@ -7,8 +7,9 @@ import RoleDropdown from '@/components/RoleDropdown';
 import { Button } from '@/components/ui/Button';
 import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, UserCog, RefreshCw, BookOpen, Loader2, ArrowRight } from '@/components/ui/icons';
+import { Users, UserCog, RefreshCw, BookOpen, Loader2, ArrowRight, Trash2 } from '@/components/ui/icons';
 import SubjectManagement from '@/components/admin/SubjectManagement';
+import DeleteUserDialog from '@/components/admin/DeleteUserDialog';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { classifyLoadFailure, getListLoadState, isRetryableLoadFailure, type LoadFailure } from '@/lib/loadFailure';
@@ -75,6 +76,7 @@ export default function AdminDashboard() {
   const usersLoadState = getListLoadState(users, usersLoading, usersLoadFailure);
   const rolesLoadState = getListLoadState(roles, rolesLoading, rolesLoadFailure);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<UserDto | null>(null);
   const [activeTab, setActiveTab] = useState<'users' | 'subjects'>('users');
   const [toast, setToast] = useState<{ isOpen: boolean; message: string; type: 'success' | 'error' }>({ isOpen: false, message: '', type: 'success' });
   const userTableRegionRef = useRef<HTMLDivElement>(null);
@@ -313,17 +315,18 @@ export default function AdminDashboard() {
                   <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.currentRole')}</th>
                   <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('teacher.modal.statusLabel')}</th>
                   <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.changeRole')}</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-semibold text-surface-600 tracking-normal">{t('admin.deleteUserColumn')}</th>
                 </tr>
               </thead>
               <tbody>
                 <AnimatePresence>
                   {usersLoadState === 'loading' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center text-surface-600/70"><Loader2 className="inline h-5 w-5 animate-spin mr-2" />{t('common.loading')}</td></tr>
+                    <tr><td colSpan={6} className="px-8 py-12 text-center text-surface-600/70"><Loader2 className="inline h-5 w-5 animate-spin mr-2" />{t('common.loading')}</td></tr>
                   ) : usersLoadFailure && usersLoadFailure !== 'failed' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-red-700">{t(usersLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'admin.usersForbidden')}</td></tr>
+                    <tr><td colSpan={6} className="px-8 py-12 text-center font-semibold text-red-700">{t(usersLoadFailure === 'unauthorized' ? 'common.sessionExpired' : 'admin.usersForbidden')}</td></tr>
                   ) : usersLoadFailure === 'failed' && users.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-8 py-12 text-center text-red-700">
+                      <td colSpan={6} className="px-8 py-12 text-center text-red-700">
                         <p className="mb-4 font-semibold">{t('admin.usersLoadEmptyError')}</p>
                         <button type="button" onClick={() => { void fetchUsers(); }} disabled={usersLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-red-400/30 px-4 font-medium text-red-700 hover:bg-red-500/10 disabled:opacity-50">
                           <RefreshCw className={`h-4 w-4 ${usersLoading ? 'animate-spin' : ''}`} />{t('common.retry')}
@@ -331,7 +334,7 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ) : usersLoadState === 'empty' ? (
-                    <tr><td colSpan={5} className="px-8 py-12 text-center font-semibold text-surface-600">{t('admin.usersEmpty')}</td></tr>
+                    <tr><td colSpan={6} className="px-8 py-12 text-center font-semibold text-surface-600">{t('admin.usersEmpty')}</td></tr>
                   ) : users.map((u) => (
                     <motion.tr
                       key={u.id}
@@ -397,6 +400,15 @@ export default function AdminDashboard() {
                           )}
                         </div>
                       </td>
+                      <td className="px-4 md:px-6 py-4">
+                        {u.id === user.id || u.roleName === 'Admin' || u.id === '99999999-9999-9999-9999-999999999999'
+                          ? <span className="text-sm text-surface-600">{t('admin.protectedAccount')}</span>
+                          : <button type="button" disabled={Boolean(updatingId)} onClick={() => setDeleteTarget(u)}
+                              aria-label={t('admin.deleteUserLabel', { email: u.email })}
+                              className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700 disabled:opacity-50">
+                              <Trash2 className="h-4 w-4 shrink-0" />{t('admin.deleteUserAction')}
+                            </button>}
+                      </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
@@ -416,6 +428,12 @@ export default function AdminDashboard() {
           )}
         </AnimatePresence>
       </div>
+      {deleteTarget && <DeleteUserDialog key={deleteTarget.id} user={deleteTarget} onClose={() => setDeleteTarget(null)}
+        onDeleted={id => {
+          setUsers(current => current.filter(item => item.id !== id));
+          setDeleteTarget(null);
+          setToast({ isOpen: true, message: t('admin.deleteUserSuccess'), type: 'success' });
+        }} />}
       <Toast isOpen={toast.isOpen} message={toast.message} type={toast.type} onClose={() => setToast((current) => ({ ...current, isOpen: false }))} />
     </main>
   );

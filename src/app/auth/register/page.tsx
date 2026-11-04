@@ -11,12 +11,10 @@ import api from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import Link from 'next/link';
 
-import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function RegisterPage() {
-  const { t } = useLanguage();
-  const { login: authLogin } = useAuth();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -25,15 +23,16 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      await api.post('/auth/register', formData);
-      await authLogin();
-      window.location.href = '/teacher';
+      await api.post('/auth/register', { ...formData, language });
+      setSent(true);
+      setFormData(current => ({ ...current, password: '' }));
     } catch (err: unknown) {
       setError(apiErrorMessage(err, t, 'auth.registrationFailed'));
     } finally {
@@ -43,7 +42,7 @@ export default function RegisterPage() {
 
   return (
     <AuthShell title={t('common.register')} description={t('auth.createAccount')} footer={<p>{t('auth.haveAccount')}{' '}<Link href="/auth/login" className="font-semibold text-brand-text hover:underline">{t('common.login')}</Link></p>}>
-      <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {sent ? <div className="space-y-6"><p role="status">{t('auth.verificationRegistrationSent')}</p><Link href="/auth/verify-email" className="inline-block font-semibold text-brand-text hover:underline">{t('auth.verificationResend')}</Link></div> : <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <Input
                 label={t('auth.fullName')}
@@ -65,6 +64,8 @@ export default function RegisterPage() {
             <Input
               label={t('auth.email')}
               type="email"
+              autoComplete="email"
+              maxLength={255}
               placeholder="john@example.com"
 
               value={formData.email}
@@ -90,8 +91,8 @@ export default function RegisterPage() {
             <Button type="submit" className="md:col-span-2 h-12 rounded-lg" isLoading={loading}>
               {t('common.register')}
             </Button>
-          </form>
-      <GoogleSignIn />
+          </form>}
+      {!sent && <GoogleSignIn />}
     </AuthShell>
   );
 }

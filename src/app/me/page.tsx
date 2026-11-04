@@ -265,9 +265,10 @@ export default function ProfilePage() {
                         label={t('auth.email')}
                         type="email"
                         value={profileData.email}
-                        onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                        required
+                        readOnly
+                        aria-describedby="profile-email-help"
                       />
+                      <p id="profile-email-help" className="text-sm text-surface-600">{t('profile.emailLocked')}</p>
                       <Input
                         label={t('auth.username')}
                         value={user.username}

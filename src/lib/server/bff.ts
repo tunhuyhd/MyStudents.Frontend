@@ -3,8 +3,8 @@ import type { Session, SessionStore } from './sessionStore';
 
 const WEEK = 7 * 86400_000;
 const IDLE = 86400_000;
-const authPaths = new Set(['auth/login', 'auth/register', 'auth/google', 'admin/login']);
-const publicPaths = new Set([...authPaths, 'auth/forgot-password', 'auth/reset-password', 'auth/reset-password/validate']);
+const authPaths = new Set(['auth/login', 'auth/google', 'admin/login']);
+const publicPaths = new Set([...authPaths, 'auth/register', 'auth/verify-email', 'auth/resend-verification', 'auth/forgot-password', 'auth/reset-password', 'auth/reset-password/validate']);
 type Options = { store: SessionStore; apiURL: string; origin: string; secure: boolean; fetcher?: typeof fetch };
 
 class PayloadTooLarge extends Error {}
@@ -81,7 +81,7 @@ export function createBff({ store, apiURL, origin, secure, fetcher = fetch }: Op
       }
       function relay(response: Response) {
         const headers = new Headers({ 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
-        for (const name of ['Content-Type', 'Content-Disposition']) {
+        for (const name of ['Content-Type', 'Content-Disposition', 'Retry-After']) {
           const value = response.headers.get(name);
           if (value) headers.set(name, value);
         }

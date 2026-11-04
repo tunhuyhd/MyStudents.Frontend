@@ -13,7 +13,7 @@ export function createApiClient(baseURL: string, redirectToLogin: () => void, ad
     return response;
   }, (error: AxiosError) => {
     const url = error.config?.url?.split('?')[0] || '';
-    const publicAuth = /^\/(?:auth\/(?:login|register|google|me|forgot-password|reset-password(?:\/validate)?)|admin\/login)$/.test(url);
+    const publicAuth = /^\/(?:auth\/(?:login|register|google|me|verify-email|resend-verification|forgot-password|reset-password(?:\/validate)?)|admin\/login)$/.test(url);
     if (error.response?.status === 401 && !publicAuth && !redirected) {
       redirected = true;
       redirectToLogin();

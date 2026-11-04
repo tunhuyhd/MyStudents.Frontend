@@ -50,6 +50,15 @@
     "footerSlogan": "Quản lý thông minh"
   },
   "auth": {
+    "verificationTitle": "Xác thực email",
+    "verificationRegistrationSent": "Tài khoản đã được tạo. Hãy kiểm tra hộp thư và thư rác, rồi mở liên kết xác thực trong vòng 30 phút trước khi đăng nhập. Nếu chưa nhận được thư, bạn có thể yêu cầu gửi lại sau 2 phút.",
+    "verificationResend": "Gửi lại email xác thực",
+    "verificationResendDesc": "Nhập email đã đăng ký để nhận liên kết xác thực. Tài khoản cũ chưa xác thực cũng cần hoàn tất bước này trước khi đăng nhập.",
+    "verificationResent": "Nếu tài khoản cần xác thực, hệ thống sẽ gửi liên kết đến email đã đăng ký. Hãy kiểm tra cả thư rác. Mỗi lần gửi cách nhau ít nhất 2 phút.",
+    "verificationConfirm": "Xác thực email của tôi",
+    "verificationConfirmDesc": "Bấm xác thực để xác nhận bạn có quyền truy cập hộp thư này. Sau đó đăng nhập bằng tài khoản đã đăng ký.",
+    "verificationSuccess": "Email đã được xác thực. Bạn có thể đăng nhập vào MyStudents.",
+    "verificationRequiredForReset": "Chỉ email đã xác thực mới nhận được liên kết đặt lại mật khẩu.",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "logout": "Đăng xuất",
@@ -85,6 +94,7 @@
     "googleLoading": "Đang tải Google…"
   },
   "profile": {
+    "emailLocked": "Email đăng ký được cố định để xác thực tài khoản và khôi phục mật khẩu.",
     "title": "Hồ sơ Giáo viên",
     "desc": "Quản lý thông tin cá nhân và tài khoản",
     "security": "Bảo mật",
@@ -346,6 +356,9 @@
     }
   },
   "errors": {
+    "ERR_EMAIL_UNVERIFIED": "Email chưa được xác thực. Hãy mở liên kết trong hộp thư hoặc chọn Gửi lại email xác thực.",
+    "ERR_EMAIL_IMMUTABLE": "Không thể thay đổi email đăng ký trong hồ sơ.",
+    "ERR_INVALID_VERIFICATION_TOKEN": "Liên kết xác thực không hợp lệ, đã hết hạn hoặc đã được sử dụng. Hãy yêu cầu gửi lại email xác thực.",
     "ERR_SCHEDULE_OVERLAP": "Bạn đã có lớp học '{className}' vào {day} từ {startTime} đến {endTime} nên không thể tạo mới/ thay đổi thời gian lớp học.",
     "ERR_INTERNAL_SCHEDULE_OVERLAP": "Lịch học trong cùng một lớp bị trùng nhau vào {day} ({time1} và {time2}).",
     "ERR_UNAUTHORIZED": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.",

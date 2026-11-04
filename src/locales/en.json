@@ -50,6 +50,15 @@
     "footerSlogan": "Smart Management"
   },
   "auth": {
+    "verificationTitle": "Verify your email",
+    "verificationRegistrationSent": "Your account has been created. Check your inbox and spam folder, then open the verification link within 30 minutes before signing in. If it has not arrived, you can request another email after 2 minutes.",
+    "verificationResend": "Resend verification email",
+    "verificationResendDesc": "Enter your registered email to receive a verification link. Existing accounts with unverified emails must also complete this step before signing in.",
+    "verificationResent": "If the account needs verification, a link will be sent to the registered email. Check your spam folder too. Allow at least 2 minutes between requests.",
+    "verificationConfirm": "Verify my email",
+    "verificationConfirmDesc": "Confirm that you have access to this inbox. Then sign in with your registered account.",
+    "verificationSuccess": "Your email is verified. You can now sign in to MyStudents.",
+    "verificationRequiredForReset": "Only verified emails can receive a password reset link.",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -85,6 +94,7 @@
     "googleLoading": "Loading Google…"
   },
   "profile": {
+    "emailLocked": "Your registered email is fixed for account verification and password recovery.",
     "title": "Teacher Profile",
     "desc": "Manage personal info and account",
     "security": "Security",
@@ -346,6 +356,9 @@
     }
   },
   "errors": {
+    "ERR_EMAIL_UNVERIFIED": "Your email is not verified. Open the link in your inbox or choose Resend verification email.",
+    "ERR_EMAIL_IMMUTABLE": "Your registered email cannot be changed in your profile.",
+    "ERR_INVALID_VERIFICATION_TOKEN": "This verification link is invalid, expired, or already used. Request another verification email.",
     "ERR_SCHEDULE_OVERLAP": "You already have class '{className}' on {day} from {startTime} to {endTime}. Cannot create or update class.",
     "ERR_INTERNAL_SCHEDULE_OVERLAP": "Schedule conflict within the same class on {day} ({time1} and {time2}).",
     "ERR_UNAUTHORIZED": "Your session has expired. Sign in again to continue.",

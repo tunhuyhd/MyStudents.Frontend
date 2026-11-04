@@ -25,6 +25,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthShell title={t('auth.forgotPassword')}>
         <p className="text-surface-500 mt-3 mb-8">{t('auth.forgotPasswordDesc')}</p>
+        <p className="mb-6 text-sm">{t('auth.verificationRequiredForReset')}{' '}<Link href="/auth/verify-email" className="font-semibold text-brand-text hover:underline">{t('auth.verificationResend')}</Link></p>
         {sent ? <p role="status" className="text-brand-primary mb-8">{t('auth.forgotPasswordSuccess')}</p> : (
           <form onSubmit={submit} className="space-y-6">
             <Input label={t('auth.email')} type="email" autoComplete="email" maxLength={255} value={email} onChange={e => setEmail(e.target.value)} required />

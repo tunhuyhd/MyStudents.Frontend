@@ -66,6 +66,7 @@ export default function UserLoginPage() {
             />
 
             <Link href="/auth/forgot-password" className="block text-sm font-medium text-brand-primary hover:underline">{t('auth.forgotPassword')}</Link>
+            <Link href="/auth/verify-email" className="block text-sm font-medium text-brand-primary hover:underline">{t('auth.verificationResend')}</Link>
             {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 font-medium text-left">{error}</p>}
 
             <Button type="submit" className="w-full h-12 rounded-lg" isLoading={loading}>

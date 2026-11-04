@@ -17,8 +17,8 @@ async function setup(fetcher) {
   return { store, call: (path, method, body, headers) => handle(request(path, method, body, headers), path.split('/')) };
 }
 
-test('login/register/admin login never expose tokens; rotate session ID and use secure cookie', async () => {
-  for (const path of ['auth/login', 'auth/register', 'auth/google', 'admin/login', 'Auth/Login']) {
+test('login/admin login never expose tokens; rotate session ID and use secure cookie', async () => {
+  for (const path of ['auth/login', 'auth/google', 'admin/login', 'Auth/Login']) {
     const { call, store } = await setup(async (url, options) => {
       assert.equal(options.headers.has('Authorization'), false);
       return json({ token: 'secret-access', refreshToken: 'secret-refresh', username: 'user', userRole: 'Teacher', userId: '1' });
@@ -203,4 +203,19 @@ test('Google login maps the backend role and preserves the existing session on f
   const response = await success.call('auth/google', 'POST', { credential: 'credential' });
   assert.deepEqual(await response.json(), { username: 'teacher', userRole: 'User', userId: '123' });
   assert.match(response.headers.get('Set-Cookie'), /HttpOnly; SameSite=Lax; Max-Age=604800; Secure/);
+});
+
+
+test('registration and email verification relay without issuing a session', async () => {
+  for (const path of ['auth/register', 'auth/resend-verification', 'auth/verify-email']) {
+    const { call, store } = await setup(async (url, options) => {
+      assert.equal(options.headers.has('Authorization'), false);
+      return path === 'auth/verify-email' ? new Response(null, { status: 204 }) : json({ requiresEmailVerification: true }, 202);
+    });
+    const response = await call(path, 'POST', { email: 'teacher@example.test' }, { Cookie: '' });
+    assert.equal(response.status, path === 'auth/verify-email' ? 204 : 202);
+    assert.equal(response.headers.get('Set-Cookie'), null);
+    assert.ok(await store.get(id));
+    assert.equal((await call(path, 'GET')).status, 405);
+  }
 });

@@ -22,9 +22,10 @@ test('401 redirects once without browser refresh; public authentication remains 
     throw new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined, { status: 401, data: {}, headers: {}, config });
   });
   await assert.rejects(api.post('/auth/login'));
+  await assert.rejects(api.post('/auth/google'));
   await assert.rejects(api.get('/auth/me'));
   assert.equal(redirects, 0);
   await Promise.allSettled([api.get('/students'), api.get('/classes')]);
   assert.equal(redirects, 1);
-  assert.equal(calls, 4);
+  assert.equal(calls, 5);
 });

@@ -3,7 +3,7 @@ import type { Session, SessionStore } from './sessionStore';
 
 const WEEK = 7 * 86400_000;
 const IDLE = 86400_000;
-const authPaths = new Set(['auth/login', 'auth/register', 'admin/login']);
+const authPaths = new Set(['auth/login', 'auth/register', 'auth/google', 'admin/login']);
 const publicPaths = new Set([...authPaths, 'auth/forgot-password', 'auth/reset-password', 'auth/reset-password/validate']);
 type Options = { store: SessionStore; apiURL: string; origin: string; secure: boolean; fetcher?: typeof fetch };
 
@@ -91,13 +91,13 @@ export function createBff({ store, apiURL, origin, secure, fetcher = fetch }: Op
         const response = await upstream(route);
         if (!response.ok) return relay(response);
         if (authPaths.has(route)) {
-          const data = await response.json() as { token: string; refreshToken: string; username: string; userRole: string; userId: string };
+          const data = await response.json() as { token: string; refreshToken: string; username: string; userRole?: string; role?: string; userId: string };
           if (!data.token || !data.refreshToken) throw new Error('Invalid authentication response');
           const newId = randomBytes(32).toString('hex');
           await store.set(newId, { token: data.token, refreshToken: data.refreshToken, expiresAt: Date.now() + WEEK, idleUntil: Date.now() + IDLE });
           if (sessionId) await locked(sessionId, async () => store.delete(sessionId));
           // Explicit allowlist: credentials must never reach browser JSON.
-          return cookie(reply({ username: data.username, userRole: data.userRole, userId: data.userId }, 200), newId, WEEK / 1000);
+          return cookie(reply({ username: data.username, userRole: data.role ?? data.userRole, userId: data.userId }, 200), newId, WEEK / 1000);
         }
         if (route === 'auth/reset-password') {
           if (sessionId) await locked(sessionId, async () => store.delete(sessionId));

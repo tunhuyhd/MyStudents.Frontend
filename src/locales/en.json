@@ -77,7 +77,12 @@
     "resetPassword": "Reset password",
     "invalidToken": "This link is invalid or has expired.",
     "requestNewLink": "Request a new link",
-    "resetSuccess": "Your password has been updated. You can sign in again."
+    "resetSuccess": "Your password has been updated. You can sign in again.",
+    "or": "or",
+    "googleFailed": "Google sign-in failed. Please select your account and try again.",
+    "googleLoadFailed": "Google could not load. Check your connection, reload, or sign in with your password.",
+    "googleSigningIn": "Signing in…",
+    "googleLoading": "Loading Google…"
   },
   "profile": {
     "title": "Teacher Profile",
@@ -371,7 +376,10 @@
     "ERR_SESSION_HISTORY_LOCKED": "This session history is locked. Check that you selected the correct session.",
     "ERR_SESSION_NOT_STARTED": "This session has not started. You can do this after it begins.",
     "ERR_SESSION_OUTSIDE_CLASS": "This session is outside the class date range. Choose a date between the class start and end dates.",
-    "ERR_SESSION_OVERLAP": "This session overlaps another session. Check the schedule and choose another time."
+    "ERR_SESSION_OVERLAP": "This session overlaps another session. Check the schedule and choose another time.",
+    "ERR_GOOGLE_ACCOUNT_EXISTS": "This email already has an account. Sign in with your existing username and password.",
+    "ERR_GOOGLE_UNAVAILABLE": "Google sign-in is not configured. You can still sign in with your password.",
+    "ERR_GOOGLE_RETRY": "The account was just updated. Please try Google sign-in again."
   },
   "campus": {
     "authTitle": "Less administration. More time to teach.",

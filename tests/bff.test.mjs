@@ -18,7 +18,7 @@ async function setup(fetcher) {
 }
 
 test('login/register/admin login never expose tokens; rotate session ID and use secure cookie', async () => {
-  for (const path of ['auth/login', 'auth/register', 'admin/login', 'Auth/Login']) {
+  for (const path of ['auth/login', 'auth/register', 'auth/google', 'admin/login', 'Auth/Login']) {
     const { call, store } = await setup(async (url, options) => {
       assert.equal(options.headers.has('Authorization'), false);
       return json({ token: 'secret-access', refreshToken: 'secret-refresh', username: 'user', userRole: 'Teacher', userId: '1' });
@@ -190,4 +190,17 @@ test('revoked session clears browser cookie and cannot be replayed', async () =>
   assert.equal(calls, 2);
   assert.equal((await call('admin/users')).status, 401);
   assert.equal(calls, 2);
+});
+
+
+test('Google login maps the backend role and preserves the existing session on failure', async () => {
+  const { call, store } = await setup(async () => json({ errorCode: 'ERR_GOOGLE_ACCOUNT_EXISTS' }, 409));
+  const denied = await call('auth/google', 'POST', { credential: 'credential' });
+  assert.equal(denied.status, 409);
+  assert.equal(denied.headers.get('Set-Cookie'), null);
+  assert.ok(await store.get(id));
+  const success = await setup(async () => json({ token: 'secret', refreshToken: 'refresh', username: 'teacher', role: 'User', userId: '123' }));
+  const response = await success.call('auth/google', 'POST', { credential: 'credential' });
+  assert.deepEqual(await response.json(), { username: 'teacher', userRole: 'User', userId: '123' });
+  assert.match(response.headers.get('Set-Cookie'), /HttpOnly; SameSite=Lax; Max-Age=604800; Secure/);
 });

@@ -77,7 +77,12 @@
     "resetPassword": "Đặt lại mật khẩu",
     "invalidToken": "Liên kết không hợp lệ hoặc đã hết hạn.",
     "requestNewLink": "Yêu cầu liên kết mới",
-    "resetSuccess": "Mật khẩu đã được cập nhật. Bạn có thể đăng nhập lại."
+    "resetSuccess": "Mật khẩu đã được cập nhật. Bạn có thể đăng nhập lại.",
+    "or": "hoặc",
+    "googleFailed": "Không thể đăng nhập Google. Vui lòng chọn lại tài khoản và thử lại.",
+    "googleLoadFailed": "Không tải được Google. Hãy kiểm tra kết nối, tải lại trang hoặc đăng nhập bằng mật khẩu.",
+    "googleSigningIn": "Đang đăng nhập…",
+    "googleLoading": "Đang tải Google…"
   },
   "profile": {
     "title": "Hồ sơ Giáo viên",
@@ -371,7 +376,10 @@
     "ERR_SESSION_HISTORY_LOCKED": "Buổi học đã được chốt nên không thể sửa lịch sử. Hãy kiểm tra lại buổi học cần thao tác.",
     "ERR_SESSION_NOT_STARTED": "Buổi học chưa bắt đầu. Bạn chỉ có thể thực hiện thao tác này sau khi buổi học bắt đầu.",
     "ERR_SESSION_OUTSIDE_CLASS": "Thời gian buổi học nằm ngoài thời gian của lớp. Hãy chọn ngày trong khoảng bắt đầu và kết thúc lớp.",
-    "ERR_SESSION_OVERLAP": "Buổi học bị trùng thời gian với buổi khác. Hãy kiểm tra lịch và chọn thời gian khác."
+    "ERR_SESSION_OVERLAP": "Buổi học bị trùng thời gian với buổi khác. Hãy kiểm tra lịch và chọn thời gian khác.",
+    "ERR_GOOGLE_ACCOUNT_EXISTS": "Email này đã có tài khoản. Hãy đăng nhập bằng tên đăng nhập và mật khẩu hiện có.",
+    "ERR_GOOGLE_UNAVAILABLE": "Đăng nhập Google chưa được cấu hình. Bạn vẫn có thể đăng nhập bằng mật khẩu.",
+    "ERR_GOOGLE_RETRY": "Tài khoản vừa được cập nhật. Vui lòng thử đăng nhập Google lại."
   },
   "campus": {
     "authTitle": "Ít việc quản lý hơn. Nhiều thời gian dạy hơn.",

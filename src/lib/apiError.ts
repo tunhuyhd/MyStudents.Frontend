@@ -7,6 +7,7 @@ export function apiErrorMessage(error: unknown, t: Translate, fallback = 'common
   const failure = error as ApiFailure;
   const status = failure.response?.status;
   const login = fallback === 'auth.loginFailed' || fallback === 'admin.loginFailed';
+  if (status === 401 && fallback === 'auth.googleFailed') return t(fallback);
   if (status === 401) return t(login ? 'apiErrors.invalidCredentials' : 'common.sessionExpired');
   if (status === 403) return t('common.permissionDenied');
   if (failure.code === 'ECONNABORTED' || failure.code === 'ETIMEDOUT') return t('apiErrors.timeout');

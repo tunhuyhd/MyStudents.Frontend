@@ -1,5 +1,6 @@
 'use client';
 
+import { GoogleSignIn } from '@/components/GoogleSignIn';
 import { AuthShell } from '@/components/AuthShell';
 
 
@@ -90,6 +91,7 @@ export default function RegisterPage() {
               {t('common.register')}
             </Button>
           </form>
+      <GoogleSignIn />
     </AuthShell>
   );
 }

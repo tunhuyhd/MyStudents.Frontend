@@ -50,11 +50,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     let translated = getTranslation(language, path);
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        // Convert value to string and translate if it's a day of week
+        // Only day parameters represent weekdays; counts must remain numbers.
         const stringValue = String(value);
         const translatedValue = getTranslation(language, `days.${stringValue}`);
-        const finalValue = translatedValue !== `days.${stringValue}` ? translatedValue : stringValue;
-        translated = translated.replace(`{${key}}`, finalValue);
+        const finalValue = key === 'day' && translatedValue !== `days.${stringValue}` ? translatedValue : stringValue;
+        translated = translated.replaceAll(`{${key}}`, finalValue);
       });
     }
 

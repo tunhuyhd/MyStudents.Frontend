@@ -77,6 +77,7 @@ export function TeacherSidebar({ isOpen, onClose }: SidebarProps) {
   }, [isOpen, onClose]);
 
   const menuItems = [
+    { title: t('overview.nav'), icon: BookOpen, href: '/teacher/overview' },
     {
       title: t('teacher.title'),
       icon: BookOpen,

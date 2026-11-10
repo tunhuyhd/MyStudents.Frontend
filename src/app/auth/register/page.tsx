@@ -24,16 +24,20 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setEmailExists(false);
     try {
       await api.post('/auth/register', { ...formData, language });
       setSent(true);
       setFormData(current => ({ ...current, password: '' }));
     } catch (err: unknown) {
+      const code = (err as { response?: { data?: { errorCode?: string } } }).response?.data?.errorCode;
+      setEmailExists(code === 'ERR_EMAIL_EXISTS');
       setError(apiErrorMessage(err, t, 'auth.registrationFailed'));
     } finally {
       setLoading(false);
@@ -86,7 +90,13 @@ export default function RegisterPage() {
               />
             </div>
 
-            {error && <p className="md:col-span-2 text-sm text-red-500 font-medium text-center">{error}</p>}
+            {error && <div role="alert" className="md:col-span-2 space-y-3 text-sm">
+              <p className="text-red-700 font-medium">{emailExists ? t('auth.emailAlreadyRegistered') : error}</p>
+              {emailExists && <div className="flex flex-wrap gap-x-6 gap-y-3">
+                <Link href="/auth/login" className="font-semibold text-brand-text underline underline-offset-4">{t('common.login')}</Link>
+                <Link href="/auth/verify-email" className="font-semibold text-brand-text underline underline-offset-4">{t('auth.verificationResend')}</Link>
+              </div>}
+            </div>}
 
             <Button type="submit" className="md:col-span-2 h-12 rounded-lg" isLoading={loading}>
               {t('common.register')}

@@ -24,6 +24,7 @@ interface UserDto {
   roleName: string;
   roleId: string;
   status: number;
+  isEmailVerified?: boolean;
 }
 
 interface RoleDto {
@@ -67,6 +68,9 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   const [users, setUsers] = useState<UserDto[]>([]);
+  const [verificationFilter, setVerificationFilter] = useState('all');
+  const filteredUsers = users.filter(item => verificationFilter === 'all' ||
+    (verificationFilter === 'verified' ? item.isEmailVerified === true : item.isEmailVerified === false));
   const [roles, setRoles] = useState<RoleDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [usersLoading, setUsersLoading] = useState(true);
@@ -99,7 +103,7 @@ export default function AdminDashboard() {
       observer.disconnect();
       window.removeEventListener('resize', measureOverflow);
     };
-  }, [activeTab, users.length]);
+  }, [activeTab, users.length, verificationFilter]);
 
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -299,6 +303,14 @@ export default function AdminDashboard() {
                   <span>{t('admin.scrollToViewAllColumns')}</span>
                 </p>
               )}
+              <div className="flex flex-wrap items-center gap-3 px-6 py-4">
+                <label htmlFor="email-verification-filter" className="text-sm font-medium text-surface-900">{t('admin.emailVerification')}</label>
+                <select id="email-verification-filter" value={verificationFilter} onChange={event => setVerificationFilter(event.target.value)} className="min-h-10 rounded-lg border border-surface-200 bg-white px-3 text-sm text-surface-900">
+                  <option value="all">{t('admin.allVerificationStates')}</option>
+                  <option value="pending">{t('admin.emailPending')}</option>
+                  <option value="verified">{t('admin.emailVerified')}</option>
+                </select>
+              </div>
               <div
                 ref={userTableRegionRef}
                 role="region"
@@ -333,9 +345,9 @@ export default function AdminDashboard() {
                         </button>
                       </td>
                     </tr>
-                  ) : usersLoadState === 'empty' ? (
-                    <tr><td colSpan={6} className="px-8 py-12 text-center font-semibold text-surface-600">{t('admin.usersEmpty')}</td></tr>
-                  ) : users.map((u) => (
+                  ) : usersLoadState === 'empty' || filteredUsers.length === 0 ? (
+                    <tr><td colSpan={6} className="px-8 py-12 text-center font-semibold text-surface-600">{t(users.length === 0 ? 'admin.usersEmpty' : 'admin.noVerificationMatches')}</td></tr>
+                  ) : filteredUsers.map((u) => (
                     <motion.tr
                       key={u.id}
                       initial={false}
@@ -356,6 +368,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 md:px-6 py-4 text-surface-900/70 font-medium max-w-[150px] md:max-w-[260px]">
                         <ExpandableTableValue value={u.email} valueType="email" className="text-surface-900/70 font-medium max-w-[150px] md:max-w-[260px]" />
+                        <span className={`mt-2 inline-block rounded-md px-2 py-1 text-xs font-semibold ${u.isEmailVerified === true ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900'}`}>
+                          {t(u.isEmailVerified === true ? 'admin.emailVerified' : u.isEmailVerified === false ? 'admin.emailPending' : 'admin.emailVerificationUnknown')}
+                        </span>
                       </td>
                       <td className="px-4 md:px-6 py-4">
                         <span className={`px-4 py-1.5 rounded-full text-xs font-semibold  tracking-normal border ${

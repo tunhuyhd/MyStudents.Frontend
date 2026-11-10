@@ -50,6 +50,7 @@
     "footerSlogan": "Smart Management"
   },
   "auth": {
+    "emailAlreadyRegistered": "This email is already registered. You can sign in or request another verification email. An expired link does not delete your account.",
     "verificationTitle": "Verify your email",
     "verificationRegistrationSent": "Your account has been created. Check your inbox and spam folder, then open the verification link within 30 minutes before signing in. If it has not arrived, you can request another email after 2 minutes.",
     "verificationResend": "Resend verification email",
@@ -115,6 +116,12 @@
     "avatarUploadFailed": "Failed to upload avatar"
   },
   "admin": {
+    "emailVerification": "Email verification",
+    "allVerificationStates": "All email states",
+    "emailPending": "Pending verification",
+    "emailVerified": "Verified",
+    "emailVerificationUnknown": "Verification status unavailable",
+    "noVerificationMatches": "No accounts match this email filter.",
     "deleteUserTitle": "Permanently delete account",
     "deleteUserColumn": "Delete account",
     "deleteUserAction": "Delete permanently",

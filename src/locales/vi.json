@@ -50,6 +50,7 @@
     "footerSlogan": "Quản lý thông minh"
   },
   "auth": {
+    "emailAlreadyRegistered": "Email này đã được đăng ký. Bạn có thể đăng nhập hoặc yêu cầu gửi lại email xác thực. Liên kết hết hạn không xóa tài khoản.",
     "verificationTitle": "Xác thực email",
     "verificationRegistrationSent": "Tài khoản đã được tạo. Hãy kiểm tra hộp thư và thư rác, rồi mở liên kết xác thực trong vòng 30 phút trước khi đăng nhập. Nếu chưa nhận được thư, bạn có thể yêu cầu gửi lại sau 2 phút.",
     "verificationResend": "Gửi lại email xác thực",
@@ -115,6 +116,12 @@
     "avatarUploadFailed": "Tải ảnh đại diện thất bại"
   },
   "admin": {
+    "emailVerification": "Xác thực email",
+    "allVerificationStates": "Tất cả trạng thái email",
+    "emailPending": "Chờ xác thực",
+    "emailVerified": "Đã xác thực",
+    "emailVerificationUnknown": "Chưa có thông tin xác thực",
+    "noVerificationMatches": "Không có tài khoản phù hợp với bộ lọc email.",
     "deleteUserTitle": "Xóa vĩnh viễn tài khoản",
     "deleteUserColumn": "Xóa tài khoản",
     "deleteUserAction": "Xóa vĩnh viễn",
